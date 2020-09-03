@@ -1,3 +1,5 @@
+const cursorText = '<span class="cursor"></span>';
+
 (async () => {
 
   let input = `Hello I am a sentence.`;
@@ -27,27 +29,29 @@
 
   let cursor = 0;
 
-  const ta = document.querySelector("textarea");
+  const ta = document.querySelector("#codepled");
 
-  setCaretPosition(ta, cursor);
+  // setCaretPosition(ta, cursor);
+  setText(ta, getText(ta), cursor);
 
   for (let i = 0; i < commands.length; i++) {
     await sleep(100);
     const currentCommand = commands[i];
-    setCaretPosition(ta, cursor);
+    // setCaretPosition(ta, cursor);
+    setText(ta, getText(ta), cursor);
 
     if (typeof currentCommand === 'string') {
-
-      ta.value = ta.value.substr(0, cursor) + currentCommand + ta.value.substr(cursor);
+      const oldText = getText(ta);
+      const newText = oldText.substr(0, cursor) + currentCommand + oldText.substr(cursor);
       cursor += currentCommand.length;
-      setCaretPosition(ta, cursor);
+      setText(ta, newText, cursor);
     } else if (currentCommand <= 0) {
-      const oldVal = ta.value;
-      ta.value = oldVal.substr(0, cursor) + oldVal.substr(cursor + (currentCommand * (-1)));
-      setCaretPosition(ta, cursor);
+      const oldText = getText(ta);
+      const newText = oldText.substr(0, cursor) + oldText.substr(cursor + (currentCommand * (-1)));
+      setText(ta, newText, cursor);
     } else {
       cursor += currentCommand;
-      setCaretPosition(ta, cursor);
+      setText(ta, getText(ta), cursor);
     }
   }
 
@@ -71,16 +75,31 @@ function doGetCaretPosition(ctrl) {
     CaretPos = ctrl.selectionStart;
   return (CaretPos);
 }
+
+function getText(ctrl) {
+  return ctrl.innerHTML.replace(cursorText, '');
+}
+
+function setText(ctrl, text, cursor) {
+  ctrl.innerHTML = text.substr(0, cursor) + cursorText + text.substr(cursor);
+}
+
 function setCaretPosition(ctrl, pos) {
-  if (ctrl.setSelectionRange) {
-    ctrl.focus();
-    ctrl.setSelectionRange(pos, pos);
-  }
-  else if (ctrl.createTextRange) {
-    var range = ctrl.createTextRange();
-    range.collapse(true);
-    range.moveEnd('character', pos);
-    range.moveStart('character', pos);
-    range.select();
-  }
+
+  console.log('pos', pos)
+  ctrl.innerHTML = ctrl.innerHTML.replace(cursorText, '');
+  ctrl.innerHTML = ctrl.innerHTML.substr(0, pos) + cursorText + ctrl.innerHTML.substr(pos);
+  console.log('inbetween', ctrl.innerHTML);
+  return pos + cursorText.length;
+  // if (ctrl.setSelectionRange) {
+  //   ctrl.focus();
+  //   ctrl.setSelectionRange(pos, pos);
+  // }
+  // else if (ctrl.createTextRange) {
+  //   var range = ctrl.createTextRange();
+  //   range.collapse(true);
+  //   range.moveEnd('character', pos);
+  //   range.moveStart('character', pos);
+  //   range.select();
+  // }
 }

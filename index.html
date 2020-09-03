@@ -2,10 +2,22 @@
 <html>
   <head>
     <title>Title of the document</title>
+    <style type="text/css">
+      .cursor {
+        border: 1px solid black;
+        animation: blinker 1s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <textarea>Hello I am a sentence.</textarea>
+    <div id="codepled">Hello I am a sentence.</div>
     <script src="diffMatchPatch.js"></script>
     <script src="script.js"></script>
   </body>
