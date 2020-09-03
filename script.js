@@ -2,9 +2,10 @@ const cursorText = '<span class="cursor"></span>';
 
 (async () => {
 
-  let input = `Hello I am a sentence.`;
+  let input = `const cursorText = '<span class="cursor"></span>';`;
 
-  let transformed = `I am no sentence at all.`;
+  let transformed = `const cursorTextNew = '<span class="cursor"></span>';
+console.log('hello');`;
 
   var dmp = new diff_match_patch();
 
@@ -28,78 +29,59 @@ const cursorText = '<span class="cursor"></span>';
   console.log(commands);
 
   let cursor = 0;
+  let trueText = input;
 
   const ta = document.querySelector("#codepled");
 
-  // setCaretPosition(ta, cursor);
-  setText(ta, getText(ta), cursor);
+  ta.innerHTML = htmlEncode(input);
+
+  setText(ta, trueText, cursor);
 
   for (let i = 0; i < commands.length; i++) {
     await sleep(100);
     const currentCommand = commands[i];
-    // setCaretPosition(ta, cursor);
-    setText(ta, getText(ta), cursor);
+    setText(ta, trueText, cursor);
 
     if (typeof currentCommand === 'string') {
-      const oldText = getText(ta);
+      const oldText = trueText
       const newText = oldText.substr(0, cursor) + currentCommand + oldText.substr(cursor);
       cursor += currentCommand.length;
       setText(ta, newText, cursor);
     } else if (currentCommand <= 0) {
-      const oldText = getText(ta);
+      const oldText = trueText;
       const newText = oldText.substr(0, cursor) + oldText.substr(cursor + (currentCommand * (-1)));
       setText(ta, newText, cursor);
     } else {
       cursor += currentCommand;
-      setText(ta, getText(ta), cursor);
+      setText(ta, trueText, cursor);
     }
+  }
+
+  function setText(ctrl, text, cursor) {
+    ctrl.innerHTML = htmlEncode(text.substr(0, cursor)) + cursorText + htmlEncode(text.substr(cursor));
+    trueText = text;
+    highlight();
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function highlight() {
+    hljs.configure({ useBR: false });
+
+    document.querySelectorAll('#codepled').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  }
+
+  function htmlEncode(value) {
+    var div = document.createElement('div');
+    var text = document.createTextNode(value);
+    div.appendChild(text);
+    return div.innerHTML;
   }
 
 
 })();
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function doGetCaretPosition(ctrl) {
-  var CaretPos = 0;   // IE Support
-  if (document.selection) {
-    ctrl.focus();
-    var Sel = document.selection.createRange();
-    Sel.moveStart('character', -ctrl.value.length);
-    CaretPos = Sel.text.length;
-  }
-  // Firefox support
-  else if (ctrl.selectionStart || ctrl.selectionStart == '0')
-    CaretPos = ctrl.selectionStart;
-  return (CaretPos);
-}
-
-function getText(ctrl) {
-  return ctrl.innerHTML.replace(cursorText, '');
-}
-
-function setText(ctrl, text, cursor) {
-  ctrl.innerHTML = text.substr(0, cursor) + cursorText + text.substr(cursor);
-}
-
-function setCaretPosition(ctrl, pos) {
-
-  console.log('pos', pos)
-  ctrl.innerHTML = ctrl.innerHTML.replace(cursorText, '');
-  ctrl.innerHTML = ctrl.innerHTML.substr(0, pos) + cursorText + ctrl.innerHTML.substr(pos);
-  console.log('inbetween', ctrl.innerHTML);
-  return pos + cursorText.length;
-  // if (ctrl.setSelectionRange) {
-  //   ctrl.focus();
-  //   ctrl.setSelectionRange(pos, pos);
-  // }
-  // else if (ctrl.createTextRange) {
-  //   var range = ctrl.createTextRange();
-  //   range.collapse(true);
-  //   range.moveEnd('character', pos);
-  //   range.moveStart('character', pos);
-  //   range.select();
-  // }
-}
