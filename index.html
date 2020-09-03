@@ -27,12 +27,20 @@
         font-family: Menlo, Monaco, "Courier New", monospace;
         min-height: 100%;
       }
+      .play {
+        position: fixed;
+        color: white;
+        bottom: 30px;
+        left: 30px;
+        cursor: pointer;
+      }
     </style>
     <link rel="stylesheet" href="lib/css/tomorrow-night.css" />
   </head>
 
   <body>
     <div id="codepled" class="language-js">Hello I am a sentence.</div>
+    <div class="play">▶</div>
     <script src="lib/js/highlight.pack.js"></script>
     <script src="lib/js/diffMatchPatch.js"></script>
     <script src="script.js"></script>
