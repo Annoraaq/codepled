@@ -25,11 +25,7 @@
         display: block;
         white-space: pre;
         font-family: Menlo, Monaco, "Courier New", monospace;
-        min-height: 100%;
-      }
-      .container {
-        height: 100%;
-        min-height: 100%;
+        flex-grow: 1;
       }
       .play {
         color: white;
@@ -48,7 +44,6 @@
         background: white; /* Grey background */
         outline: none; /* Remove outline */
         width: 100%;
-        margin-left: 15px;
       }
 
       .slider::-webkit-slider-thumb {
@@ -67,20 +62,18 @@
         cursor: pointer; /* Cursor on hover */
       }
       .slider-container {
-        height: 25px;
+        height: 50px;
         width: 100%;
-        align-items: stretch;
+        align-items: center;
         display: flex;
-        position: fixed;
-        bottom: 10px;
-        right: 0;
         flex-direction: row;
       }
       .sliderbox {
-        height: 25 px;
+        height: 25px;
         flex-grow: 300;
         display: block;
         margin-right: 20px;
+        margin-left: 20px;
       }
       .speedmeter {
         background: #ffa372;
@@ -96,6 +89,19 @@
         text-align: center;
         font-weight: bold;
         display: block;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: auto;
+
+        position: absolute;
+        min-height: auto;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
       }
     </style>
     <link rel="stylesheet" href="lib/css/tomorrow-night.css" />

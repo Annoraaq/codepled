@@ -6,7 +6,7 @@
   const playButton = document.querySelector('.play');
   const slider = document.querySelector('.slider');
   const speedButton = document.querySelector('.speed');
-  const commands = createCommands(diff);
+  const commands = [...createCommands(diff), [2, 'Some Text']];
   const SPEED = { 3: 10, 2: 50, 1: 100 };
   let speed = 1;
   let trueText;
@@ -14,11 +14,14 @@
   let isPlaying = false;
   let wasPlayingOnSliderMove = false;
   let cursor = 0;
+  let isBlocked = false;
 
   initPlayButton(playButton);
   initSpeedButton(speedButton);
   initSlider(slider);
   init();
+
+
 
   function init() {
     cursor = 0;
@@ -26,6 +29,9 @@
   }
 
   async function play() {
+    if (currentCommandIndex >= commands.length) {
+      currentCommandIndex = 0;
+    }
     if (currentCommandIndex == 0) {
       init();
     }
@@ -42,7 +48,8 @@
   function forwardTo(targetIndex) {
     if (currentCommandIndex == 0) init();
 
-    while (currentCommandIndex <= targetIndex) {
+    while (currentCommandIndex < targetIndex) {
+      console.log('enter the loop')
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) {
@@ -60,15 +67,34 @@
     } else if (commandNo === -1) {
       const newText = trueText.substr(0, cursor) + trueText.substr(cursor + payload);
       setText(ta, newText, cursor);
-    } else {
+    } else if (commandNo === 0) {
       cursor += payload;
       setText(ta, trueText, cursor);
+    } else if (commandNo === 2) {
+      isPlaying = false;
+      const isLastCommand = currentCommandIndex == commands.length - 1;
+      isBlocked = true;
+      slider.disabled = true;
+      showMessage(payload).then(() => {
+        isBlocked = false;
+        slider.disabled = false;
+        if (!isLastCommand) {
+          play();
+        }
+      })
     }
+  }
+
+  async function showMessage(message) {
+    console.log('message')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => { console.log('resolved'); resolve() }, 5000);
+    });
   }
 
   function stop() {
     isPlaying = false;
-    setCurrentCommandIndex(0);
+    // setCurrentCommandIndex(0);
     playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
@@ -134,6 +160,7 @@
 
   function initPlayButton(playButton) {
     playButton.onclick = () => {
+      if (isBlocked) return;
       if (!isPlaying) {
         playButton.innerHTML = '<i class="fas fa-pause"></i>';
         play();
@@ -146,6 +173,7 @@
   }
 
   function initSpeedButton(speedButton) {
+    if (isBlocked) return;
     speedButton.onclick = () => {
       speed = (speed + 1) % 4;
       if (speed == 0) speed = 1;
