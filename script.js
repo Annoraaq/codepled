@@ -6,10 +6,12 @@
   const playButton = document.querySelector('.play');
   const slider = document.querySelector('.slider');
   const commands = createCommands(diff);
+  const DELAY = 50;
 
   let trueText;
   let currentCommandIndex = 0;
   let isPlaying = false;
+  let wasPlayingOnSliderMove = false;
   let cursor = 0;
 
   initPlayButton(playButton);
@@ -31,7 +33,7 @@
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) stop();
-      await sleep(100);
+      await sleep(DELAY);
     }
   }
 
@@ -62,7 +64,7 @@
   function stop() {
     isPlaying = false;
     setCurrentCommandIndex(0);
-    playButton.textContent = '▶';
+    playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
   function setCurrentCommandIndex(newIndex) {
@@ -100,26 +102,40 @@
   }
 
   function initSlider(slider) {
-    slider.setAttribute('max', commands.length)
+    slider.setAttribute('max', commands.length - 1)
     slider.value = 0;
-    slider.oninput = function (e) {
-      // currentCommandIndex = this.value;
+    slider.onchange = function (e) {
       if (this.value < currentCommandIndex) {
         currentCommandIndex = 0;
       }
+
       forwardTo(this.value);
-      console.log(this.value)
+      if (wasPlayingOnSliderMove) {
+        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+        play();
+      }
+      console.log(this.value, commands.length)
+    }
+    slider.oninput = function (e) {
+      if (isPlaying || wasPlayingOnSliderMove) {
+        wasPlayingOnSliderMove = true;
+      } else {
+        wasPlayingOnSliderMove = false;
+      }
+      playButton.innerHTML = '<i class="fas fa-play"></i>';
+      isPlaying = false;
     }
   }
 
   function initPlayButton(playButton) {
     playButton.onclick = () => {
       if (!isPlaying) {
-        playButton.textContent = '⏸';
+        playButton.innerHTML = '<i class="fas fa-pause"></i>';
         play();
       } else {
-        playButton.textContent = '▶';
+        playButton.innerHTML = '<i class="fas fa-play"></i>';
         isPlaying = false;
+        wasPlayingOnSliderMove = false;
       }
     }
   }

@@ -32,16 +32,55 @@
         min-height: 100%;
       }
       .play {
-        position: fixed;
         color: white;
-        bottom: 30px;
-        left: 30px;
         cursor: pointer;
+        flex-grow: 1;
+        margin-left: 10px;
+        margin-right: 10px;
+        line-height: 25px;
+        height: 25px;
+        width: 15px;
       }
       .slider {
+        -webkit-appearance: none; /* Override default CSS styles */
+        appearance: none;
+        height: 5px; /* Specified height */
+        background: white; /* Grey background */
+        outline: none; /* Remove outline */
+        width: 100%;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        appearance: none;
+        width: 15px; /* Set a specific slider handle width */
+        height: 15px; /* Slider handle height */
+        background: #ffa372; /* Green background */
+        cursor: pointer; /* Cursor on hover */
+      }
+
+      .slider::-moz-range-thumb {
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: #4caf50; /* Green background */
+        cursor: pointer; /* Cursor on hover */
+      }
+      .slider-container {
+        height: 25px;
+        width: 100%;
+        justify-content: space-around;
+        align-items: stretch;
+        display: flex;
         position: fixed;
         bottom: 10px;
-        left: 30px;
+        right: 0;
+        flex-direction: row;
+      }
+      .sliderbox {
+        height: 25 px;
+        flex-grow: 300;
+        display: block;
+        margin-right: 20px;
       }
     </style>
     <link rel="stylesheet" href="lib/css/tomorrow-night.css" />
@@ -50,9 +89,17 @@
   <body>
     <div class="container">
       <div id="codepled" class="language-js">Hello I am a sentence.</div>
-      <div class="play">▶</div>
-      <input type="range" min="0" max="99" value="50" class="slider" />
+      <div class="slider-container">
+        <div class="play"><i class="fas fa-play"></i></div>
+        <div class="sliderbox">
+          <input type="range" min="0" max="99" value="50" class="slider" />
+        </div>
+      </div>
     </div>
+    <script
+      src="https://kit.fontawesome.com/a4654796fe.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="lib/js/highlight.pack.js"></script>
     <script src="lib/js/diffMatchPatch.js"></script>
     <script src="input.js"></script>
