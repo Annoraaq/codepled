@@ -51,10 +51,7 @@
   function forwardTo(targetIndex) {
     if (currentCommandIndex == 0) init();
 
-    console.log('forward to', targetIndex)
-
     while (currentCommandIndex <= targetIndex) {
-      console.log('currentCommandINdex', currentCommandIndex)
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) {
