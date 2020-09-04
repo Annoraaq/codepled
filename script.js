@@ -49,7 +49,6 @@
     if (currentCommandIndex == 0) init();
 
     while (currentCommandIndex < targetIndex) {
-      console.log('enter the loop')
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) {
