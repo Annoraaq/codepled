@@ -9,16 +9,6 @@
   const commands = createCommands(diff);
   const SPEED = { 3: 10, 2: 50, 1: 100 };
   let speed = 1;
-
-  speedButton.onclick = () => {
-    speed = (speed + 1) % 4;
-    if (speed == 0) speed = 1;
-    const speedMeter = document.querySelector('.speedmeter');
-    speedMeter.textContent = speed;
-
-  }
-
-
   let trueText;
   let currentCommandIndex = 0;
   let isPlaying = false;
@@ -26,6 +16,7 @@
   let cursor = 0;
 
   initPlayButton(playButton);
+  initSpeedButton(speedButton);
   initSlider(slider);
   init();
 
@@ -61,16 +52,16 @@
     }
   }
 
-  function processCommand(currentCommand) {
-    if (typeof currentCommand === 'string') {
-      const newText = trueText.substr(0, cursor) + currentCommand + trueText.substr(cursor);
-      cursor += currentCommand.length;
+  function processCommand([commandNo, payload]) {
+    if (commandNo === 1) {
+      const newText = trueText.substr(0, cursor) + payload + trueText.substr(cursor);
+      cursor += payload.length;
       setText(ta, newText, cursor);
-    } else if (currentCommand <= 0) {
-      const newText = trueText.substr(0, cursor) + trueText.substr(cursor + (currentCommand * (-1)));
+    } else if (commandNo === -1) {
+      const newText = trueText.substr(0, cursor) + trueText.substr(cursor + payload);
       setText(ta, newText, cursor);
     } else {
-      cursor += currentCommand;
+      cursor += payload;
       setText(ta, trueText, cursor);
     }
   }
@@ -154,18 +145,27 @@
     }
   }
 
+  function initSpeedButton(speedButton) {
+    speedButton.onclick = () => {
+      speed = (speed + 1) % 4;
+      if (speed == 0) speed = 1;
+      const speedMeter = document.querySelector('.speedmeter');
+      speedMeter.textContent = speed;
+    }
+  }
+
   function createCommands(diff) {
     const commands = [];
     diff.forEach(d => {
       if (d[0] === -1) {
         for (let i = 0; i < d[1].length; i++) {
-          commands.push(-1);
+          commands.push([-1, 1]);
         }
       } else if (d[0] === 0) {
-        commands.push(d[1].length);
+        commands.push([0, d[1].length]);
       } else {
         for (let i = 0; i < d[1].length; i++) {
-          commands.push(d[1][i]);
+          commands.push([1, d[1][i]]);
         }
       }
     });
