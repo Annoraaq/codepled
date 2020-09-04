@@ -5,8 +5,19 @@
   const ta = document.querySelector("#codepled");
   const playButton = document.querySelector('.play');
   const slider = document.querySelector('.slider');
+  const speedButton = document.querySelector('.speed');
   const commands = createCommands(diff);
-  const DELAY = 50;
+  const SPEED = { 3: 10, 2: 50, 1: 100 };
+  let speed = 1;
+
+  speedButton.onclick = () => {
+    speed = (speed + 1) % 4;
+    if (speed == 0) speed = 1;
+    const speedMeter = document.querySelector('.speedmeter');
+    speedMeter.textContent = speed;
+
+  }
+
 
   let trueText;
   let currentCommandIndex = 0;
@@ -33,17 +44,23 @@
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) stop();
-      await sleep(DELAY);
+      await sleep(SPEED[speed]);
     }
   }
 
   function forwardTo(targetIndex) {
     if (currentCommandIndex == 0) init();
 
+    console.log('forward to', targetIndex)
+
     while (currentCommandIndex <= targetIndex) {
+      console.log('currentCommandINdex', currentCommandIndex)
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
-      if (currentCommandIndex >= commands.length) stop();
+      if (currentCommandIndex >= commands.length) {
+        stop();
+        break;
+      };
     }
   }
 

@@ -36,10 +36,10 @@
         cursor: pointer;
         flex-grow: 1;
         margin-left: 10px;
-        margin-right: 10px;
         line-height: 25px;
         height: 25px;
         width: 15px;
+        text-align: center;
       }
       .slider {
         -webkit-appearance: none; /* Override default CSS styles */
@@ -48,6 +48,7 @@
         background: white; /* Grey background */
         outline: none; /* Remove outline */
         width: 100%;
+        margin-left: 15px;
       }
 
       .slider::-webkit-slider-thumb {
@@ -68,7 +69,6 @@
       .slider-container {
         height: 25px;
         width: 100%;
-        justify-content: space-around;
         align-items: stretch;
         display: flex;
         position: fixed;
@@ -82,6 +82,21 @@
         display: block;
         margin-right: 20px;
       }
+      .speedmeter {
+        background: #ffa372;
+        color: black;
+        position: absolute;
+        border-radius: 10px;
+        font-size: 9px;
+        width: 13px;
+        height: 13px;
+        line-height: 13px;
+        font-family: Menlo, Monaco, "Courier New", monospace;
+        margin-left: 10px;
+        text-align: center;
+        font-weight: bold;
+        display: block;
+      }
     </style>
     <link rel="stylesheet" href="lib/css/tomorrow-night.css" />
   </head>
@@ -91,6 +106,9 @@
       <div id="codepled" class="language-js">Hello I am a sentence.</div>
       <div class="slider-container">
         <div class="play"><i class="fas fa-play"></i></div>
+        <div class="play speed">
+          <span class="speedmeter">1</span><i class="fas fa-tachometer-alt"></i>
+        </div>
         <div class="sliderbox">
           <input type="range" min="0" max="99" value="50" class="slider" />
         </div>
