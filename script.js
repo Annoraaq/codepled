@@ -1,4 +1,9 @@
 (function () {
+  const SPEED = { 3: 10, 2: 50, 1: 100 };
+  const CMD_DELETE = -1;
+  const CMD_INSERT = 1;
+  const CMD_SKIP = 0;
+  const CMD_SHOW_TEXT = 2;
   const cursorText = '<span class="cursor"></span>';
   const dmp = new diff_match_patch();
   const diff = dmp.diff_main(input, transformed);
@@ -6,8 +11,63 @@
   const playButton = document.querySelector('.play');
   const slider = document.querySelector('.slider');
   const speedButton = document.querySelector('.speed');
-  const commands = [...createCommands(diff), [2, 'Some Text']];
-  const SPEED = { 3: 10, 2: 50, 1: 100 };
+  const textbox = document.querySelector('.textbox-container');
+  const commands = [...createCommands(diff), [2, `Some Text that is very very long. Lorem Ipsum dolor sit amet. Bla bla blaa asdih asdf
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  Some Text that is very very long. Lorem Ipsum dol
+  bnsdf ahd asdh sdgh asd ahjg sajdfasd gkasdkf dsfgkjbnasd dfk zsjks sdf;vjkjawekjasdljnasdvkjabsdlfkj`]];
+
   let speed = 1;
   let trueText;
   let currentCommandIndex = 0;
@@ -15,13 +75,13 @@
   let wasPlayingOnSliderMove = false;
   let cursor = 0;
   let isBlocked = false;
+  let textContinue;
 
   initPlayButton(playButton);
   initSpeedButton(speedButton);
   initSlider(slider);
+  initTextbox(textbox);
   init();
-
-
 
   function init() {
     cursor = 0;
@@ -59,24 +119,22 @@
   }
 
   function processCommand([commandNo, payload]) {
-    if (commandNo === 1) {
+    if (commandNo === CMD_INSERT) {
       const newText = trueText.substr(0, cursor) + payload + trueText.substr(cursor);
       cursor += payload.length;
       setText(ta, newText, cursor);
-    } else if (commandNo === -1) {
+    } else if (commandNo === CMD_DELETE) {
       const newText = trueText.substr(0, cursor) + trueText.substr(cursor + payload);
       setText(ta, newText, cursor);
-    } else if (commandNo === 0) {
+    } else if (commandNo === CMD_SKIP) {
       cursor += payload;
       setText(ta, trueText, cursor);
-    } else if (commandNo === 2) {
+    } else if (commandNo === CMD_SHOW_TEXT) {
       isPlaying = false;
       const isLastCommand = currentCommandIndex == commands.length - 1;
-      isBlocked = true;
-      slider.disabled = true;
+      disableControls();
       showMessage(payload).then(() => {
-        isBlocked = false;
-        slider.disabled = false;
+        enableControls();
         if (!isLastCommand) {
           play();
         }
@@ -85,15 +143,15 @@
   }
 
   async function showMessage(message) {
-    console.log('message')
-    return new Promise((resolve, reject) => {
-      setTimeout(() => { console.log('resolved'); resolve() }, 5000);
+    document.querySelector('.textbox-container').style.display = 'flex';
+    document.querySelector('.textbox__content').innerHTML = message;
+    return new Promise((resolve) => {
+      textContinue = resolve;
     });
   }
 
   function stop() {
     isPlaying = false;
-    // setCurrentCommandIndex(0);
     playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
@@ -186,16 +244,37 @@
     diff.forEach(d => {
       if (d[0] === -1) {
         for (let i = 0; i < d[1].length; i++) {
-          commands.push([-1, 1]);
+          commands.push([CMD_DELETE, 1]);
         }
       } else if (d[0] === 0) {
-        commands.push([0, d[1].length]);
+        commands.push([CMD_SKIP, d[1].length]);
       } else {
         for (let i = 0; i < d[1].length; i++) {
-          commands.push([1, d[1][i]]);
+          commands.push([CMD_INSERT, d[1][i]]);
         }
       }
     });
     return commands;
+  }
+
+  function initTextbox(textbox) {
+    textbox.style.display = 'none';
+
+    textbox.querySelector('i').onclick = () => {
+      if (textContinue) {
+        textbox.style.display = 'none';
+        textContinue();
+      }
+    };
+  }
+
+  function disableControls() {
+    isBlocked = true;
+    slider.disabled = true;
+  }
+
+  function enableControls() {
+    isBlocked = false;
+    slider.disabled = false;
   }
 })();
