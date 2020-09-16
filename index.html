@@ -127,6 +127,15 @@
         cursor: pointer;
       }
       .next-button {
+        animation: blinker 2s linear infinite;
+      }
+      .slider-container.disabled .play {
+        cursor: not-allowed;
+        color: gray;
+      }
+      .slider-container.disabled input {
+        cursor: not-allowed;
+        background: gray;
       }
     </style>
     <link rel="stylesheet" href="lib/css/tomorrow-night.css" />

@@ -271,10 +271,13 @@
   function disableControls() {
     isBlocked = true;
     slider.disabled = true;
+
+    document.querySelector('.slider-container').classList.add('disabled');
   }
 
   function enableControls() {
     isBlocked = false;
     slider.disabled = false;
+    document.querySelector('.slider-container').classList.remove('disabled');
   }
 })();
