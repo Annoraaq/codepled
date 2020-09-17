@@ -20,6 +20,23 @@
           opacity: 0;
         }
       }
+      .code-container {
+        font-size: 12px;
+        display: block;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+      }
+      .lines {
+        padding-top: 6px;
+        padding-left: 10px;
+        padding-right: 4px;
+        display: block;
+        font-family: Menlo, Monaco, "Courier New", monospace;
+        color: #787878;
+        background: rgb(29, 31, 33);
+      }
       #codepled {
         font-size: 12px;
         display: block;
@@ -143,7 +160,10 @@
 
   <body>
     <div class="container">
-      <div id="codepled" class="language-js">Hello I am a sentence.</div>
+      <div class="code-container">
+        <div class="lines"></div>
+        <div id="codepled" class="language-js"></div>
+      </div>
       <div class="textbox-container">
         <div class="textbox__content"></div>
         <button class="button next-button">
@@ -166,6 +186,7 @@
     ></script>
     <script src="lib/js/highlight.pack.js"></script>
     <script src="lib/js/diffMatchPatch.js"></script>
+    <script src="lib/js/highlightjs-highlight-lines.min.js"></script>
     <script src="input.js"></script>
     <script src="transformed.js"></script>
     <script src="script.js"></script>

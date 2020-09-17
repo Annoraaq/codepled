@@ -167,19 +167,34 @@
   function setText(ctrl, text, cursor) {
     ctrl.innerHTML = htmlEncode(text.substr(0, cursor)) + cursorText + htmlEncode(text.substr(cursor));
     trueText = text;
-    highlight();
+    highlight({ start: 2, end: 2 });
   }
 
   function setCursor(ctrl, cursorPos) {
     ctrl.innerHTML = htmlEncode(trueText.substr(0, cursor)) + cursorText + htmlEncode(trueText.substr(cursor));
   }
 
-  function highlight() {
+  function highlight(highlightedLines = { start: 0, end: 0 }) {
     hljs.configure({ useBR: false });
 
     document.querySelectorAll('#codepled').forEach((block) => {
       hljs.highlightBlock(block);
+      const lines = (block.innerHTML.match(/\n/g) || []).length;
+      setLines(lines);
+      // hljs.highlightLinesCode(block, [{ start: highlightedLines.start, end: highlightedLines.end, color: '#004212' }], true);
+
     });
+  }
+
+  function setLines(lineCount) {
+    let innerStr = '';
+    for (let i = 1; i <= lineCount; i++) {
+      innerStr += i + '<br />';
+    }
+    const linesContainer = document.querySelector('.lines');
+    if (linesContainer) {
+      linesContainer.innerHTML = innerStr;
+    }
   }
 
   function htmlEncode(value) {
