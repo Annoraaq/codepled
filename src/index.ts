@@ -5,7 +5,7 @@ import { transformed } from "./transformed";
 import { displayText } from "./displayText";
 
 (function () {
-  const SPEED = { 3: 10, 2: 50, 1: 100 };
+  const SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
   const CMD_DELETE = -1;
   const CMD_INSERT = 1;
   const CMD_SKIP = 0;
@@ -17,9 +17,9 @@ import { displayText } from "./displayText";
   const diff = dmp.diff_main(input, transformed);
   const ta = document.querySelector("#codepled");
   const playButton = document.querySelector(".play");
-  const slider = document.querySelector(".slider");
-  const speedButton = document.querySelector(".speed");
-  const textbox = document.querySelector(".textbox-container");
+  const slider = <HTMLInputElement>document.querySelector(".slider");
+  const speedButton = <HTMLElement>document.querySelector(".speed");
+  const textbox = <HTMLElement>document.querySelector(".textbox-container");
   let highlightedLines = { start: -1, end: -2 };
   const commands = [
     ...createCommands(diff),
@@ -34,9 +34,9 @@ import { displayText } from "./displayText";
   let wasPlayingOnSliderMove = false;
   let cursor = 0;
   let isBlocked = false;
-  let textContinue: string;
+  let textContinue: () => void;
 
-  initPlayButton(playButton);
+  initPlayButton(<HTMLElement>playButton);
   initSpeedButton(speedButton);
   initSlider(slider);
   initTextbox(textbox);
@@ -61,13 +61,11 @@ import { displayText } from "./displayText";
       processCommand(commands[currentCommandIndex]);
       setCurrentCommandIndex(currentCommandIndex + 1);
       if (currentCommandIndex >= commands.length) stop();
-      // @ts-ignore
       await sleep(SPEED[speed]);
     }
   }
 
-  // @ts-ignore
-  function forwardTo(targetIndex) {
+  function forwardTo(targetIndex: number) {
     if (currentCommandIndex == 0) init();
 
     while (currentCommandIndex < targetIndex) {
@@ -80,8 +78,7 @@ import { displayText } from "./displayText";
     }
   }
 
-  // @ts-ignore
-  function processCommand([commandNo, payload]) {
+  function processCommand([commandNo, payload]: any[]) {
     if (commandNo === CMD_INSERT) {
       const newText =
         trueText.substr(0, cursor) + payload + trueText.substr(cursor);
@@ -115,8 +112,7 @@ import { displayText } from "./displayText";
     }
   }
 
-  // @ts-ignore
-  function scrollTo(line) {
+  function scrollTo(line: number) {
     const codepled = document.querySelector("#codepled");
     const clientHeight = codepled.clientHeight;
     const padding = parseFloat(
@@ -137,13 +133,11 @@ import { displayText } from "./displayText";
     return (beforeCursor.match(/\n/g) || []).length;
   }
 
-  // @ts-ignore
-  async function showMessage(message) {
-    // @ts-ignore
-    document.querySelector(".textbox-container").style.display = "flex";
+  async function showMessage(message: string) {
+    (<HTMLElement>document.querySelector(".textbox-container")).style.display =
+      "flex";
     document.querySelector(".textbox__content").innerHTML = message;
     return new Promise((resolve) => {
-      // @ts-ignore
       textContinue = resolve;
     });
   }
@@ -153,20 +147,16 @@ import { displayText } from "./displayText";
     playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
-  // @ts-ignore
-  function setCurrentCommandIndex(newIndex) {
+  function setCurrentCommandIndex(newIndex: number) {
     currentCommandIndex = newIndex;
-    // @ts-ignore
-    slider.value = newIndex;
+    (<HTMLInputElement>slider).value = `${newIndex}`;
   }
 
-  // @ts-ignore
-  function sleep(ms) {
+  function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // @ts-ignore
-  function setText(ctrl, text, cursor) {
+  function setText(ctrl: Element, text: string, cursor: number) {
     ctrl.innerHTML =
       htmlEncode(text.substr(0, cursor)) +
       cursorText +
@@ -175,8 +165,7 @@ import { displayText } from "./displayText";
     highlight();
   }
 
-  // @ts-ignore
-  function setCursor(ctrl, cursorPos) {
+  function setCursor(ctrl: Element, cursorPos: number) {
     ctrl.innerHTML =
       htmlEncode(trueText.substr(0, cursor)) +
       cursorText +
@@ -187,16 +176,14 @@ import { displayText } from "./displayText";
     hljs.configure({ useBR: false });
 
     document.querySelectorAll("#codepled").forEach((block) => {
-      // @ts-ignore
-      hljs.highlightBlock(block);
+      hljs.highlightBlock(<HTMLElement>block);
       const linesCount = (block.innerHTML.match(/\n/g) || []).length;
       setLines(linesCount);
       highlightLines(block);
     });
   }
 
-  // @ts-ignore
-  function highlightLines(block) {
+  function highlightLines(block: Element) {
     block.innerHTML = block.innerHTML.replace(
       /([ \S]*\n|[ \S]*$)/gm,
       // @ts-ignore
@@ -208,13 +195,12 @@ import { displayText } from "./displayText";
     const lines = block.querySelectorAll(".line");
     for (let option of options) {
       for (let i = option.start; i <= option.end; i++) {
-        lines[i - 1].style.backgroundColor = option.color;
+        (<HTMLElement>lines[i - 1]).style.backgroundColor = option.color;
       }
     }
   }
 
-  // @ts-ignore
-  function setLines(lineCount) {
+  function setLines(lineCount: number) {
     let innerStr = "";
     for (let i = 1; i <= lineCount; i++) {
       innerStr += i + "<br />";
@@ -225,32 +211,28 @@ import { displayText } from "./displayText";
     }
   }
 
-  // @ts-ignore
-  function htmlEncode(value) {
+  function htmlEncode(value: string) {
     var div = document.createElement("div");
     var text = document.createTextNode(value);
     div.appendChild(text);
     return div.innerHTML;
   }
 
-  // @ts-ignore
-  function initSlider(slider) {
-    slider.setAttribute("max", commands.length - 1);
-    slider.value = 0;
-    // @ts-ignore
+  function initSlider(slider: HTMLInputElement) {
+    slider.setAttribute("max", `${commands.length - 1}`);
+    slider.value = "0";
     slider.onchange = function (e) {
-      if (this.value < currentCommandIndex) {
+      const sliderVal = Number((<HTMLInputElement>this).value);
+      if (sliderVal < currentCommandIndex) {
         currentCommandIndex = 0;
       }
 
-      forwardTo(this.value);
+      forwardTo(sliderVal);
       if (wasPlayingOnSliderMove) {
         playButton.innerHTML = '<i class="fas fa-pause"></i>';
         play();
       }
-      console.log(this.value, commands.length);
     };
-    // @ts-ignore
     slider.oninput = function (e) {
       if (isPlaying || wasPlayingOnSliderMove) {
         wasPlayingOnSliderMove = true;
@@ -262,8 +244,7 @@ import { displayText } from "./displayText";
     };
   }
 
-  // @ts-ignore
-  function initPlayButton(playButton) {
+  function initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
       if (isBlocked) return;
       if (!isPlaying) {
@@ -277,23 +258,18 @@ import { displayText } from "./displayText";
     };
   }
 
-  // @ts-ignore
-  function initSpeedButton(speedButton) {
+  function initSpeedButton(speedButton: HTMLElement) {
     if (isBlocked) return;
     speedButton.onclick = () => {
       speed = (speed + 1) % 4;
       if (speed == 0) speed = 1;
       const speedMeter = document.querySelector(".speedmeter");
-      // @ts-ignore
-      speedMeter.textContent = speed;
+      speedMeter.textContent = `${speed}`;
     };
   }
 
-  // @ts-ignore
-  function createCommands(diff) {
-    // @ts-ignore
-    const commands = [];
-    // @ts-ignore
+  function createCommands(diff: any[]) {
+    const commands: any[] = [];
     diff.forEach((d) => {
       if (d[0] === -1) {
         for (let i = 0; i < d[1].length; i++) {
@@ -307,18 +283,15 @@ import { displayText } from "./displayText";
         }
       }
     });
-    // @ts-ignore
     return commands;
   }
 
-  // @ts-ignore
-  function initTextbox(textbox) {
+  function initTextbox(textbox: HTMLElement) {
     textbox.style.display = "none";
 
     textbox.querySelector("i").onclick = () => {
       if (textContinue) {
         textbox.style.display = "none";
-        // @ts-ignore
         textContinue();
       }
     };
@@ -326,7 +299,6 @@ import { displayText } from "./displayText";
 
   function disableControls() {
     isBlocked = true;
-    // @ts-ignore
     slider.disabled = true;
 
     document.querySelector(".slider-container").classList.add("disabled");
@@ -334,7 +306,6 @@ import { displayText } from "./displayText";
 
   function enableControls() {
     isBlocked = false;
-    // @ts-ignore
     slider.disabled = false;
     document.querySelector(".slider-container").classList.remove("disabled");
   }
