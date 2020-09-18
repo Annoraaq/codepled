@@ -4,5 +4,53 @@ var input = `callMe().then(result => {
   }).then(filtered => {
     return mapResult(filtered);
   });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
+  }).then(filtered => {
+    return mapResult(filtered);
+  });
 });
 `;

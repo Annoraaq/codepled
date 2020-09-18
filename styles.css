@@ -1,0 +1,155 @@
+html,
+body {
+  background: black;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.cursor {
+  border: 1px solid white;
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.code-container {
+  font-size: 12px;
+  flex-grow: 1;
+  align-items: stretch;
+  overflow: scroll;
+}
+.inner-container {
+  display: flex;
+  flex-direction: row;
+}
+.lines {
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 4px;
+  display: block;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  color: #787878;
+  background: rgb(29, 31, 33);
+  overflow: auto;
+  height: auto;
+}
+#codepled {
+  font-size: 12px;
+  display: block;
+  white-space: pre;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  flex-grow: 1;
+  overflow: hidden;
+  height: auto;
+}
+.play {
+  color: white;
+  cursor: pointer;
+  flex-grow: 1;
+  margin-left: 10px;
+  line-height: 25px;
+  height: 25px;
+  width: 15px;
+  text-align: center;
+}
+.slider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  height: 5px; /* Specified height */
+  background: white; /* Grey background */
+  outline: none; /* Remove outline */
+  width: 100%;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 15px; /* Set a specific slider handle width */
+  height: 15px; /* Slider handle height */
+  background: #ffa372; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4caf50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+.slider-container {
+  height: 50px;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+}
+.textbox-container {
+  color: white;
+  padding: 10px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  max-height: 50%;
+}
+.textbox__content {
+  white-space: pre-wrap;
+  overflow-y: scroll;
+  max-height: 100%;
+  width: 100%;
+}
+.sliderbox {
+  height: 25px;
+  flex-grow: 300;
+  display: block;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+.speedmeter {
+  background: #ffa372;
+  color: black;
+  position: absolute;
+  border-radius: 10px;
+  font-size: 9px;
+  width: 13px;
+  height: 13px;
+  line-height: 13px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  margin-left: 10px;
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: auto;
+  position: absolute;
+  min-height: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.button {
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  cursor: pointer;
+}
+.next-button {
+  animation: blinker 2s linear infinite;
+}
+.slider-container.disabled .play {
+  cursor: not-allowed;
+  color: gray;
+}
+.slider-container.disabled input {
+  cursor: not-allowed;
+  background: gray;
+}
