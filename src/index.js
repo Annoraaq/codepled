@@ -1,3 +1,9 @@
+import DiffMatchPatch from 'diff-match-patch';
+import hljs from 'highlight.js';
+import { input } from './input';
+import { transformed } from './transformed';
+
+
 (function () {
   const SPEED = { 3: 10, 2: 50, 1: 100 };
   const CMD_DELETE = -1;
@@ -7,7 +13,7 @@
   const CMD_HIGHLIGHT_LINES = 3;
   const CMD_SCROLL_TO = 4;
   const cursorText = '<span class="cursor"></span>';
-  const dmp = new diff_match_patch();
+  const dmp = new DiffMatchPatch();
   const diff = dmp.diff_main(input, transformed);
   const ta = document.querySelector("#codepled");
   const playButton = document.querySelector('.play');

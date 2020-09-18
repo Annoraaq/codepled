@@ -1,0 +1,30 @@
+{
+  "name": "codepled",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Annoraaq/codepled.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Annoraaq/codepled/issues"
+  },
+  "homepage": "https://github.com/Annoraaq/codepled#readme",
+  "devDependencies": {
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "diff-match-patch": "^1.0.5",
+    "highlight.js": "^10.2.0"
+  }
+}
