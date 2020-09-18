@@ -4,6 +4,7 @@
   const CMD_INSERT = 1;
   const CMD_SKIP = 0;
   const CMD_SHOW_TEXT = 2;
+  const CMD_HIGHLIGHT_LINES = 3;
   const cursorText = '<span class="cursor"></span>';
   const dmp = new diff_match_patch();
   const diff = dmp.diff_main(input, transformed);
@@ -12,7 +13,8 @@
   const slider = document.querySelector('.slider');
   const speedButton = document.querySelector('.speed');
   const textbox = document.querySelector('.textbox-container');
-  const commands = [...createCommands(diff), [2, `Some Text that is very very long. Lorem Ipsum dolor sit amet. Bla bla blaa asdih asdf
+  let highlightedLines = { start: -1, end: -2 };
+  const commands = [...createCommands(diff), [CMD_HIGHLIGHT_LINES, { start: 3, end: 4 }], [2, `Some Text that is very very long. Lorem Ipsum dolor sit amet. Bla bla blaa asdih asdf
   Some Text that is very very long. Lorem Ipsum dol
   Some Text that is very very long. Lorem Ipsum dol
   Some Text that is very very long. Lorem Ipsum dol
@@ -139,6 +141,9 @@
           play();
         }
       })
+    } else if (commandNo === CMD_HIGHLIGHT_LINES) {
+      highlightedLines = payload;
+      setText(ta, trueText, cursor);
     }
   }
 
@@ -167,23 +172,38 @@
   function setText(ctrl, text, cursor) {
     ctrl.innerHTML = htmlEncode(text.substr(0, cursor)) + cursorText + htmlEncode(text.substr(cursor));
     trueText = text;
-    highlight({ start: 2, end: 2 });
+    highlight();
   }
 
   function setCursor(ctrl, cursorPos) {
     ctrl.innerHTML = htmlEncode(trueText.substr(0, cursor)) + cursorText + htmlEncode(trueText.substr(cursor));
   }
 
-  function highlight(highlightedLines = { start: 0, end: 0 }) {
+  function highlight() {
     hljs.configure({ useBR: false });
 
     document.querySelectorAll('#codepled').forEach((block) => {
       hljs.highlightBlock(block);
-      const lines = (block.innerHTML.match(/\n/g) || []).length;
-      setLines(lines);
-      // hljs.highlightLinesCode(block, [{ start: highlightedLines.start, end: highlightedLines.end, color: '#004212' }], true);
-
+      const linesCount = (block.innerHTML.match(/\n/g) || []).length;
+      setLines(linesCount);
+      highlightLines(block);
     });
+  }
+
+  function highlightLines(block) {
+    block.innerHTML = block.innerHTML.replace(
+      /([ \S]*\n|[ \S]*$)/gm,
+      match => `<div class="line">${match}</div>`
+    );
+
+    const options = [{ ...highlightedLines, color: '#004212' }];
+
+    const lines = block.querySelectorAll('.line');
+    for (let option of options) {
+      for (let i = option.start; i <= option.end; i++) {
+        lines[i - 1].style.backgroundColor = option.color;
+      }
+    }
   }
 
   function setLines(lineCount) {
