@@ -15,7 +15,7 @@
   const speedButton = document.querySelector('.speed');
   const textbox = document.querySelector('.textbox-container');
   let highlightedLines = { start: -1, end: -2 };
-  const commands = [[CMD_SCROLL_TO, 32], ...createCommands(diff), [CMD_HIGHLIGHT_LINES, { start: 3, end: 4 }], [2, `Some Text that is very very long. Lorem Ipsum dolor sit amet. Bla bla blaa asdih asdf
+  const commands = [...createCommands(diff), [CMD_HIGHLIGHT_LINES, { start: 3, end: 4 }], [2, `Some Text that is very very long. Lorem Ipsum dolor sit amet. Bla bla blaa asdih asdf
   Some Text that is very very long. Lorem Ipsum dol
   Some Text that is very very long. Lorem Ipsum dol
   Some Text that is very very long. Lorem Ipsum dol
@@ -127,12 +127,15 @@
       const newText = trueText.substr(0, cursor) + payload + trueText.substr(cursor);
       cursor += payload.length;
       setText(ta, newText, cursor);
+      scrollTo(getCursorLine());
     } else if (commandNo === CMD_DELETE) {
       const newText = trueText.substr(0, cursor) + trueText.substr(cursor + payload);
       setText(ta, newText, cursor);
+      scrollTo(getCursorLine());
     } else if (commandNo === CMD_SKIP) {
       cursor += payload;
       setText(ta, trueText, cursor);
+      scrollTo(getCursorLine());
     } else if (commandNo === CMD_SHOW_TEXT) {
       isPlaying = false;
       const isLastCommand = currentCommandIndex == commands.length - 1;
@@ -147,13 +150,23 @@
       highlightedLines = payload;
       setText(ta, trueText, cursor);
     } else if (commandNo === CMD_SCROLL_TO) {
-      const codepled = document.querySelector('#codepled');
-      const clientHeight = codepled.clientHeight;
-      const padding = parseFloat(window.getComputedStyle(codepled).getPropertyValue('padding-top'));
-      const linesCount = (codepled.innerHTML.match(/\n/g) || []).length;
-      const lineHeight = (clientHeight - 2 * padding) / linesCount;
-      document.querySelector('.code-container').scrollTop = lineHeight * (payload - 1) + padding;
+      scrollTo(payload);
     }
+  }
+
+  function scrollTo(line) {
+    const codepled = document.querySelector('#codepled');
+    const clientHeight = codepled.clientHeight;
+    const padding = parseFloat(window.getComputedStyle(codepled).getPropertyValue('padding-top'));
+    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length;
+    const lineHeight = (clientHeight - 2 * padding) / linesCount;
+    document.querySelector('.code-container').scrollTop = lineHeight * (line - 1) + padding;
+  }
+
+  function getCursorLine() {
+    const codepled = document.querySelector('#codepled');
+    const beforeCursor = codepled.innerHTML.substr(0, codepled.innerHTML.indexOf(cursorText));
+    return (beforeCursor.match(/\n/g) || []).length;
   }
 
   async function showMessage(message) {
