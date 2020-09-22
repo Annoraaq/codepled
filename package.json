@@ -29,6 +29,7 @@
     "@types/diff-match-patch": "^1.0.32",
     "@types/highlight.js": "^9.12.4",
     "diff-match-patch": "^1.0.5",
-    "highlight.js": "^10.2.0"
+    "highlight.js": "^10.2.0",
+    "jest": "^26.4.2"
   }
 }
