@@ -1,4 +1,4 @@
-import { Command } from "./Commands";
+import { Command, Commands } from "./Commands";
 import { Diff, DiffConverter } from "./DiffConverter";
 
 let diffConverter: DiffConverter;
@@ -8,29 +8,29 @@ beforeEach(() => {
 });
 
 test("converts deletes", () => {
-  const diff: Diff = [diffConverter.CMD_DELETE, "hello"];
+  const diff: Diff = [Commands.DELETE, "hello"];
   const expectedCommands: Command[] = [
-    [diffConverter.CMD_DELETE, 1],
-    [diffConverter.CMD_DELETE, 1],
-    [diffConverter.CMD_DELETE, 1],
-    [diffConverter.CMD_DELETE, 1],
-    [diffConverter.CMD_DELETE, 1],
+    [Commands.DELETE, 1],
+    [Commands.DELETE, 1],
+    [Commands.DELETE, 1],
+    [Commands.DELETE, 1],
+    [Commands.DELETE, 1],
   ];
   expect(diffConverter.createCommands([diff])).toEqual(expectedCommands);
 });
 
 test("converts skips", () => {
-  const diff: Diff = [diffConverter.CMD_SKIP, "hello"];
-  const expectedCommands: Command[] = [[diffConverter.CMD_SKIP, 5]];
+  const diff: Diff = [Commands.SKIP, "hello"];
+  const expectedCommands: Command[] = [[Commands.SKIP, 5]];
   expect(diffConverter.createCommands([diff])).toEqual(expectedCommands);
 });
 
 test("converts inserts", () => {
-  const diff: Diff = [diffConverter.CMD_INSERT, "asd"];
+  const diff: Diff = [Commands.INSERT, "asd"];
   const expectedCommands: Command[] = [
-    [diffConverter.CMD_INSERT, "a"],
-    [diffConverter.CMD_INSERT, "s"],
-    [diffConverter.CMD_INSERT, "d"],
+    [Commands.INSERT, "a"],
+    [Commands.INSERT, "s"],
+    [Commands.INSERT, "d"],
   ];
   expect(diffConverter.createCommands([diff])).toEqual(expectedCommands);
 });
