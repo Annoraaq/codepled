@@ -1,4 +1,4 @@
-export enum Commands {
+export enum CommandType {
   DELETE = -1,
   INSERT = 1,
   SKIP = 0,
