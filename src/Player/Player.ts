@@ -1,8 +1,9 @@
 import { diff_match_patch as DiffMatchPatch } from "diff-match-patch";
 import * as hljs from "highlight.js";
-import { input } from "./input";
-import { transformed } from "./transformed";
-import { displayText } from "./displayText";
+import { input } from "../input";
+import { transformed } from "../transformed";
+import { displayText } from "../displayText";
+import { DiffConverter } from "../DiffConverter/DiffConverter";
 
 export class Player {
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
@@ -31,32 +32,37 @@ export class Player {
   private cursor = 0;
   private isBlocked = false;
   private textContinue: () => void;
+  private diffConverter: DiffConverter;
 
   constructor() {
+    this.diffConverter = new DiffConverter();
     this.commands = [
-      ...this.createCommands(this.diff),
+      ...this.diffConverter.createCommands(this.diff),
       [this.CMD_HIGHLIGHT_LINES, { start: 3, end: 4 }],
       [2, displayText],
     ];
+  }
+
+  init() {
     this.initPlayButton(this.playButton);
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);
     this.initTextbox(this.textbox);
-    this.init();
+    this.reset();
   }
 
-  init() {
+  private reset() {
     this.cursor = 0;
     this.setText(this.ta, input, this.cursor);
     this.highlightedLines = { start: -1, end: -2 };
   }
 
-  async play() {
+  private async play() {
     if (this.currentCommandIndex >= this.commands.length) {
       this.currentCommandIndex = 0;
     }
     if (this.currentCommandIndex == 0) {
-      this.init();
+      this.reset();
     }
     this.isPlaying = true;
     this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
@@ -72,8 +78,8 @@ export class Player {
     }
   }
 
-  forwardTo(targetIndex: number) {
-    if (this.currentCommandIndex == 0) this.init();
+  private forwardTo(targetIndex: number) {
+    if (this.currentCommandIndex == 0) this.reset();
 
     while (this.currentCommandIndex < targetIndex) {
       this.processCommand(this.commands[this.currentCommandIndex]);
@@ -85,7 +91,7 @@ export class Player {
     }
   }
 
-  processCommand([commandNo, payload]: any[]) {
+  private processCommand([commandNo, payload]: any[]) {
     if (commandNo === this.CMD_INSERT) {
       const newText =
         this.trueText.substr(0, this.cursor) +
@@ -123,7 +129,7 @@ export class Player {
     }
   }
 
-  scrollTo(line: number) {
+  private scrollTo(line: number) {
     const codepled = document.querySelector("#codepled");
     const clientHeight = codepled.clientHeight;
     const padding = parseFloat(
@@ -135,7 +141,7 @@ export class Player {
       lineHeight * (line - 1) + padding;
   }
 
-  getCursorLine() {
+  private getCursorLine() {
     const codepled = document.querySelector("#codepled");
     const beforeCursor = codepled.innerHTML.substr(
       0,
@@ -144,7 +150,7 @@ export class Player {
     return (beforeCursor.match(/\n/g) || []).length;
   }
 
-  async showMessage(message: string) {
+  private async showMessage(message: string) {
     (<HTMLElement>document.querySelector(".textbox-container")).style.display =
       "flex";
     document.querySelector(".textbox__content").innerHTML = message;
@@ -153,21 +159,21 @@ export class Player {
     });
   }
 
-  stop() {
+  private stop() {
     this.isPlaying = false;
     this.playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
-  setCurrentCommandIndex(newIndex: number) {
+  private setCurrentCommandIndex(newIndex: number) {
     this.currentCommandIndex = newIndex;
     (<HTMLInputElement>this.slider).value = `${newIndex}`;
   }
 
-  sleep(ms: number) {
+  private sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  setText(ctrl: Element, text: string, cursor: number) {
+  private setText(ctrl: Element, text: string, cursor: number) {
     ctrl.innerHTML =
       this.htmlEncode(text.substr(0, cursor)) +
       this.cursorText +
@@ -176,14 +182,7 @@ export class Player {
     this.highlight();
   }
 
-  setCursor(ctrl: Element, cursorPos: number) {
-    ctrl.innerHTML =
-      this.htmlEncode(this.trueText.substr(0, this.cursor)) +
-      this.cursorText +
-      this.htmlEncode(this.trueText.substr(this.cursor));
-  }
-
-  highlight() {
+  private highlight() {
     hljs.configure({ useBR: false });
 
     document.querySelectorAll("#codepled").forEach((block) => {
@@ -194,7 +193,7 @@ export class Player {
     });
   }
 
-  highlightLines(block: Element) {
+  private highlightLines(block: Element) {
     block.innerHTML = block.innerHTML.replace(
       /([ \S]*\n|[ \S]*$)/gm,
       // @ts-ignore
@@ -211,7 +210,7 @@ export class Player {
     }
   }
 
-  setLines(lineCount: number) {
+  private setLines(lineCount: number) {
     let innerStr = "";
     for (let i = 1; i <= lineCount; i++) {
       innerStr += i + "<br />";
@@ -222,14 +221,14 @@ export class Player {
     }
   }
 
-  htmlEncode(value: string) {
+  private htmlEncode(value: string) {
     var div = document.createElement("div");
     var text = document.createTextNode(value);
     div.appendChild(text);
     return div.innerHTML;
   }
 
-  initSlider(slider: HTMLInputElement) {
+  private initSlider(slider: HTMLInputElement) {
     slider.setAttribute("max", `${this.commands.length - 1}`);
     slider.value = "0";
     slider.onchange = (e) => {
@@ -254,7 +253,7 @@ export class Player {
     };
   }
 
-  initPlayButton(playButton: HTMLElement) {
+  private initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
       if (this.isBlocked) return;
       if (!this.isPlaying) {
@@ -266,7 +265,7 @@ export class Player {
     };
   }
 
-  initSpeedButton(speedButton: HTMLElement) {
+  private initSpeedButton(speedButton: HTMLElement) {
     if (this.isBlocked) return;
     speedButton.onclick = () => {
       this.speed = (this.speed + 1) % 4;
@@ -276,25 +275,7 @@ export class Player {
     };
   }
 
-  createCommands(diff: any[]) {
-    const commands: any[] = [];
-    diff.forEach((d) => {
-      if (d[0] === -1) {
-        for (let i = 0; i < d[1].length; i++) {
-          commands.push([this.CMD_DELETE, 1]);
-        }
-      } else if (d[0] === 0) {
-        commands.push([this.CMD_SKIP, d[1].length]);
-      } else {
-        for (let i = 0; i < d[1].length; i++) {
-          commands.push([this.CMD_INSERT, d[1][i]]);
-        }
-      }
-    });
-    return commands;
-  }
-
-  initTextbox(textbox: HTMLElement) {
+  private initTextbox(textbox: HTMLElement) {
     textbox.style.display = "none";
 
     textbox.querySelector("i").onclick = () => {
@@ -305,14 +286,14 @@ export class Player {
     };
   }
 
-  disableControls() {
+  private disableControls() {
     this.isBlocked = true;
     this.slider.disabled = true;
 
     document.querySelector(".slider-container").classList.add("disabled");
   }
 
-  enableControls() {
+  private enableControls() {
     this.isBlocked = false;
     this.slider.disabled = false;
     document.querySelector(".slider-container").classList.remove("disabled");
