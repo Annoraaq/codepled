@@ -52,5 +52,4 @@ export const input = `callMe().then(result => {
   }).then(filtered => {
     return mapResult(filtered);
   });
-});
-`;
+});`;

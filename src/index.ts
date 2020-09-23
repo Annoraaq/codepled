@@ -10,9 +10,9 @@ const diffConverter = new DiffConverter();
 
 const player = new Player();
 player.setInitialText(input);
-player.init();
 player.addCommands(diffConverter.createCommands(diff));
 player.addCommands([
   [3, { start: 3, end: 4 }],
   [2, displayText],
 ]);
+player.init();

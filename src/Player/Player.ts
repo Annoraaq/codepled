@@ -61,6 +61,10 @@ export class Player {
     return this.currentCommandIndex;
   }
 
+  setCursorPos(pos: number): void {
+    this.cursor = pos;
+  }
+
   private reset() {
     this.cursor = 0;
     this.setText(this.ta, this.initialText, this.cursor);
@@ -145,10 +149,11 @@ export class Player {
     const padding = parseFloat(
       window.getComputedStyle(codepled).getPropertyValue("padding-top")
     );
-    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length;
+    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
     const lineHeight = (clientHeight - 2 * padding) / linesCount;
+
     document.querySelector(".code-container").scrollTop =
-      lineHeight * (line - 1) + padding;
+      lineHeight * line + padding;
   }
 
   private getCursorLine() {
@@ -190,12 +195,11 @@ export class Player {
   private highlight() {
     hljs.configure({ useBR: false });
 
-    document.querySelectorAll("#codepled").forEach((block) => {
-      hljs.highlightBlock(<HTMLElement>block);
-      const linesCount = (block.innerHTML.match(/\n/g) || []).length;
-      this.setLines(linesCount);
-      this.highlightLines(block);
-    });
+    const block = document.querySelector("#codepled");
+    hljs.highlightBlock(<HTMLElement>block);
+    const linesCount = (block.innerHTML.match(/\n/g) || []).length + 1;
+    this.setLines(linesCount);
+    this.highlightLines(block);
   }
 
   private highlightLines(block: Element) {
