@@ -3,4 +3,4 @@ export enum CommandType {
   INSERT = 1,
   SKIP = 0,
 }
-export type Command = [number, String | number];
+export type Command = [number, any];

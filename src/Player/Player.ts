@@ -1,9 +1,5 @@
-import { diff_match_patch as DiffMatchPatch } from "diff-match-patch";
 import * as hljs from "highlight.js";
-import { input } from "../input";
-import { transformed } from "../transformed";
-import { displayText } from "../displayText";
-import { DiffConverter } from "../DiffConverter/DiffConverter";
+import { Command } from "../DiffConverter/Commands";
 
 export class Player {
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
@@ -14,15 +10,13 @@ export class Player {
   private CMD_HIGHLIGHT_LINES = 3;
   private CMD_SCROLL_TO = 4;
   private cursorText = '<span class="cursor"></span>';
-  private dmp = new DiffMatchPatch();
-  private diff = this.dmp.diff_main(input, transformed);
   private ta = document.querySelector("#codepled");
-  private playButton = <HTMLElement>document.querySelector(".play");
-  private slider = <HTMLInputElement>document.querySelector(".slider");
-  private speedButton = <HTMLElement>document.querySelector(".speed");
-  private textbox = <HTMLElement>document.querySelector(".textbox-container");
+  private playButton: HTMLElement;
+  private slider: HTMLInputElement;
+  private speedButton: HTMLElement;
+  private textbox: HTMLElement;
   private highlightedLines = { start: -1, end: -2 };
-  private commands: any[];
+  private commands: Command[];
 
   private speed = 1;
   private trueText: string;
@@ -32,15 +26,18 @@ export class Player {
   private cursor = 0;
   private isBlocked = false;
   private textContinue: () => void;
-  private diffConverter: DiffConverter;
+  private initialText = "";
 
   constructor() {
-    this.diffConverter = new DiffConverter();
-    this.commands = [
-      ...this.diffConverter.createCommands(this.diff),
-      [this.CMD_HIGHLIGHT_LINES, { start: 3, end: 4 }],
-      [2, displayText],
-    ];
+    this.commands = [];
+    this.playButton = <HTMLElement>document.querySelector(".play");
+    this.slider = <HTMLInputElement>document.querySelector(".slider");
+    this.speedButton = <HTMLElement>document.querySelector(".speed");
+    this.textbox = <HTMLElement>document.querySelector(".textbox-container");
+  }
+
+  addCommands(commands: Command[]): void {
+    this.commands = [...this.commands, ...commands];
   }
 
   init() {
@@ -51,13 +48,26 @@ export class Player {
     this.reset();
   }
 
+  setCurrentCommandIndex(newIndex: number) {
+    this.currentCommandIndex = newIndex;
+    this.slider.value = `${newIndex}`;
+  }
+
+  setInitialText(initialText: string) {
+    this.initialText = initialText;
+  }
+
+  getCurrentCommandIndex(): number {
+    return this.currentCommandIndex;
+  }
+
   private reset() {
     this.cursor = 0;
-    this.setText(this.ta, input, this.cursor);
+    this.setText(this.ta, this.initialText, this.cursor);
     this.highlightedLines = { start: -1, end: -2 };
   }
 
-  private async play() {
+  async play() {
     if (this.currentCommandIndex >= this.commands.length) {
       this.currentCommandIndex = 0;
     }
@@ -162,11 +172,6 @@ export class Player {
   private stop() {
     this.isPlaying = false;
     this.playButton.innerHTML = '<i class="fas fa-play"></i>';
-  }
-
-  private setCurrentCommandIndex(newIndex: number) {
-    this.currentCommandIndex = newIndex;
-    (<HTMLInputElement>this.slider).value = `${newIndex}`;
   }
 
   private sleep(ms: number) {
