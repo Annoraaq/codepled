@@ -2,6 +2,7 @@ import { mocked } from "ts-jest/utils";
 import { CommandType } from "./../DiffConverter/Commands";
 import { Player } from "./Player";
 import * as hljs from "highlight.js";
+import { isPartiallyEmittedExpression } from "typescript";
 jest.mock("highlight.js");
 
 const mockedHljs = mocked(hljs, true);
@@ -37,6 +38,7 @@ describe("Player", () => {
     </div>
   `;
     player = new Player();
+    player["sleep"] = jest.fn(() => Promise.resolve());
   });
 
   it("should set current command index", () => {
@@ -148,6 +150,37 @@ describe("Player", () => {
     await player.play();
     expect(textArea.innerHTML).toEqual(
       '<div class="line">Hello\n</div><div class="line">Worl<span class="cursor"></span>!</div><div class="line"></div>'
+    );
+    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
+    expect(mockedHljs.configure).toHaveBeenCalled();
+    expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
+    expect(codeContainer.scrollTop).toEqual(lineHeight * 1 + paddingTop);
+  });
+
+  it("processes multiple skip commands", async () => {
+    const textArea = document.querySelector("#codepled");
+    const linesContainer = document.querySelector(".lines");
+    const codeContainer = document.querySelector(".code-container");
+    const paddingTop = 10;
+    const clientHeight = 30;
+    const linesCount = 2;
+    const lineHeight = (clientHeight - 2 * paddingTop) / linesCount;
+
+    jest.spyOn(window, "getComputedStyle").mockImplementation(
+      () =>
+        <any>{
+          getPropertyValue: jest.fn(() => 10),
+        }
+    );
+    jest.spyOn(textArea, "clientHeight", "get").mockImplementation(() => 30);
+    player.setInitialText("Hello\nWorld!");
+    player.addCommands([[CommandType.SKIP, 10]]);
+    player.init();
+    mockedHljs.configure.mockReset();
+    mockedHljs.highlightBlock.mockReset();
+    await player.play();
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line">Hello\n</div><div class="line">Worl<span class="cursor"></span>d!</div><div class="line"></div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
