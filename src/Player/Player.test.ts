@@ -193,4 +193,64 @@ describe("Player", () => {
     expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
     expect(codeContainer.scrollTop).toEqual(lineHeight * 1 + paddingTop);
   });
+
+  it("processes show_text command", async (done) => {
+    const textArea = document.querySelector("#codepled");
+    const linesContainer = document.querySelector(".lines");
+    const slider = <HTMLInputElement>document.querySelector(".slider");
+    const sliderContainer = document.querySelector(".slider-container");
+    const textboxContainer = <HTMLElement>(
+      document.querySelector(".textbox-container")
+    );
+    const textboxContent = <HTMLElement>(
+      document.querySelector(".textbox__content")
+    );
+
+    player.setInitialText("Hello\n");
+    player.addCommands([[CommandType.SHOW_TEXT, "Text to be shown"]]);
+    player.init();
+    await player.play();
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line"><span class="cursor"></span>Hello\n</div><div class="line"></div>'
+    );
+    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
+    expect(player.isPaused()).toEqual(true);
+    expect(player.isBlocked()).toEqual(true);
+    expect(slider.disabled).toEqual(true);
+    expect(sliderContainer.classList.contains("disabled")).toEqual(true);
+
+    expect(textboxContainer.style.display).toEqual("flex");
+    expect(textboxContent.innerHTML).toEqual("Text to be shown");
+    textboxContainer.querySelector("i").click();
+    setTimeout(() => {
+      expect(textboxContainer.style.display).toEqual("none");
+
+      expect(player.isBlocked()).toEqual(false);
+      expect(slider.disabled).toEqual(false);
+      expect(sliderContainer.classList.contains("disabled")).toEqual(false);
+      done();
+    }, 0);
+  });
+
+  it("should resume playing after show_text", async (done) => {
+    const textArea = document.querySelector("#codepled");
+    const textboxContainer = <HTMLElement>(
+      document.querySelector(".textbox-container")
+    );
+
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SHOW_TEXT, "Text to be shown"],
+      [CommandType.DELETE, 1],
+    ]);
+    player.init();
+    await player.play();
+    textboxContainer.querySelector("i").click();
+    setTimeout(() => {
+      expect(textArea.innerHTML).toEqual(
+        '<div class="line"><span class="cursor"></span>ello\n</div><div class="line"></div>'
+      );
+      done();
+    }, 0);
+  });
 });

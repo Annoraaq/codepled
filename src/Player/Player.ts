@@ -24,7 +24,8 @@ export class Player {
   private isPlaying = false;
   private wasPlayingOnSliderMove = false;
   private cursor = 0;
-  private isBlocked = false;
+  private _isBlocked = false;
+
   private textContinue: () => void;
   private initialText = "";
 
@@ -65,6 +66,10 @@ export class Player {
     this.cursor = pos;
   }
 
+  isBlocked(): boolean {
+    return this._isBlocked;
+  }
+
   private reset() {
     this.cursor = 0;
     this.setText(this.ta, this.initialText, this.cursor);
@@ -85,7 +90,7 @@ export class Player {
       this.processCommand(this.commands[this.currentCommandIndex]);
       this.setCurrentCommandIndex(this.currentCommandIndex + 1);
       if (this.currentCommandIndex >= this.commands.length) {
-        this.stop();
+        this.pause();
         this.isPlaying = false;
       }
       await this.sleep(this.SPEED[this.speed]);
@@ -99,7 +104,7 @@ export class Player {
       this.processCommand(this.commands[this.currentCommandIndex]);
       this.setCurrentCommandIndex(this.currentCommandIndex + 1);
       if (this.currentCommandIndex >= this.commands.length) {
-        this.stop();
+        this.pause();
         break;
       }
     }
@@ -125,7 +130,7 @@ export class Player {
       this.setText(this.ta, this.trueText, this.cursor);
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === this.CMD_SHOW_TEXT) {
-      this.stop();
+      this.pause();
       const isLastCommand =
         this.currentCommandIndex == this.commands.length - 1;
       this.disableControls();
@@ -174,7 +179,11 @@ export class Player {
     });
   }
 
-  private stop() {
+  public isPaused(): boolean {
+    return !this.isPlaying;
+  }
+
+  private pause() {
     this.isPlaying = false;
     this.playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
@@ -258,24 +267,24 @@ export class Player {
       } else {
         this.wasPlayingOnSliderMove = false;
       }
-      this.stop();
+      this.pause();
     };
   }
 
   private initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
-      if (this.isBlocked) return;
+      if (this._isBlocked) return;
       if (!this.isPlaying) {
         this.play();
       } else {
-        this.stop();
+        this.pause();
         this.wasPlayingOnSliderMove = false;
       }
     };
   }
 
   private initSpeedButton(speedButton: HTMLElement) {
-    if (this.isBlocked) return;
+    if (this._isBlocked) return;
     speedButton.onclick = () => {
       this.speed = (this.speed + 1) % 4;
       if (this.speed == 0) this.speed = 1;
@@ -296,14 +305,14 @@ export class Player {
   }
 
   private disableControls() {
-    this.isBlocked = true;
+    this._isBlocked = true;
     this.slider.disabled = true;
 
     document.querySelector(".slider-container").classList.add("disabled");
   }
 
   private enableControls() {
-    this.isBlocked = false;
+    this._isBlocked = false;
     this.slider.disabled = false;
     document.querySelector(".slider-container").classList.remove("disabled");
   }
