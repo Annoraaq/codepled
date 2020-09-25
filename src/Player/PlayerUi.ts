@@ -1,12 +1,17 @@
-import { CommandType } from "./../DiffConverter/Commands";
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
 export class PlayerUi {
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
+  private CMD_DELETE = -1;
+  private CMD_INSERT = 1;
+  private CMD_SKIP = 0;
+  private CMD_SHOW_TEXT = 2;
+  private CMD_HIGHLIGHT_LINES = 3;
+  private CMD_SCROLL_TO = 4;
   private cursorText = '<span class="cursor"></span>';
-  private ta: HTMLElement;
+  private ta = document.querySelector("#codepled");
   private playButton: HTMLElement;
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
@@ -27,11 +32,10 @@ export class PlayerUi {
 
   constructor() {
     this.commands = [];
-    this.playButton = document.querySelector(".play");
+    this.playButton = <HTMLElement>document.querySelector(".play");
     this.slider = <HTMLInputElement>document.querySelector(".slider");
-    this.speedButton = document.querySelector(".speed");
-    this.textbox = document.querySelector(".textbox-container");
-    this.ta = document.querySelector("#codepled");
+    this.speedButton = <HTMLElement>document.querySelector(".speed");
+    this.textbox = <HTMLElement>document.querySelector(".textbox-container");
   }
 
   addCommands(commands: Command[]): void {
@@ -124,7 +128,7 @@ export class PlayerUi {
   }
 
   private processCommand([commandNo, payload]: any[]) {
-    if (commandNo === CommandType.INSERT) {
+    if (commandNo === this.CMD_INSERT) {
       const newText =
         this.trueText.substr(0, this.cursor) +
         payload +
@@ -132,17 +136,17 @@ export class PlayerUi {
       this.cursor += payload.length;
       this.setText(this.ta, newText, this.cursor);
       this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.DELETE) {
+    } else if (commandNo === this.CMD_DELETE) {
       const newText =
         this.trueText.substr(0, this.cursor) +
         this.trueText.substr(this.cursor + payload);
       this.setText(this.ta, newText, this.cursor);
       this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.SKIP) {
+    } else if (commandNo === this.CMD_SKIP) {
       this.cursor += payload;
       this.setText(this.ta, this.trueText, this.cursor);
       this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.SHOW_TEXT) {
+    } else if (commandNo === this.CMD_SHOW_TEXT) {
       this.pause();
       const isLastCommand =
         this.currentCommandIndex == this.commands.length - 1;
@@ -153,10 +157,10 @@ export class PlayerUi {
           this.play();
         }
       });
-    } else if (commandNo === CommandType.HIGHLIGHT_LINES) {
+    } else if (commandNo === this.CMD_HIGHLIGHT_LINES) {
       this.highlightedLines = payload;
       this.setText(this.ta, this.trueText, this.cursor);
-    } else if (commandNo === CommandType.SCROLL_TO) {
+    } else if (commandNo === this.CMD_SCROLL_TO) {
       this.scrollTo(payload);
     }
   }
