@@ -92,8 +92,12 @@ export class Player {
     }
   }
 
-  public isPaused(): boolean {
+  isPaused(): boolean {
     return !this.isPlaying;
+  }
+
+  getSpeed(): number {
+    return this.speed;
   }
 
   private reset() {
@@ -281,8 +285,8 @@ export class Player {
   }
 
   private initSpeedButton(speedButton: HTMLElement) {
-    if (this._isBlocked) return;
     speedButton.onclick = () => {
+      if (this._isBlocked) return;
       this.speed = (this.speed + 1) % 4;
       if (this.speed == 0) this.speed = 1;
       const speedMeter = document.querySelector(".speedmeter");
@@ -304,7 +308,6 @@ export class Player {
   private disableControls() {
     this._isBlocked = true;
     this.slider.disabled = true;
-
     document.querySelector(".slider-container").classList.add("disabled");
   }
 

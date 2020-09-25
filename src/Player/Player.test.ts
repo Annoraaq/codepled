@@ -1,3 +1,4 @@
+import { TestUtils } from "./../Utils/TestUtils";
 import { Utils } from "./../Utils/Utils";
 import { mocked } from "ts-jest/utils";
 import { CommandType } from "./../DiffConverter/Commands";
@@ -225,17 +226,16 @@ describe("Player", () => {
     expect(textboxContainer.style.display).toEqual("flex");
     expect(textboxContent.innerHTML).toEqual("Text to be shown");
     textboxContainer.querySelector("i").click();
-    setTimeout(() => {
-      expect(textboxContainer.style.display).toEqual("none");
+    await TestUtils.tick();
+    expect(textboxContainer.style.display).toEqual("none");
 
-      expect(player.isBlocked()).toEqual(false);
-      expect(slider.disabled).toEqual(false);
-      expect(sliderContainer.classList.contains("disabled")).toEqual(false);
-      done();
-    }, 0);
+    expect(player.isBlocked()).toEqual(false);
+    expect(slider.disabled).toEqual(false);
+    expect(sliderContainer.classList.contains("disabled")).toEqual(false);
+    done();
   });
 
-  it("should resume playing after show_text", async (done) => {
+  it("should resume playing after show_text", async () => {
     const textArea = document.querySelector("#codepled");
     const textboxContainer = <HTMLElement>(
       document.querySelector(".textbox-container")
@@ -249,12 +249,10 @@ describe("Player", () => {
     player.init();
     await player.play();
     textboxContainer.querySelector("i").click();
-    setTimeout(() => {
-      expect(textArea.innerHTML).toEqual(
-        '<div class="line"><span class="cursor"></span>ello\n</div><div class="line"></div>'
-      );
-      done();
-    }, 0);
+    await TestUtils.tick();
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line"><span class="cursor"></span>ello\n</div><div class="line"></div>'
+    );
   });
   it("should highlight line", async () => {
     const textArea = document.querySelector("#codepled");
@@ -307,7 +305,54 @@ describe("Player", () => {
     expect(codeContainer.scrollTop).toEqual(lineHeight * 50 + paddingTop);
   });
 
-  //todo: test speed button
+  it("should increase speed", async () => {
+    const speedButton = <HTMLElement>document.querySelector(".speed");
+    const speedMeter = document.querySelector(".speedmeter");
+
+    player.init();
+    expect(player.getSpeed()).toEqual(1);
+    expect(speedMeter.textContent).toEqual("1");
+
+    speedButton.click();
+    await TestUtils.tick();
+
+    expect(player.getSpeed()).toEqual(2);
+    expect(speedMeter.textContent).toEqual("2");
+
+    speedButton.click();
+    await TestUtils.tick();
+
+    expect(player.getSpeed()).toEqual(3);
+    expect(speedMeter.textContent).toEqual("3");
+
+    speedButton.click();
+    await TestUtils.tick();
+
+    expect(player.getSpeed()).toEqual(1);
+    expect(speedMeter.textContent).toEqual("1");
+  });
+
+  it("should not increase speed if blocked", async () => {
+    const speedButton = <HTMLElement>document.querySelector(".speed");
+    const speedMeter = document.querySelector(".speedmeter");
+
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SHOW_TEXT, "Text to be shown"],
+      [CommandType.DELETE, 1],
+    ]);
+    player.init();
+    await player.play();
+
+    expect(player.isBlocked()).toEqual(true);
+
+    speedButton.click();
+    await TestUtils.tick();
+
+    expect(player.getSpeed()).toEqual(1);
+    expect(speedMeter.textContent).toEqual("1");
+  });
+
   //todo: test pause button
   //todo: test play button
   //todo: test forwarding
