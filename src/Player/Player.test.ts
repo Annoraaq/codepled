@@ -353,7 +353,50 @@ describe("Player", () => {
     expect(speedMeter.textContent).toEqual("1");
   });
 
-  //todo: test pause button
-  //todo: test play button
+  it("should play", async () => {
+    const playButton = <HTMLElement>document.querySelector(".play");
+
+    const playSpy = spyOn(player, "play");
+
+    player.setInitialText("Hello\n");
+    player.addCommands([[CommandType.SKIP, 1]]);
+    player.init();
+    expect(player.isPaused()).toEqual(true);
+    playButton.click();
+    await TestUtils.tick();
+    expect(playSpy).toHaveBeenCalledTimes(1);
+  });
+  it("should pause", async () => {
+    const playButton = <HTMLElement>document.querySelector(".play");
+
+    player.init();
+    player["isPlaying"] = true;
+    playButton.click();
+    await TestUtils.tick();
+    expect(player.isPaused()).toEqual(true);
+  });
+
+  it("should not pause if blocked", async () => {
+    const playButton = <HTMLElement>document.querySelector(".play");
+    player["_isBlocked"] = true;
+    player["isPlaying"] = true;
+    player.init();
+
+    playButton.click();
+    await TestUtils.tick();
+    expect(player.isPaused()).toEqual(false);
+  });
+
+  it("should not play if blocked", async () => {
+    const playButton = <HTMLElement>document.querySelector(".play");
+    player["_isBlocked"] = true;
+    player["isPlaying"] = false;
+    player.init();
+
+    playButton.click();
+    await TestUtils.tick();
+    expect(player.isPaused()).toEqual(true);
+  });
+
   //todo: test forwarding
 });

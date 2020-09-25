@@ -100,6 +100,11 @@ export class Player {
     return this.speed;
   }
 
+  private pause(): void {
+    this.isPlaying = false;
+    this.playButton.innerHTML = '<i class="fas fa-play"></i>';
+  }
+
   private reset() {
     this.cursor = 0;
     this.setText(this.ta, this.initialText, this.cursor);
@@ -186,11 +191,6 @@ export class Player {
     return new Promise((resolve) => {
       this.textContinue = resolve;
     });
-  }
-
-  private pause() {
-    this.isPlaying = false;
-    this.playButton.innerHTML = '<i class="fas fa-play"></i>';
   }
 
   private setText(ctrl: Element, text: string, cursor: number) {
