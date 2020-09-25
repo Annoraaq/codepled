@@ -5,7 +5,6 @@ import { Utils } from "../Utils/Utils";
 import { Player } from "./Player";
 
 export class PlayerUi {
-  private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
   private cursorText = '<span class="cursor"></span>';
   private ta: HTMLElement;
   private playButton: HTMLElement;
@@ -13,12 +12,9 @@ export class PlayerUi {
   private speedButton: HTMLElement;
   private textbox: HTMLElement;
 
-  private speed = 1;
   private wasPlayingOnSliderMove = false;
-  private _isBlocked = false;
 
   private textContinue: () => void;
-  private initialText = "";
 
   constructor(private player: Player = new Player()) {
     this.playButton = document.querySelector(".play");
@@ -30,6 +26,11 @@ export class PlayerUi {
     addEventListener(
       "pause",
       () => (this.playButton.innerHTML = '<i class="fas fa-play"></i>'),
+      false
+    );
+    addEventListener(
+      "play",
+      () => (this.playButton.innerHTML = '<i class="fas fa-pause"></i>'),
       false
     );
     addEventListener(
@@ -69,14 +70,12 @@ export class PlayerUi {
     addEventListener(
       "showText",
       (event: any) => {
-        const isLastCommand =
-          this.player.getCurrentCommandIndex() ==
-          this.player.getCommands().length - 1;
+        const isLastCommand = this.player.isLastCommand();
         this.disableControls();
         this.showMessage(event.detail.message).then(() => {
           this.enableControls();
           if (!isLastCommand) {
-            this.play();
+            this.player.play();
           }
         });
       },
@@ -93,11 +92,11 @@ export class PlayerUi {
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);
     this.initTextbox(this.textbox);
-    this.reset();
+    this.player.reset();
   }
 
   setInitialText(initialText: string) {
-    this.initialText = initialText;
+    this.player.setInitialText(initialText);
   }
 
   getCurrentCommandIndex(): number {
@@ -109,38 +108,7 @@ export class PlayerUi {
   }
 
   isBlocked(): boolean {
-    return this._isBlocked;
-  }
-
-  async play() {
-    if (
-      this.player.getCurrentCommandIndex() >= this.player.getCommands().length
-    ) {
-      this.player.setCurrentCommandIndex(0);
-    }
-    if (this.player.getCurrentCommandIndex() == 0) {
-      this.reset();
-    }
-    this.player.play();
-    this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
-
-    while (
-      this.player.getCurrentCommandIndex() < this.player.getCommands().length &&
-      !this.player.isPaused()
-    ) {
-      this.player.processCommand(
-        this.player.getCommands()[this.player.getCurrentCommandIndex()]
-      );
-      this.player.setCurrentCommandIndex(
-        this.player.getCurrentCommandIndex() + 1
-      );
-      if (
-        this.player.getCurrentCommandIndex() >= this.player.getCommands().length
-      ) {
-        this.player.pause();
-      }
-      await Utils.sleep(this.SPEED[this.speed]);
-    }
+    return this.player.isBlocked();
   }
 
   isPaused(): boolean {
@@ -148,35 +116,11 @@ export class PlayerUi {
   }
 
   getSpeed(): number {
-    return this.speed;
+    return this.player.speed;
   }
 
-  private reset() {
-    this.player.cursor = 0;
-    this.player.setText(this.initialText);
-    this.player.highlightedLines = { start: -1, end: -2 };
-  }
-
-  private forwardTo(targetIndex: number) {
-    if (targetIndex < this.player.getCurrentCommandIndex()) {
-      this.player.setCurrentCommandIndex(0);
-    }
-    if (this.player.getCurrentCommandIndex() == 0) this.reset();
-
-    while (this.player.getCurrentCommandIndex() < targetIndex) {
-      this.player.processCommand(
-        this.player.getCommands()[this.player.getCurrentCommandIndex()]
-      );
-      this.player.setCurrentCommandIndex(
-        this.player.getCurrentCommandIndex() + 1
-      );
-      if (
-        this.player.getCurrentCommandIndex() >= this.player.getCommands().length
-      ) {
-        this.player.pause();
-        break;
-      }
-    }
+  async play() {
+    return this.player.play();
   }
 
   private async showMessage(message: string) {
@@ -238,9 +182,9 @@ export class PlayerUi {
     slider.onchange = (e) => {
       const sliderVal = Number((<HTMLInputElement>e.target).value);
 
-      this.forwardTo(sliderVal);
+      this.player.forwardTo(sliderVal);
       if (this.wasPlayingOnSliderMove) {
-        this.play();
+        this.player.play();
       }
     };
     slider.oninput = () => {
@@ -255,9 +199,9 @@ export class PlayerUi {
 
   private initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
-      if (this._isBlocked) return;
+      if (this.player.isBlocked()) return;
       if (this.player.isPaused()) {
-        this.play();
+        this.player.play();
       } else {
         this.player.pause();
         this.wasPlayingOnSliderMove = false;
@@ -267,11 +211,11 @@ export class PlayerUi {
 
   private initSpeedButton(speedButton: HTMLElement) {
     speedButton.onclick = () => {
-      if (this._isBlocked) return;
-      this.speed = (this.speed + 1) % 4;
-      if (this.speed == 0) this.speed = 1;
+      if (this.isBlocked()) return;
+      this.player.speed = (this.player.speed + 1) % 4;
+      if (this.player.speed == 0) this.player.speed = 1;
       const speedMeter = document.querySelector(".speedmeter");
-      speedMeter.textContent = `${this.speed}`;
+      speedMeter.textContent = `${this.player.speed}`;
     };
   }
 
@@ -287,13 +231,13 @@ export class PlayerUi {
   }
 
   private disableControls() {
-    this._isBlocked = true;
+    this.player.block();
     this.slider.disabled = true;
     document.querySelector(".slider-container").classList.add("disabled");
   }
 
   private enableControls() {
-    this._isBlocked = false;
+    this.player.unblock();
     this.slider.disabled = false;
     document.querySelector(".slider-container").classList.remove("disabled");
   }

@@ -1,4 +1,5 @@
 import { Command, CommandType } from "../DiffConverter/Commands";
+import { Utils } from "../Utils/Utils";
 import { PlayerUi } from "./PlayerUi";
 
 export class Player {
@@ -6,7 +7,10 @@ export class Player {
   private currentCommandIndex = 0;
   private isPlaying = false;
   private trueText: string;
-  private cursorText = '<span class="cursor"></span>';
+  private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
+  private _isBlocked = false;
+  speed = 1;
+  private initialText = "";
   highlightedLines = { start: -1, end: -2 };
   cursor = 0;
 
@@ -47,8 +51,46 @@ export class Player {
     dispatchEvent(event);
   }
 
-  play(): void {
+  isBlocked(): boolean {
+    return this._isBlocked;
+  }
+
+  block() {
+    this._isBlocked = true;
+  }
+
+  unblock() {
+    this._isBlocked = false;
+  }
+
+  isLastCommand(): boolean {
+    return this.currentCommandIndex == this.commands.length - 1;
+  }
+
+  async play() {
+    if (this.currentCommandIndex >= this.getCommands().length) {
+      this.setCurrentCommandIndex(0);
+    }
+    if (this.currentCommandIndex == 0) {
+      this.reset();
+    }
+
     this.isPlaying = true;
+    var event = document.createEvent("Event");
+    event.initEvent("play", true, true);
+    dispatchEvent(event);
+
+    while (
+      this.currentCommandIndex < this.commands.length &&
+      !this.isPaused()
+    ) {
+      this.processCommand(this.commands[this.currentCommandIndex]);
+      this.setCurrentCommandIndex(this.currentCommandIndex + 1);
+      if (this.currentCommandIndex >= this.commands.length) {
+        this.pause();
+      }
+      await Utils.sleep(this.SPEED[this.speed]);
+    }
   }
 
   setText(text: string) {
@@ -73,6 +115,22 @@ export class Player {
       },
     });
     dispatchEvent(event);
+  }
+
+  forwardTo(targetIndex: number) {
+    if (targetIndex < this.getCurrentCommandIndex()) {
+      this.setCurrentCommandIndex(0);
+    }
+    if (this.getCurrentCommandIndex() == 0) this.reset();
+
+    while (this.getCurrentCommandIndex() < targetIndex) {
+      this.processCommand(this.getCommands()[this.getCurrentCommandIndex()]);
+      this.setCurrentCommandIndex(this.getCurrentCommandIndex() + 1);
+      if (this.getCurrentCommandIndex() >= this.getCommands().length) {
+        this.pause();
+        break;
+      }
+    }
   }
 
   processCommand([commandNo, payload]: any[]) {
@@ -113,5 +171,19 @@ export class Player {
   private getCursorLine() {
     const beforeCursor = this.trueText.substr(0, this.cursor);
     return (beforeCursor.match(/\n/g) || []).length + 1;
+  }
+
+  reset() {
+    this.cursor = 0;
+    this.setText(this.initialText);
+    this.highlightedLines = { start: -1, end: -2 };
+  }
+
+  setInitialText(initialText: string) {
+    this.initialText = initialText;
+  }
+
+  getCursor(): number {
+    return this.cursor;
   }
 }
