@@ -44,20 +44,6 @@ describe("PlayerUi", () => {
     mockedUtils.sleep.mockImplementation(() => Promise.resolve());
   });
 
-  it("should set current command index", () => {
-    player.addCommands([
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-    ]);
-    player.init();
-    player.setCurrentCommandIndex(4);
-    expect(player.getCurrentCommandIndex()).toEqual(4);
-    const slider = <HTMLInputElement>document.querySelector(".slider");
-    expect(slider.value).toEqual("4");
-  });
   it("processes multiple delete commands", async () => {
     const textArea = document.querySelector("#codepled");
     const linesContainer = document.querySelector(".lines");
@@ -87,7 +73,7 @@ describe("PlayerUi", () => {
     mockedHljs.highlightBlock.mockReset();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>World!\n</div><div class="line">Last line</div><div class="line"></div>'
+      '<div class="line"><span class="cursor"></span>World!</div>\n<div class="line">Last line</div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
@@ -121,7 +107,7 @@ describe("PlayerUi", () => {
     mockedHljs.highlightBlock.mockReset();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello\n</div><div class="line">Worl<span class="cursor"></span>!</div><div class="line"></div>'
+      '<div class="line">Hello</div>\n<div class="line">Worl<span class="cursor"></span>!</div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
@@ -152,7 +138,7 @@ describe("PlayerUi", () => {
     mockedHljs.highlightBlock.mockReset();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello\n</div><div class="line">Worl<span class="cursor"></span>d!</div><div class="line"></div>'
+      '<div class="line">Hello</div>\n<div class="line">Worl<span class="cursor"></span>d!</div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
@@ -190,7 +176,7 @@ describe("PlayerUi", () => {
     mockedHljs.highlightBlock.mockReset();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello\n</div><div class="line">world<span class="cursor"></span></div><div class="line"></div>'
+      '<div class="line">Hello</div>\n<div class="line">world<span class="cursor"></span></div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
@@ -215,7 +201,7 @@ describe("PlayerUi", () => {
     player.init();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>Hello\n</div><div class="line"></div>'
+      '<div class="line"><span class="cursor"></span>Hello</div>\n<div class="line"></div>'
     );
     expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
     expect(player.isPaused()).toEqual(true);
@@ -251,7 +237,7 @@ describe("PlayerUi", () => {
     textboxContainer.querySelector("i").click();
     await TestUtils.tick();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>ello\n</div><div class="line"></div>'
+      '<div class="line"><span class="cursor"></span>ello</div>\n<div class="line"></div>'
     );
   });
   it("should highlight line", async () => {
@@ -263,14 +249,13 @@ describe("PlayerUi", () => {
     player.init();
     await player.play();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>Hello\n</div>' +
-        `<div class="line" ${highlightStyle}>World\n</div>` +
-        `<div class="line" ${highlightStyle}>Line 3</div>` +
-        '<div class="line"></div>'
+      '<div class="line"><span class="cursor"></span>Hello</div>\n' +
+        `<div class="line" ${highlightStyle}>World</div>\n` +
+        `<div class="line" ${highlightStyle}>Line 3</div>`
     );
   });
 
-  it("should scroll to", async () => {
+  fit("should scroll to", async () => {
     const textArea = document.querySelector("#codepled");
     const paddingTop = 10;
     const lineHeight = 10;
@@ -302,7 +287,7 @@ describe("PlayerUi", () => {
     player.init();
     await player.play();
 
-    expect(codeContainer.scrollTop).toEqual(lineHeight * 50 + paddingTop);
+    expect(codeContainer.scrollTop).toEqual(lineHeight * 49 + paddingTop);
   });
 
   it("should increase speed", async () => {
@@ -370,7 +355,7 @@ describe("PlayerUi", () => {
     const playButton = <HTMLElement>document.querySelector(".play");
 
     player.init();
-    player["isPlaying"] = true;
+    player["isPaused"] = () => true;
     playButton.click();
     await TestUtils.tick();
     expect(player.isPaused()).toEqual(true);
@@ -379,7 +364,7 @@ describe("PlayerUi", () => {
   it("should not pause if blocked", async () => {
     const playButton = <HTMLElement>document.querySelector(".play");
     player["_isBlocked"] = true;
-    player["isPlaying"] = true;
+    player["isPaused"] = () => false;
     player.init();
 
     playButton.click();
@@ -390,7 +375,7 @@ describe("PlayerUi", () => {
   it("should not play if blocked", async () => {
     const playButton = <HTMLElement>document.querySelector(".play");
     player["_isBlocked"] = true;
-    player["isPlaying"] = false;
+    player["isPaused"] = () => true;
     player.init();
 
     playButton.click();
@@ -416,28 +401,25 @@ describe("PlayerUi", () => {
     slider.value = "5";
     slider.onchange(<any>{ target: slider });
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Herr<span class="cursor"></span>o\n</div>' +
-        '<div class="line">World\n</div>' +
-        '<div class="line">Line 3</div>' +
-        '<div class="line"></div>'
+      '<div class="line">Herr<span class="cursor"></span>o</div>\n' +
+        '<div class="line">World</div>\n' +
+        '<div class="line">Line 3</div>'
     );
 
     slider.value = "3";
     slider.onchange(<any>{ target: slider });
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">He<span class="cursor"></span>o\n</div>' +
-        '<div class="line">World\n</div>' +
-        '<div class="line">Line 3</div>' +
-        '<div class="line"></div>'
+      '<div class="line">He<span class="cursor"></span>o</div>\n' +
+        '<div class="line">World</div>\n' +
+        '<div class="line">Line 3</div>'
     );
 
     slider.value = "10";
     slider.onchange(<any>{ target: slider });
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Herrr<span class="cursor"></span>o\n</div>' +
-        '<div class="line">World\n</div>' +
-        '<div class="line">Line 3</div>' +
-        '<div class="line"></div>'
+      '<div class="line">Herrr<span class="cursor"></span>o</div>\n' +
+        '<div class="line">World</div>\n' +
+        '<div class="line">Line 3</div>'
     );
     expect(player.isPaused()).toEqual(true);
   });

@@ -1,34 +1,35 @@
-import { Command, CommandType } from "./../DiffConverter/Commands";
+import { CommandType } from "../DiffConverter/Commands";
 import { Player } from "./Player";
 
 describe("Player", () => {
   let player: Player;
+  it("should set current command index", () => {
+    player.addCommands([
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+    ]);
+    player.setCurrentCommandIndex(4);
+    expect(player.getCurrentCommandIndex()).toEqual(4);
+  });
   let playerUiMock = {
     init: jest.fn(),
     setInitialText: jest.fn(),
     addCommands: jest.fn(),
+    play: jest.fn(),
   };
 
   beforeEach(() => {
     playerUiMock.init.mockReset();
     playerUiMock.setInitialText.mockReset();
     playerUiMock.addCommands.mockReset();
-    player = new Player(<any>playerUiMock);
+    playerUiMock.play.mockReset();
+    player = new Player();
   });
 
-  it("should init", () => {
-    player.init();
-    expect(playerUiMock.init).toHaveBeenCalledTimes(1);
-  });
-
-  it("should set initil text", () => {
-    player.setInitialText("initial text");
-    expect(playerUiMock.setInitialText).toHaveBeenCalledWith("initial text");
-  });
-
-  it("should add commands", () => {
-    const commands: Command[] = [[CommandType.DELETE, 1]];
-    player.addCommands(commands);
-    expect(playerUiMock.addCommands).toHaveBeenCalledWith(commands);
+  it("should play", () => {
+    // player.play();
   });
 });

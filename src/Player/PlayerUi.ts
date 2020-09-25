@@ -2,6 +2,7 @@ import { CommandType } from "./../DiffConverter/Commands";
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
+import { Player } from "./Player";
 
 export class PlayerUi {
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
@@ -11,31 +12,80 @@ export class PlayerUi {
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
   private textbox: HTMLElement;
-  private highlightedLines = { start: -1, end: -2 };
-  private commands: Command[];
 
   private speed = 1;
-  private trueText: string;
-  private currentCommandIndex = 0;
-  private isPlaying = false;
   private wasPlayingOnSliderMove = false;
-  private cursor = 0;
   private _isBlocked = false;
 
   private textContinue: () => void;
   private initialText = "";
 
-  constructor() {
-    this.commands = [];
+  constructor(private player: Player = new Player()) {
     this.playButton = document.querySelector(".play");
     this.slider = <HTMLInputElement>document.querySelector(".slider");
     this.speedButton = document.querySelector(".speed");
     this.textbox = document.querySelector(".textbox-container");
     this.ta = document.querySelector("#codepled");
+
+    addEventListener(
+      "pause",
+      () => (this.playButton.innerHTML = '<i class="fas fa-play"></i>'),
+      false
+    );
+    addEventListener(
+      "changeText",
+      (event: any) => {
+        this.ta.innerHTML =
+          this.htmlEncode(event.detail.text.substr(0, event.detail.cursor)) +
+          this.cursorText +
+          this.htmlEncode(event.detail.text.substr(event.detail.cursor));
+        this.highlight();
+      },
+      false
+    );
+    addEventListener(
+      "changeCommandIndex",
+      (event: any) => {
+        this.slider.value = `${event.index}`;
+      },
+      false
+    );
+    addEventListener(
+      "scrollTo",
+      (event: any) => {
+        const codepled = document.querySelector("#codepled");
+        const clientHeight = codepled.clientHeight;
+        const padding = parseFloat(
+          window.getComputedStyle(codepled).getPropertyValue("padding-top")
+        );
+        const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
+        const lineHeight = (clientHeight - 2 * padding) / linesCount;
+
+        document.querySelector(".code-container").scrollTop =
+          lineHeight * (event.detail.line - 1) + padding;
+      },
+      false
+    );
+    addEventListener(
+      "showText",
+      (event: any) => {
+        const isLastCommand =
+          this.player.getCurrentCommandIndex() ==
+          this.player.getCommands().length - 1;
+        this.disableControls();
+        this.showMessage(event.detail.message).then(() => {
+          this.enableControls();
+          if (!isLastCommand) {
+            this.play();
+          }
+        });
+      },
+      false
+    );
   }
 
   addCommands(commands: Command[]): void {
-    this.commands = [...this.commands, ...commands];
+    this.player.addCommands(commands);
   }
 
   init() {
@@ -46,21 +96,16 @@ export class PlayerUi {
     this.reset();
   }
 
-  setCurrentCommandIndex(newIndex: number) {
-    this.currentCommandIndex = newIndex;
-    this.slider.value = `${newIndex}`;
-  }
-
   setInitialText(initialText: string) {
     this.initialText = initialText;
   }
 
   getCurrentCommandIndex(): number {
-    return this.currentCommandIndex;
+    return this.player.getCurrentCommandIndex();
   }
 
   setCursorPos(pos: number): void {
-    this.cursor = pos;
+    this.player.cursor = pos;
   }
 
   isBlocked(): boolean {
@@ -68,119 +113,70 @@ export class PlayerUi {
   }
 
   async play() {
-    if (this.currentCommandIndex >= this.commands.length) {
-      this.currentCommandIndex = 0;
+    if (
+      this.player.getCurrentCommandIndex() >= this.player.getCommands().length
+    ) {
+      this.player.setCurrentCommandIndex(0);
     }
-    if (this.currentCommandIndex == 0) {
+    if (this.player.getCurrentCommandIndex() == 0) {
       this.reset();
     }
-    this.isPlaying = true;
+    this.player.play();
     this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
 
-    while (this.currentCommandIndex < this.commands.length && this.isPlaying) {
-      this.processCommand(this.commands[this.currentCommandIndex]);
-      this.setCurrentCommandIndex(this.currentCommandIndex + 1);
-      if (this.currentCommandIndex >= this.commands.length) {
-        this.pause();
-        this.isPlaying = false;
+    while (
+      this.player.getCurrentCommandIndex() < this.player.getCommands().length &&
+      !this.player.isPaused()
+    ) {
+      this.player.processCommand(
+        this.player.getCommands()[this.player.getCurrentCommandIndex()]
+      );
+      this.player.setCurrentCommandIndex(
+        this.player.getCurrentCommandIndex() + 1
+      );
+      if (
+        this.player.getCurrentCommandIndex() >= this.player.getCommands().length
+      ) {
+        this.player.pause();
       }
       await Utils.sleep(this.SPEED[this.speed]);
     }
   }
 
   isPaused(): boolean {
-    return !this.isPlaying;
+    return this.player.isPaused();
   }
 
   getSpeed(): number {
     return this.speed;
   }
 
-  private pause(): void {
-    this.isPlaying = false;
-    this.playButton.innerHTML = '<i class="fas fa-play"></i>';
-  }
-
   private reset() {
-    this.cursor = 0;
-    this.setText(this.ta, this.initialText, this.cursor);
-    this.highlightedLines = { start: -1, end: -2 };
+    this.player.cursor = 0;
+    this.player.setText(this.initialText);
+    this.player.highlightedLines = { start: -1, end: -2 };
   }
 
   private forwardTo(targetIndex: number) {
-    if (targetIndex < this.currentCommandIndex) {
-      this.currentCommandIndex = 0;
+    if (targetIndex < this.player.getCurrentCommandIndex()) {
+      this.player.setCurrentCommandIndex(0);
     }
-    if (this.currentCommandIndex == 0) this.reset();
+    if (this.player.getCurrentCommandIndex() == 0) this.reset();
 
-    while (this.currentCommandIndex < targetIndex) {
-      this.processCommand(this.commands[this.currentCommandIndex]);
-      this.setCurrentCommandIndex(this.currentCommandIndex + 1);
-      if (this.currentCommandIndex >= this.commands.length) {
-        this.pause();
+    while (this.player.getCurrentCommandIndex() < targetIndex) {
+      this.player.processCommand(
+        this.player.getCommands()[this.player.getCurrentCommandIndex()]
+      );
+      this.player.setCurrentCommandIndex(
+        this.player.getCurrentCommandIndex() + 1
+      );
+      if (
+        this.player.getCurrentCommandIndex() >= this.player.getCommands().length
+      ) {
+        this.player.pause();
         break;
       }
     }
-  }
-
-  private processCommand([commandNo, payload]: any[]) {
-    if (commandNo === CommandType.INSERT) {
-      const newText =
-        this.trueText.substr(0, this.cursor) +
-        payload +
-        this.trueText.substr(this.cursor);
-      this.cursor += payload.length;
-      this.setText(this.ta, newText, this.cursor);
-      this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.DELETE) {
-      const newText =
-        this.trueText.substr(0, this.cursor) +
-        this.trueText.substr(this.cursor + payload);
-      this.setText(this.ta, newText, this.cursor);
-      this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.SKIP) {
-      this.cursor += payload;
-      this.setText(this.ta, this.trueText, this.cursor);
-      this.scrollTo(this.getCursorLine());
-    } else if (commandNo === CommandType.SHOW_TEXT) {
-      this.pause();
-      const isLastCommand =
-        this.currentCommandIndex == this.commands.length - 1;
-      this.disableControls();
-      this.showMessage(payload).then(() => {
-        this.enableControls();
-        if (!isLastCommand) {
-          this.play();
-        }
-      });
-    } else if (commandNo === CommandType.HIGHLIGHT_LINES) {
-      this.highlightedLines = payload;
-      this.setText(this.ta, this.trueText, this.cursor);
-    } else if (commandNo === CommandType.SCROLL_TO) {
-      this.scrollTo(payload);
-    }
-  }
-
-  private scrollTo(line: number) {
-    const codepled = document.querySelector("#codepled");
-    const clientHeight = codepled.clientHeight;
-    const padding = parseFloat(
-      window.getComputedStyle(codepled).getPropertyValue("padding-top")
-    );
-    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
-    const lineHeight = (clientHeight - 2 * padding) / linesCount;
-
-    document.querySelector(".code-container").scrollTop =
-      lineHeight * line + padding;
-  }
-
-  private getCursorLine() {
-    const codepled = document.querySelector("#codepled");
-    const beforeCursor = codepled.innerHTML.substr(
-      0,
-      codepled.innerHTML.indexOf(this.cursorText)
-    );
-    return (beforeCursor.match(/\n/g) || []).length;
   }
 
   private async showMessage(message: string) {
@@ -190,15 +186,6 @@ export class PlayerUi {
     return new Promise((resolve) => {
       this.textContinue = resolve;
     });
-  }
-
-  private setText(ctrl: Element, text: string, cursor: number) {
-    ctrl.innerHTML =
-      this.htmlEncode(text.substr(0, cursor)) +
-      this.cursorText +
-      this.htmlEncode(text.substr(cursor));
-    this.trueText = text;
-    this.highlight();
   }
 
   private highlight() {
@@ -212,13 +199,12 @@ export class PlayerUi {
   }
 
   private highlightLines(block: Element) {
-    block.innerHTML = block.innerHTML.replace(
-      /([ \S]*\n|[ \S]*$)/gm,
-      // @ts-ignore
-      (match) => `<div class="line">${match}</div>`
-    );
+    block.innerHTML = block.innerHTML
+      .split("\n")
+      .map((ls) => `<div class="line">${ls}</div>`)
+      .join("\n");
 
-    const options = [{ ...this.highlightedLines, color: "#004212" }];
+    const options = [{ ...this.player.highlightedLines, color: "#004212" }];
 
     const lines = block.querySelectorAll(".line");
     for (let option of options) {
@@ -247,7 +233,7 @@ export class PlayerUi {
   }
 
   private initSlider(slider: HTMLInputElement) {
-    slider.setAttribute("max", `${this.commands.length - 1}`);
+    slider.setAttribute("max", `${this.player.getCommands().length - 1}`);
     slider.value = "0";
     slider.onchange = (e) => {
       const sliderVal = Number((<HTMLInputElement>e.target).value);
@@ -258,22 +244,22 @@ export class PlayerUi {
       }
     };
     slider.oninput = () => {
-      if (this.isPlaying || this.wasPlayingOnSliderMove) {
+      if (!this.player.isPaused() || this.wasPlayingOnSliderMove) {
         this.wasPlayingOnSliderMove = true;
       } else {
         this.wasPlayingOnSliderMove = false;
       }
-      this.pause();
+      this.player.pause();
     };
   }
 
   private initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
       if (this._isBlocked) return;
-      if (!this.isPlaying) {
+      if (this.player.isPaused()) {
         this.play();
       } else {
-        this.pause();
+        this.player.pause();
         this.wasPlayingOnSliderMove = false;
       }
     };
