@@ -70,12 +70,6 @@ export class Player {
     return this._isBlocked;
   }
 
-  private reset() {
-    this.cursor = 0;
-    this.setText(this.ta, this.initialText, this.cursor);
-    this.highlightedLines = { start: -1, end: -2 };
-  }
-
   async play() {
     if (this.currentCommandIndex >= this.commands.length) {
       this.currentCommandIndex = 0;
@@ -95,6 +89,12 @@ export class Player {
       }
       await this.sleep(this.SPEED[this.speed]);
     }
+  }
+
+  private reset() {
+    this.cursor = 0;
+    this.setText(this.ta, this.initialText, this.cursor);
+    this.highlightedLines = { start: -1, end: -2 };
   }
 
   private forwardTo(targetIndex: number) {
@@ -144,7 +144,7 @@ export class Player {
       this.highlightedLines = payload;
       this.setText(this.ta, this.trueText, this.cursor);
     } else if (commandNo === this.CMD_SCROLL_TO) {
-      scrollTo(payload);
+      this.scrollTo(payload);
     }
   }
 

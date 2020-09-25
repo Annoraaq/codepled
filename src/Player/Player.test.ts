@@ -253,4 +253,54 @@ describe("Player", () => {
       done();
     }, 0);
   });
+  it("should highlight line", async () => {
+    const textArea = document.querySelector("#codepled");
+    const highlightStyle = 'style="background-color: rgb(0, 66, 18);"';
+
+    player.setInitialText("Hello\nWorld\nLine 3");
+    player.addCommands([[CommandType.HIGHLIGHT_LINES, { start: 2, end: 3 }]]);
+    player.init();
+    await player.play();
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line"><span class="cursor"></span>Hello\n</div>' +
+        `<div class="line" ${highlightStyle}>World\n</div>` +
+        `<div class="line" ${highlightStyle}>Line 3</div>` +
+        '<div class="line"></div>'
+    );
+  });
+
+  it("should scroll to", async () => {
+    const textArea = document.querySelector("#codepled");
+    const paddingTop = 10;
+    const lineHeight = 10;
+    const linesCount = 100;
+    const clientHeight = linesCount * lineHeight + 2 * paddingTop;
+    const codeContainer = document.querySelector(".code-container");
+
+    let initialText = "";
+    for (let i = 1; i <= 100; i++) {
+      if (i == 100) {
+        initialText += `Line ${i}`;
+      } else {
+        initialText += `Line ${i}\n`;
+      }
+    }
+
+    jest.spyOn(window, "getComputedStyle").mockImplementation(
+      () =>
+        <any>{
+          getPropertyValue: jest.fn(() => paddingTop),
+        }
+    );
+
+    jest
+      .spyOn(textArea, "clientHeight", "get")
+      .mockImplementation(() => clientHeight);
+    player.setInitialText(initialText);
+    player.addCommands([[CommandType.SCROLL_TO, 50]]);
+    player.init();
+    await player.play();
+
+    expect(codeContainer.scrollTop).toEqual(lineHeight * 50 + paddingTop);
+  });
 });
