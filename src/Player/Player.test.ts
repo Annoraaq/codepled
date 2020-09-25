@@ -398,5 +398,47 @@ describe("Player", () => {
     expect(player.isPaused()).toEqual(true);
   });
 
-  //todo: test forwarding
+  it("should forward on slider change", async () => {
+    const slider = <HTMLInputElement>document.querySelector(".slider");
+    const textArea = document.querySelector("#codepled");
+    player.setInitialText("Hello\nWorld\nLine 3");
+    player.addCommands([
+      [CommandType.SKIP, 2],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+    ]);
+    player.init();
+
+    slider.value = "5";
+    slider.onchange(<any>{ target: slider });
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line">Herr<span class="cursor"></span>o\n</div>' +
+        '<div class="line">World\n</div>' +
+        '<div class="line">Line 3</div>' +
+        '<div class="line"></div>'
+    );
+
+    slider.value = "3";
+    slider.onchange(<any>{ target: slider });
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line">He<span class="cursor"></span>o\n</div>' +
+        '<div class="line">World\n</div>' +
+        '<div class="line">Line 3</div>' +
+        '<div class="line"></div>'
+    );
+
+    slider.value = "10";
+    slider.onchange(<any>{ target: slider });
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line">Herrr<span class="cursor"></span>o\n</div>' +
+        '<div class="line">World\n</div>' +
+        '<div class="line">Line 3</div>' +
+        '<div class="line"></div>'
+    );
+    expect(player.isPaused()).toEqual(true);
+  });
 });

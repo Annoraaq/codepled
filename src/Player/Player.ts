@@ -112,6 +112,9 @@ export class Player {
   }
 
   private forwardTo(targetIndex: number) {
+    if (targetIndex < this.currentCommandIndex) {
+      this.currentCommandIndex = 0;
+    }
     if (this.currentCommandIndex == 0) this.reset();
 
     while (this.currentCommandIndex < targetIndex) {
@@ -252,17 +255,13 @@ export class Player {
     slider.value = "0";
     slider.onchange = (e) => {
       const sliderVal = Number((<HTMLInputElement>e.target).value);
-      if (sliderVal < this.currentCommandIndex) {
-        this.currentCommandIndex = 0;
-      }
 
       this.forwardTo(sliderVal);
       if (this.wasPlayingOnSliderMove) {
-        this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
         this.play();
       }
     };
-    slider.oninput = (e) => {
+    slider.oninput = () => {
       if (this.isPlaying || this.wasPlayingOnSliderMove) {
         this.wasPlayingOnSliderMove = true;
       } else {
