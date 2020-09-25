@@ -1,5 +1,6 @@
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
+import { Utils } from "../Utils/Utils";
 
 export class Player {
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
@@ -87,8 +88,12 @@ export class Player {
         this.pause();
         this.isPlaying = false;
       }
-      await this.sleep(this.SPEED[this.speed]);
+      await Utils.sleep(this.SPEED[this.speed]);
     }
+  }
+
+  public isPaused(): boolean {
+    return !this.isPlaying;
   }
 
   private reset() {
@@ -179,17 +184,9 @@ export class Player {
     });
   }
 
-  public isPaused(): boolean {
-    return !this.isPlaying;
-  }
-
   private pause() {
     this.isPlaying = false;
     this.playButton.innerHTML = '<i class="fas fa-play"></i>';
-  }
-
-  private sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private setText(ctrl: Element, text: string, cursor: number) {

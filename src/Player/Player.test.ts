@@ -1,10 +1,13 @@
+import { Utils } from "./../Utils/Utils";
 import { mocked } from "ts-jest/utils";
 import { CommandType } from "./../DiffConverter/Commands";
 import { Player } from "./Player";
 import * as hljs from "highlight.js";
 jest.mock("highlight.js");
+jest.mock("../Utils/Utils");
 
 const mockedHljs = mocked(hljs, true);
+const mockedUtils = mocked(Utils, true);
 
 let player: Player;
 
@@ -37,7 +40,7 @@ describe("Player", () => {
     </div>
   `;
     player = new Player();
-    player["sleep"] = jest.fn(() => Promise.resolve());
+    mockedUtils.sleep.mockImplementation(() => Promise.resolve());
   });
 
   it("should set current command index", () => {
@@ -303,4 +306,9 @@ describe("Player", () => {
 
     expect(codeContainer.scrollTop).toEqual(lineHeight * 50 + paddingTop);
   });
+
+  //todo: test speed button
+  //todo: test pause button
+  //todo: test play button
+  //todo: test forwarding
 });
