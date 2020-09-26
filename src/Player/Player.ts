@@ -9,9 +9,9 @@ export class Player {
   private trueText: string;
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
   private _isBlocked = false;
-  speed = 1;
+  private speed = 1;
   private initialText = "";
-  highlightedLines = { start: -1, end: -2 };
+  private highlightedLines = { start: -1, end: -2 };
   cursor = 0;
 
   constructor() {
@@ -24,6 +24,10 @@ export class Player {
 
   getCommands(): Command[] {
     return this.commands;
+  }
+
+  getHighlightedLines(): { start: number; end: number } {
+    return this.highlightedLines;
   }
 
   setCurrentCommandIndex(newIndex: number) {
@@ -45,10 +49,9 @@ export class Player {
   }
 
   pause(): void {
+    if (this._isBlocked) return;
     this.isPlaying = false;
-    var event = document.createEvent("Event");
-    event.initEvent("pause", true, true);
-    dispatchEvent(event);
+    dispatchEvent(new CustomEvent("pause"));
   }
 
   isBlocked(): boolean {
@@ -67,7 +70,18 @@ export class Player {
     return this.currentCommandIndex == this.commands.length - 1;
   }
 
+  getSpeed(): number {
+    return this.speed;
+  }
+
+  increaseSpeed(): void {
+    if (this._isBlocked) return;
+    this.speed = (this.speed + 1) % 4;
+    if (this.speed == 0) this.speed = 1;
+  }
+
   async play() {
+    if (this._isBlocked) return;
     if (this.currentCommandIndex >= this.getCommands().length) {
       this.setCurrentCommandIndex(0);
     }
@@ -76,9 +90,7 @@ export class Player {
     }
 
     this.isPlaying = true;
-    var event = document.createEvent("Event");
-    event.initEvent("play", true, true);
-    dispatchEvent(event);
+    dispatchEvent(new CustomEvent("play"));
 
     while (
       this.currentCommandIndex < this.commands.length &&
@@ -109,7 +121,7 @@ export class Player {
   }
 
   scrollTo(line: number) {
-    var event = new CustomEvent("scrollTo", {
+    const event = new CustomEvent("scrollTo", {
       detail: {
         line,
       },
@@ -154,6 +166,7 @@ export class Player {
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SHOW_TEXT) {
       this.pause();
+      this.block();
       const event = new CustomEvent("showText", {
         detail: {
           message: payload,
@@ -185,5 +198,9 @@ export class Player {
 
   getCursor(): number {
     return this.cursor;
+  }
+
+  playPause(): void {
+    !this.isPlaying ? this.play() : this.pause();
   }
 }

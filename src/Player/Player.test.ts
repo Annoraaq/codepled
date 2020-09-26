@@ -1,5 +1,8 @@
+import { TestUtils } from "./../Utils/TestUtils";
 import { CommandType } from "../DiffConverter/Commands";
 import { Player } from "./Player";
+
+TestUtils.fixCustomEventConstructor();
 
 describe("Player", () => {
   let player: Player;
@@ -46,11 +49,12 @@ describe("Player", () => {
   });
 
   it("processes multiple delete commands", async () => {
-    var expectedScrollToEvent = new CustomEvent("scrollTo", {
+    const expectedScrollToEvent = new CustomEvent("scrollTo", {
       detail: {
-        line: 0,
+        line: 1,
       },
     });
+
     player.setInitialText("Hello\nWorld!\nLast line");
     player.addCommands([
       [CommandType.DELETE, 1],
@@ -61,10 +65,134 @@ describe("Player", () => {
       [CommandType.DELETE, 1],
     ]);
     player.reset();
-    dispatchEventSpy.mockClear();
     await player.play();
+
     expect(player.getText()).toEqual("World!\nLast line");
     expect(player.getCursor()).toEqual(0);
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedScrollToEvent);
+  });
+
+  it("processes multiple skip commands and jumps into the correct line for delete", async () => {
+    const expectedScrollToEvent = new CustomEvent("scrollTo", {
+      detail: {
+        line: 2,
+      },
+    });
+
+    player.setInitialText("Hello\nWorld!\nLast line");
+    player.addCommands([[CommandType.SKIP, 10]]);
+    player.reset();
+    await player.play();
+
+    expect(player.getText()).toEqual("Hello\nWorld!\nLast line");
+    expect(player.getCursor()).toEqual(10);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedScrollToEvent);
+  });
+
+  it("processes insert commands", async () => {
+    const expectedScrollToEvent = new CustomEvent("scrollTo", {
+      detail: {
+        line: 2,
+      },
+    });
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.INSERT, "w"],
+      [CommandType.INSERT, "o"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "l"],
+      [CommandType.INSERT, "d"],
+    ]);
+    player.reset();
+    await player.play();
+
+    expect(player.getText()).toEqual("Hello\nworld");
+    expect(player.getCursor()).toEqual(11);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedScrollToEvent);
+  });
+
+  it("processes show_text command", async () => {
+    const expectedShowTextEvent = new CustomEvent("showText", {
+      detail: {
+        message: "Text to be shown",
+      },
+    });
+    player.setInitialText("Hello\n");
+    player.addCommands([[CommandType.SHOW_TEXT, "Text to be shown"]]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("Hello\n");
+    expect(player.isPaused()).toEqual(true);
+    expect(player.isBlocked()).toEqual(true);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
+  });
+
+  it("should increase speed ", async () => {
+    player.reset();
+    await player.play();
+
+    expect(player.isBlocked()).toEqual(false);
+    expect(player.getSpeed()).toEqual(1);
+    player.increaseSpeed();
+    expect(player.getSpeed()).toEqual(2);
+    player.increaseSpeed();
+    expect(player.getSpeed()).toEqual(3);
+    player.increaseSpeed();
+    expect(player.getSpeed()).toEqual(1);
+  });
+
+  it("should not increase speed if blocked", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SHOW_TEXT, "Text to be shown"],
+      [CommandType.DELETE, 1],
+    ]);
+    player.reset();
+    await player.play();
+
+    expect(player.isBlocked()).toEqual(true);
+    expect(player.getSpeed()).toEqual(1);
+    player.increaseSpeed();
+
+    expect(player.getSpeed()).toEqual(1);
+  });
+
+  it("should not pause if blocked", async () => {
+    const expectedPauseEvent = new CustomEvent("pause");
+
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SHOW_TEXT, "Text to be shown"],
+      [CommandType.DELETE, 1],
+    ]);
+    player.reset();
+    await player.play();
+
+    player.pause();
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedPauseEvent);
+  });
+
+  it("should play on playPause if paused", () => {
+    player.reset();
+    player.playPause();
+
+    expect(player.isPaused()).toEqual(false);
+  });
+
+  it("should pause on playPause if playing", () => {
+    player.reset();
+    player["isPlaying"] = true;
+    player.playPause();
+
+    expect(player.isPaused()).toEqual(true);
+  });
+
+  it("should not play if blocked", async () => {
+    player.reset();
+    player.block();
+    await player.play();
+
+    expect(player.isPaused()).toEqual(true);
   });
 });

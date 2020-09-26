@@ -65,34 +65,20 @@ describe("PlayerUi", () => {
     expect(setInitalTextSpy).toHaveBeenCalledWith("initial text");
   });
 
-  it("processes multiple delete commands", async () => {
+  it("should handle a changeText event", () => {
     const textArea = document.querySelector("#codepled");
     const linesContainer = document.querySelector(".lines");
-    const codeContainer = document.querySelector(".code-container");
-    const paddingTop = 10;
-    const clientHeight = 30;
-    const lineHeight = clientHeight - 2 * paddingTop;
-
-    jest.spyOn(window, "getComputedStyle").mockImplementation(
-      () =>
-        <any>{
-          getPropertyValue: jest.fn(() => paddingTop),
-        }
-    );
-    jest
-      .spyOn(textArea, "clientHeight", "get")
-      .mockImplementation(() => clientHeight);
 
     playerUi.init();
 
-    var event = new CustomEvent("changeText", {
-      detail: {
-        text: "Hello\nWorld",
-        cursor: 7,
-      },
-    });
-    dispatchEvent(event);
-    await TestUtils.tick();
+    dispatchEvent(
+      new CustomEvent("changeText", {
+        detail: {
+          text: "Hello\nWorld",
+          cursor: 7,
+        },
+      })
+    );
 
     expect(textArea.innerHTML).toEqual(
       '<div class="line">Hello</div>\n<div class="line">W<span class="cursor"></span>orld</div>'
@@ -102,114 +88,9 @@ describe("PlayerUi", () => {
     expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
   });
 
-  //todo: test scrollto Event
-
-  it("processes multiple skip commands and jumps into the correct line for delete", async () => {
-    const textArea = document.querySelector("#codepled");
-    const linesContainer = document.querySelector(".lines");
-    const codeContainer = document.querySelector(".code-container");
-    const paddingTop = 10;
-    const clientHeight = 30;
-    const linesCount = 2;
-    const lineHeight = (clientHeight - 2 * paddingTop) / linesCount;
-
-    jest.spyOn(window, "getComputedStyle").mockImplementation(
-      () =>
-        <any>{
-          getPropertyValue: jest.fn(() => 10),
-        }
-    );
-    jest.spyOn(textArea, "clientHeight", "get").mockImplementation(() => 30);
-    playerUi.setInitialText("Hello\nWorld!");
-    playerUi.addCommands([
-      [CommandType.SKIP, 10],
-      [CommandType.DELETE, 1],
-    ]);
-    playerUi.init();
-    mockedHljs.configure.mockReset();
-    mockedHljs.highlightBlock.mockReset();
-    await playerUi.play();
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello</div>\n<div class="line">Worl<span class="cursor"></span>!</div>'
-    );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
-    expect(mockedHljs.configure).toHaveBeenCalled();
-    expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
-    expect(codeContainer.scrollTop).toEqual(lineHeight * 1 + paddingTop);
-  });
-
-  it("processes multiple skip commands", async () => {
-    const textArea = document.querySelector("#codepled");
-    const linesContainer = document.querySelector(".lines");
-    const codeContainer = document.querySelector(".code-container");
-    const paddingTop = 10;
-    const clientHeight = 30;
-    const linesCount = 2;
-    const lineHeight = (clientHeight - 2 * paddingTop) / linesCount;
-
-    jest.spyOn(window, "getComputedStyle").mockImplementation(
-      () =>
-        <any>{
-          getPropertyValue: jest.fn(() => 10),
-        }
-    );
-    jest.spyOn(textArea, "clientHeight", "get").mockImplementation(() => 30);
-    playerUi.setInitialText("Hello\nWorld!");
-    playerUi.addCommands([[CommandType.SKIP, 10]]);
-    playerUi.init();
-    mockedHljs.configure.mockReset();
-    mockedHljs.highlightBlock.mockReset();
-    await playerUi.play();
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello</div>\n<div class="line">Worl<span class="cursor"></span>d!</div>'
-    );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
-    expect(mockedHljs.configure).toHaveBeenCalled();
-    expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
-    expect(codeContainer.scrollTop).toEqual(lineHeight * 1 + paddingTop);
-  });
-
-  it("processes insert commands", async () => {
-    const textArea = document.querySelector("#codepled");
-    const linesContainer = document.querySelector(".lines");
-    const codeContainer = document.querySelector(".code-container");
-    const paddingTop = 10;
-    const clientHeight = 30;
-    const linesCount = 2;
-    const lineHeight = (clientHeight - 2 * paddingTop) / linesCount;
-
-    jest.spyOn(window, "getComputedStyle").mockImplementation(
-      () =>
-        <any>{
-          getPropertyValue: jest.fn(() => 10),
-        }
-    );
-    jest.spyOn(textArea, "clientHeight", "get").mockImplementation(() => 30);
-    playerUi.setInitialText("Hello\n");
-    playerUi.addCommands([
-      [CommandType.SKIP, 6],
-      [CommandType.INSERT, "w"],
-      [CommandType.INSERT, "o"],
-      [CommandType.INSERT, "r"],
-      [CommandType.INSERT, "l"],
-      [CommandType.INSERT, "d"],
-    ]);
-    playerUi.init();
-    mockedHljs.configure.mockReset();
-    mockedHljs.highlightBlock.mockReset();
-    await playerUi.play();
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello</div>\n<div class="line">world<span class="cursor"></span></div>'
-    );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
-    expect(mockedHljs.configure).toHaveBeenCalled();
-    expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
-    expect(codeContainer.scrollTop).toEqual(lineHeight * 1 + paddingTop);
-  });
-
-  it("processes show_text command", async (done) => {
-    const textArea = document.querySelector("#codepled");
-    const linesContainer = document.querySelector(".lines");
+  it("processes show_text command", async () => {
+    jest.spyOn(player, "isLastCommand").mockReturnValue(false);
+    const unblockSpy = jest.spyOn(player, "unblock");
     const slider = <HTMLInputElement>document.querySelector(".slider");
     const sliderContainer = document.querySelector(".slider-container");
     const textboxContainer = <HTMLElement>(
@@ -218,59 +99,65 @@ describe("PlayerUi", () => {
     const textboxContent = <HTMLElement>(
       document.querySelector(".textbox__content")
     );
-
-    playerUi.setInitialText("Hello\n");
-    playerUi.addCommands([[CommandType.SHOW_TEXT, "Text to be shown"]]);
     playerUi.init();
-    await playerUi.play();
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>Hello</div>\n<div class="line"></div>'
+    dispatchEvent(
+      new CustomEvent("showText", {
+        detail: {
+          message: "Text to be shown",
+        },
+      })
     );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
-    expect(playerUi.isPaused()).toEqual(true);
-    expect(playerUi.isBlocked()).toEqual(true);
+
     expect(slider.disabled).toEqual(true);
     expect(sliderContainer.classList.contains("disabled")).toEqual(true);
-
     expect(textboxContainer.style.display).toEqual("flex");
     expect(textboxContent.innerHTML).toEqual("Text to be shown");
     textboxContainer.querySelector("i").click();
     await TestUtils.tick();
     expect(textboxContainer.style.display).toEqual("none");
 
-    expect(playerUi.isBlocked()).toEqual(false);
+    expect(unblockSpy).toHaveBeenCalled();
     expect(slider.disabled).toEqual(false);
     expect(sliderContainer.classList.contains("disabled")).toEqual(false);
-    done();
   });
 
   it("should resume playing after show_text", async () => {
-    const textArea = document.querySelector("#codepled");
+    jest.spyOn(player, "isLastCommand").mockReturnValue(false);
+    const playSpy = jest.spyOn(player, "play");
     const textboxContainer = <HTMLElement>(
       document.querySelector(".textbox-container")
     );
 
-    playerUi.setInitialText("Hello\n");
-    playerUi.addCommands([
-      [CommandType.SHOW_TEXT, "Text to be shown"],
-      [CommandType.DELETE, 1],
-    ]);
     playerUi.init();
-    await playerUi.play();
+    dispatchEvent(
+      new CustomEvent("showText", {
+        detail: {
+          message: "Text to be shown",
+        },
+      })
+    );
     textboxContainer.querySelector("i").click();
     await TestUtils.tick();
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>ello</div>\n<div class="line"></div>'
-    );
+    expect(playSpy).toHaveBeenCalled();
   });
+
   it("should highlight line", async () => {
     const textArea = document.querySelector("#codepled");
     const highlightStyle = 'style="background-color: rgb(0, 66, 18);"';
 
-    playerUi.setInitialText("Hello\nWorld\nLine 3");
-    playerUi.addCommands([[CommandType.HIGHLIGHT_LINES, { start: 2, end: 3 }]]);
     playerUi.init();
-    await playerUi.play();
+    jest
+      .spyOn(player, "getHighlightedLines")
+      .mockReturnValue({ start: 2, end: 3 });
+    dispatchEvent(
+      new CustomEvent("changeText", {
+        detail: {
+          text: "Hello\nWorld\nLine 3",
+          cursor: 0,
+        },
+      })
+    );
+    await TestUtils.tick();
     expect(textArea.innerHTML).toEqual(
       '<div class="line"><span class="cursor"></span>Hello</div>\n' +
         `<div class="line" ${highlightStyle}>World</div>\n` +
@@ -278,7 +165,7 @@ describe("PlayerUi", () => {
     );
   });
 
-  it("should scroll to", async () => {
+  it("should scroll to", () => {
     const textArea = document.querySelector("#codepled");
     const paddingTop = 10;
     const lineHeight = 10;
@@ -305,15 +192,29 @@ describe("PlayerUi", () => {
     jest
       .spyOn(textArea, "clientHeight", "get")
       .mockImplementation(() => clientHeight);
-    playerUi.setInitialText(initialText);
-    playerUi.addCommands([[CommandType.SCROLL_TO, 50]]);
     playerUi.init();
-    await playerUi.play();
+    dispatchEvent(
+      new CustomEvent("changeText", {
+        detail: {
+          text: initialText,
+          cursor: 0,
+        },
+      })
+    );
+    dispatchEvent(
+      new CustomEvent("scrollTo", {
+        detail: {
+          line: 50,
+        },
+      })
+    );
 
     expect(codeContainer.scrollTop).toEqual(lineHeight * 49 + paddingTop);
   });
 
   it("should increase speed", async () => {
+    const increaseSpeedSpy = jest.spyOn(player, "increaseSpeed");
+
     const speedButton = <HTMLElement>document.querySelector(".speed");
     const speedMeter = document.querySelector(".speedmeter");
 
@@ -323,79 +224,64 @@ describe("PlayerUi", () => {
 
     speedButton.click();
     await TestUtils.tick();
+    expect(increaseSpeedSpy).toHaveBeenCalled();
+  });
 
-    expect(playerUi.getSpeed()).toEqual(2);
-    expect(speedMeter.textContent).toEqual("2");
+  it("should show speed after click", async () => {
+    const speedButton = <HTMLElement>document.querySelector(".speed");
+    const speedMeter = document.querySelector(".speedmeter");
+    jest.spyOn(player, "getSpeed").mockReturnValue(3);
 
+    playerUi.init();
     speedButton.click();
     await TestUtils.tick();
 
     expect(playerUi.getSpeed()).toEqual(3);
     expect(speedMeter.textContent).toEqual("3");
-
-    speedButton.click();
-    await TestUtils.tick();
-
-    expect(playerUi.getSpeed()).toEqual(1);
-    expect(speedMeter.textContent).toEqual("1");
   });
 
-  it("should not increase speed if blocked", async () => {
-    const speedButton = <HTMLElement>document.querySelector(".speed");
-    const speedMeter = document.querySelector(".speedmeter");
+  it("should play/pause", async () => {
+    const playButton = <HTMLElement>document.querySelector(".play");
+    const playPauseSpy = jest.spyOn(player, "playPause");
 
-    playerUi.setInitialText("Hello\n");
-    playerUi.addCommands([
-      [CommandType.SHOW_TEXT, "Text to be shown"],
-      [CommandType.DELETE, 1],
-    ]);
     playerUi.init();
-    await playerUi.play();
-
-    expect(playerUi.isBlocked()).toEqual(true);
-
-    speedButton.click();
+    playButton.click();
     await TestUtils.tick();
-
-    expect(playerUi.getSpeed()).toEqual(1);
-    expect(speedMeter.textContent).toEqual("1");
+    expect(playPauseSpy).toHaveBeenCalled();
   });
 
-  it("should pause", async () => {
+  it("should show the correct play icon", () => {
     const playButton = <HTMLElement>document.querySelector(".play");
 
     playerUi.init();
-    playerUi["isPaused"] = () => true;
-    playButton.click();
-    await TestUtils.tick();
-    expect(playerUi.isPaused()).toEqual(true);
+    dispatchEvent(new CustomEvent("pause"));
+
+    expect(playButton.innerHTML).toEqual('<i class="fas fa-play"></i>');
   });
 
-  it("should not pause if blocked", async () => {
+  it("should show the correct pause icon", () => {
     const playButton = <HTMLElement>document.querySelector(".play");
-    jest.spyOn(player, "isBlocked").mockReturnValue(true);
-    playerUi["isPaused"] = () => false;
-    playerUi.init();
 
-    playButton.click();
-    await TestUtils.tick();
-    expect(playerUi.isPaused()).toEqual(false);
+    playerUi.init();
+    dispatchEvent(new CustomEvent("play"));
+
+    expect(playButton.innerHTML).toEqual('<i class="fas fa-pause"></i>');
   });
 
-  it("should not play if blocked", async () => {
+  it("should init with play icon", () => {
     const playButton = <HTMLElement>document.querySelector(".play");
-    jest.spyOn(player, "isBlocked").mockReturnValue(true);
-    playerUi["isPaused"] = () => true;
-    playerUi.init();
+    jest.spyOn(player, "isPaused").mockReturnValue(true);
 
-    playButton.click();
-    await TestUtils.tick();
-    expect(playerUi.isPaused()).toEqual(true);
+    playerUi.init();
+    expect(playButton.innerHTML).toEqual('<i class="fas fa-play"></i>');
   });
 
   it("should forward on slider change", async () => {
+    const forwardToSpy = jest.spyOn(player, "forwardTo");
+    const playSpy = jest.spyOn(player, "play");
     const slider = <HTMLInputElement>document.querySelector(".slider");
-    const textArea = document.querySelector("#codepled");
+    jest.spyOn(player, "isPaused").mockReturnValue(false);
+
     playerUi.setInitialText("Hello\nWorld\nLine 3");
     playerUi.addCommands([
       [CommandType.SKIP, 2],
@@ -409,28 +295,45 @@ describe("PlayerUi", () => {
     playerUi.init();
 
     slider.value = "5";
+    slider.oninput(undefined);
     slider.onchange(<any>{ target: slider });
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">Herr<span class="cursor"></span>o</div>\n' +
-        '<div class="line">World</div>\n' +
-        '<div class="line">Line 3</div>'
-    );
+    expect(forwardToSpy).toHaveBeenCalledWith(5);
+    expect(playSpy).toHaveBeenCalledTimes(1);
 
     slider.value = "3";
+    slider.oninput(undefined);
     slider.onchange(<any>{ target: slider });
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">He<span class="cursor"></span>o</div>\n' +
-        '<div class="line">World</div>\n' +
-        '<div class="line">Line 3</div>'
-    );
+    expect(forwardToSpy).toHaveBeenCalledWith(3);
+    expect(playSpy).toHaveBeenCalledTimes(2);
 
     slider.value = "10";
+    slider.oninput(undefined);
     slider.onchange(<any>{ target: slider });
-    expect(textArea.innerHTML).toEqual(
-      '<div class="line">Herrr<span class="cursor"></span>o</div>\n' +
-        '<div class="line">World</div>\n' +
-        '<div class="line">Line 3</div>'
-    );
-    expect(playerUi.isPaused()).toEqual(true);
+    expect(playSpy).toHaveBeenCalledTimes(3);
+  });
+
+  it("should not play when forward on slider change if paused", async () => {
+    const forwardToSpy = jest.spyOn(player, "forwardTo");
+    const playSpy = jest.spyOn(player, "play");
+    const slider = <HTMLInputElement>document.querySelector(".slider");
+    jest.spyOn(player, "isPaused").mockReturnValue(true);
+
+    playerUi.setInitialText("Hello\nWorld\nLine 3");
+    playerUi.addCommands([
+      [CommandType.SKIP, 2],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "r"],
+    ]);
+    playerUi.init();
+
+    slider.value = "5";
+    slider.oninput(undefined);
+    slider.onchange(<any>{ target: slider });
+    expect(forwardToSpy).toHaveBeenCalledWith(5);
+    expect(playSpy).not.toHaveBeenCalled();
   });
 });

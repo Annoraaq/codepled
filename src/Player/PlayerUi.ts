@@ -116,7 +116,7 @@ export class PlayerUi {
   }
 
   getSpeed(): number {
-    return this.player.speed;
+    return this.player.getSpeed();
   }
 
   async play() {
@@ -148,7 +148,9 @@ export class PlayerUi {
       .map((ls) => `<div class="line">${ls}</div>`)
       .join("\n");
 
-    const options = [{ ...this.player.highlightedLines, color: "#004212" }];
+    const options = [
+      { ...this.player.getHighlightedLines(), color: "#004212" },
+    ];
 
     const lines = block.querySelectorAll(".line");
     for (let option of options) {
@@ -199,23 +201,18 @@ export class PlayerUi {
 
   private initPlayButton(playButton: HTMLElement) {
     playButton.onclick = () => {
-      if (this.player.isBlocked()) return;
-      if (this.player.isPaused()) {
-        this.player.play();
-      } else {
-        this.player.pause();
+      if (!this.player.isPaused()) {
         this.wasPlayingOnSliderMove = false;
       }
+      this.player.playPause();
     };
   }
 
   private initSpeedButton(speedButton: HTMLElement) {
     speedButton.onclick = () => {
-      if (this.isBlocked()) return;
-      this.player.speed = (this.player.speed + 1) % 4;
-      if (this.player.speed == 0) this.player.speed = 1;
+      this.player.increaseSpeed();
       const speedMeter = document.querySelector(".speedmeter");
-      speedMeter.textContent = `${this.player.speed}`;
+      speedMeter.textContent = `${this.player.getSpeed()}`;
     };
   }
 
@@ -231,7 +228,6 @@ export class PlayerUi {
   }
 
   private disableControls() {
-    this.player.block();
     this.slider.disabled = true;
     document.querySelector(".slider-container").classList.add("disabled");
   }
