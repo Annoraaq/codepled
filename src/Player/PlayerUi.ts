@@ -23,64 +23,32 @@ export class PlayerUi {
     this.textbox = document.querySelector(".textbox-container");
     this.ta = document.querySelector("#codepled");
 
-    addEventListener(
-      "pause",
-      () => (this.playButton.innerHTML = '<i class="fas fa-play"></i>'),
-      false
-    );
-    addEventListener(
-      "play",
-      () => (this.playButton.innerHTML = '<i class="fas fa-pause"></i>'),
-      false
-    );
-    addEventListener(
-      "changeText",
-      (event: any) => {
-        this.ta.innerHTML =
-          this.htmlEncode(event.detail.text.substr(0, event.detail.cursor)) +
-          this.cursorText +
-          this.htmlEncode(event.detail.text.substr(event.detail.cursor));
-        this.highlight();
-      },
-      false
-    );
-    addEventListener(
-      "changeCommandIndex",
-      (event: any) => {
-        this.slider.value = `${event.index}`;
-      },
-      false
-    );
-    addEventListener(
-      "scrollTo",
-      (event: any) => {
-        const codepled = document.querySelector("#codepled");
-        const clientHeight = codepled.clientHeight;
-        const padding = parseFloat(
-          window.getComputedStyle(codepled).getPropertyValue("padding-top")
-        );
-        const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
-        const lineHeight = (clientHeight - 2 * padding) / linesCount;
+    addEventListener("pause", this.onPause);
+    addEventListener("play", this.onPlay);
+    addEventListener("changeText", this.onChangeText);
+    addEventListener("changeCommandIndex", this.onChangeCommandIndex);
+    addEventListener("scrollTo", (event: any) => {
+      const codepled = document.querySelector("#codepled");
+      const clientHeight = codepled.clientHeight;
+      const padding = parseFloat(
+        window.getComputedStyle(codepled).getPropertyValue("padding-top")
+      );
+      const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
+      const lineHeight = (clientHeight - 2 * padding) / linesCount;
 
-        document.querySelector(".code-container").scrollTop =
-          lineHeight * (event.detail.line - 1) + padding;
-      },
-      false
-    );
-    addEventListener(
-      "showText",
-      (event: any) => {
-        const isLastCommand = this.player.isLastCommand();
-        this.disableControls();
-        this.showMessage(event.detail.message).then(() => {
-          this.enableControls();
-          if (!isLastCommand) {
-            this.player.play();
-          }
-        });
-      },
-      false
-    );
+      document.querySelector(".code-container").scrollTop =
+        lineHeight * (event.detail.line - 1) + padding;
+    });
+    addEventListener("showText", (event: any) => {
+      const isLastCommand = this.player.isLastCommand();
+      this.disableControls();
+      this.showMessage(event.detail.message).then(() => {
+        this.enableControls();
+        if (!isLastCommand) {
+          this.player.play();
+        }
+      });
+    });
   }
 
   addCommands(commands: Command[]): void {
@@ -97,30 +65,6 @@ export class PlayerUi {
 
   setInitialText(initialText: string) {
     this.player.setInitialText(initialText);
-  }
-
-  getCurrentCommandIndex(): number {
-    return this.player.getCurrentCommandIndex();
-  }
-
-  setCursorPos(pos: number): void {
-    this.player.cursor = pos;
-  }
-
-  isBlocked(): boolean {
-    return this.player.isBlocked();
-  }
-
-  isPaused(): boolean {
-    return this.player.isPaused();
-  }
-
-  getSpeed(): number {
-    return this.player.getSpeed();
-  }
-
-  async play() {
-    return this.player.play();
   }
 
   private async showMessage(message: string) {
@@ -237,4 +181,22 @@ export class PlayerUi {
     this.slider.disabled = false;
     document.querySelector(".slider-container").classList.remove("disabled");
   }
+
+  private onPause = () =>
+    (this.playButton.innerHTML = '<i class="fas fa-play"></i>');
+
+  private onPlay = () =>
+    (this.playButton.innerHTML = '<i class="fas fa-pause"></i>');
+
+  private onChangeText = (event: any) => {
+    this.ta.innerHTML =
+      this.htmlEncode(event.detail.text.substr(0, event.detail.cursor)) +
+      this.cursorText +
+      this.htmlEncode(event.detail.text.substr(event.detail.cursor));
+    this.highlight();
+  };
+
+  private onChangeCommandIndex = (event: any) => {
+    this.slider.value = `${event.detail.index}`;
+  };
 }

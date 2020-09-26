@@ -8,6 +8,8 @@ import { Player } from "./Player";
 jest.mock("highlight.js");
 jest.mock("../Utils/Utils");
 
+TestUtils.fixCustomEventConstructor();
+
 const mockedHljs = mocked(hljs, true);
 const mockedUtils = mocked(Utils, true);
 
@@ -219,7 +221,6 @@ describe("PlayerUi", () => {
     const speedMeter = document.querySelector(".speedmeter");
 
     playerUi.init();
-    expect(playerUi.getSpeed()).toEqual(1);
     expect(speedMeter.textContent).toEqual("1");
 
     speedButton.click();
@@ -236,7 +237,6 @@ describe("PlayerUi", () => {
     speedButton.click();
     await TestUtils.tick();
 
-    expect(playerUi.getSpeed()).toEqual(3);
     expect(speedMeter.textContent).toEqual("3");
   });
 
@@ -250,10 +250,13 @@ describe("PlayerUi", () => {
     expect(playPauseSpy).toHaveBeenCalled();
   });
 
-  it("should show the correct play icon", () => {
+  it("should show the correct play icon", async () => {
     const playButton = <HTMLElement>document.querySelector(".play");
 
     playerUi.init();
+    playButton.click();
+    await TestUtils.tick();
+
     dispatchEvent(new CustomEvent("pause"));
 
     expect(playButton.innerHTML).toEqual('<i class="fas fa-play"></i>');
@@ -335,5 +338,26 @@ describe("PlayerUi", () => {
     slider.onchange(<any>{ target: slider });
     expect(forwardToSpy).toHaveBeenCalledWith(5);
     expect(playSpy).not.toHaveBeenCalled();
+  });
+
+  it("should handle changeCommandIndex event", async () => {
+    const slider = <HTMLInputElement>document.querySelector(".slider");
+    jest.spyOn(player, "getCommands").mockReturnValue([
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+      [CommandType.SKIP, 1],
+    ]);
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent("changeCommandIndex", { detail: { index: 5 } })
+    );
+
+    expect(slider.value).toEqual("5");
   });
 });
