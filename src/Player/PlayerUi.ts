@@ -1,7 +1,5 @@
-import { CommandType } from "./../DiffConverter/Commands";
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
-import { Utils } from "../Utils/Utils";
 import { PlayerEvent, Player } from "./Player";
 
 export class PlayerUi {
