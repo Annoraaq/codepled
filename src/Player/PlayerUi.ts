@@ -4,7 +4,7 @@ import { PlayerEvent, Player } from "./Player";
 
 export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
-  private ta: HTMLElement;
+  private textArea: HTMLElement;
   private playButton: HTMLElement;
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
@@ -19,7 +19,7 @@ export class PlayerUi {
     this.slider = <HTMLInputElement>document.querySelector(".slider");
     this.speedButton = document.querySelector(".speed");
     this.textbox = document.querySelector(".textbox-container");
-    this.ta = document.querySelector("#codepled");
+    this.textArea = document.querySelector("#codepled");
 
     addEventListener(PlayerEvent.PAUSE, this.onPause);
     addEventListener(PlayerEvent.PLAY, this.onPlay);
@@ -49,8 +49,7 @@ export class PlayerUi {
   }
 
   private async showMessage(message: string) {
-    (<HTMLElement>document.querySelector(".textbox-container")).style.display =
-      "flex";
+    this.textbox.style.display = "flex";
     document.querySelector(".textbox__content").innerHTML = message;
     return new Promise((resolve) => {
       this.textContinue = resolve;
@@ -170,7 +169,7 @@ export class PlayerUi {
     (this.playButton.innerHTML = '<i class="fas fa-pause"></i>');
 
   private onChangeText = (event: any) => {
-    this.ta.innerHTML =
+    this.textArea.innerHTML =
       this.htmlEncode(event.detail.text.substr(0, event.detail.cursor)) +
       this.cursorText +
       this.htmlEncode(event.detail.text.substr(event.detail.cursor));
