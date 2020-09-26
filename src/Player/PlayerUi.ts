@@ -27,28 +27,8 @@ export class PlayerUi {
     addEventListener("play", this.onPlay);
     addEventListener("changeText", this.onChangeText);
     addEventListener("changeCommandIndex", this.onChangeCommandIndex);
-    addEventListener("scrollTo", (event: any) => {
-      const codepled = document.querySelector("#codepled");
-      const clientHeight = codepled.clientHeight;
-      const padding = parseFloat(
-        window.getComputedStyle(codepled).getPropertyValue("padding-top")
-      );
-      const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
-      const lineHeight = (clientHeight - 2 * padding) / linesCount;
-
-      document.querySelector(".code-container").scrollTop =
-        lineHeight * (event.detail.line - 1) + padding;
-    });
-    addEventListener("showText", (event: any) => {
-      const isLastCommand = this.player.isLastCommand();
-      this.disableControls();
-      this.showMessage(event.detail.message).then(() => {
-        this.enableControls();
-        if (!isLastCommand) {
-          this.player.play();
-        }
-      });
-    });
+    addEventListener("scrollTo", this.onScrollTo);
+    addEventListener("showText", this.onShowText);
   }
 
   addCommands(commands: Command[]): void {
@@ -198,5 +178,29 @@ export class PlayerUi {
 
   private onChangeCommandIndex = (event: any) => {
     this.slider.value = `${event.detail.index}`;
+  };
+
+  private onScrollTo = (event: any) => {
+    const codepled = document.querySelector("#codepled");
+    const clientHeight = codepled.clientHeight;
+    const padding = parseFloat(
+      window.getComputedStyle(codepled).getPropertyValue("padding-top")
+    );
+    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
+    const lineHeight = (clientHeight - 2 * padding) / linesCount;
+
+    document.querySelector(".code-container").scrollTop =
+      lineHeight * (event.detail.line - 1) + padding;
+  };
+
+  private onShowText = (event: any) => {
+    const isLastCommand = this.player.isLastCommand();
+    this.disableControls();
+    this.showMessage(event.detail.message).then(() => {
+      this.enableControls();
+      if (!isLastCommand) {
+        this.player.play();
+      }
+    });
   };
 }
