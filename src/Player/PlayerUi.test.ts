@@ -4,7 +4,7 @@ import { mocked } from "ts-jest/utils";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { PlayerUi } from "./PlayerUi";
 import * as hljs from "highlight.js";
-import { Player } from "./Player";
+import { PlayerEvent, Player } from "./Player";
 jest.mock("highlight.js");
 jest.mock("../Utils/Utils");
 
@@ -74,7 +74,7 @@ describe("PlayerUi", () => {
     playerUi.init();
 
     dispatchEvent(
-      new CustomEvent("changeText", {
+      new CustomEvent(PlayerEvent.CHANGE_TEXT, {
         detail: {
           text: "Hello\nWorld",
           cursor: 7,
@@ -103,7 +103,7 @@ describe("PlayerUi", () => {
     );
     playerUi.init();
     dispatchEvent(
-      new CustomEvent("showText", {
+      new CustomEvent(PlayerEvent.SHOW_TEXT, {
         detail: {
           message: "Text to be shown",
         },
@@ -132,7 +132,7 @@ describe("PlayerUi", () => {
 
     playerUi.init();
     dispatchEvent(
-      new CustomEvent("showText", {
+      new CustomEvent(PlayerEvent.SHOW_TEXT, {
         detail: {
           message: "Text to be shown",
         },
@@ -152,7 +152,7 @@ describe("PlayerUi", () => {
       .spyOn(player, "getHighlightedLines")
       .mockReturnValue({ start: 2, end: 3 });
     dispatchEvent(
-      new CustomEvent("changeText", {
+      new CustomEvent(PlayerEvent.CHANGE_TEXT, {
         detail: {
           text: "Hello\nWorld\nLine 3",
           cursor: 0,
@@ -196,7 +196,7 @@ describe("PlayerUi", () => {
       .mockImplementation(() => clientHeight);
     playerUi.init();
     dispatchEvent(
-      new CustomEvent("changeText", {
+      new CustomEvent(PlayerEvent.CHANGE_TEXT, {
         detail: {
           text: initialText,
           cursor: 0,
@@ -204,7 +204,7 @@ describe("PlayerUi", () => {
       })
     );
     dispatchEvent(
-      new CustomEvent("scrollTo", {
+      new CustomEvent(PlayerEvent.SCROLL_TO, {
         detail: {
           line: 50,
         },
@@ -257,7 +257,7 @@ describe("PlayerUi", () => {
     playButton.click();
     await TestUtils.tick();
 
-    dispatchEvent(new CustomEvent("pause"));
+    dispatchEvent(new CustomEvent(PlayerEvent.PAUSE));
 
     expect(playButton.innerHTML).toEqual('<i class="fas fa-play"></i>');
   });
@@ -266,7 +266,7 @@ describe("PlayerUi", () => {
     const playButton = <HTMLElement>document.querySelector(".play");
 
     playerUi.init();
-    dispatchEvent(new CustomEvent("play"));
+    dispatchEvent(new CustomEvent(PlayerEvent.PLAY));
 
     expect(playButton.innerHTML).toEqual('<i class="fas fa-pause"></i>');
   });
@@ -355,7 +355,9 @@ describe("PlayerUi", () => {
     playerUi.init();
 
     dispatchEvent(
-      new CustomEvent("changeCommandIndex", { detail: { index: 5 } })
+      new CustomEvent(PlayerEvent.CHANGE_COMMAND_INDEX, {
+        detail: { index: 5 },
+      })
     );
 
     expect(slider.value).toEqual("5");

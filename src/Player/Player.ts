@@ -1,6 +1,14 @@
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
-import { PlayerUi } from "./PlayerUi";
+
+export enum PlayerEvent {
+  PAUSE = "PLAYER_PAUSE",
+  PLAY = "PLAYER_PLAY",
+  CHANGE_TEXT = "PLAYER_CHANGE_TEXT",
+  CHANGE_COMMAND_INDEX = "PLAYER_CHANGE_COMMAND_INDEX",
+  SCROLL_TO = "PLAYER_SCROLL_TO",
+  SHOW_TEXT = "PLAYER_SHOW_TEXT",
+}
 
 export class Player {
   private commands: Command[];
@@ -32,7 +40,7 @@ export class Player {
 
   setCurrentCommandIndex(newIndex: number) {
     this.currentCommandIndex = newIndex;
-    var event = new CustomEvent("changeCommandIndex", {
+    var event = new CustomEvent(PlayerEvent.CHANGE_COMMAND_INDEX, {
       detail: {
         index: newIndex,
       },
@@ -51,7 +59,7 @@ export class Player {
   pause(): void {
     if (this._isBlocked) return;
     this.isPlaying = false;
-    dispatchEvent(new CustomEvent("pause"));
+    dispatchEvent(new CustomEvent(PlayerEvent.PAUSE));
   }
 
   isBlocked(): boolean {
@@ -90,7 +98,7 @@ export class Player {
     }
 
     this.isPlaying = true;
-    dispatchEvent(new CustomEvent("play"));
+    dispatchEvent(new CustomEvent(PlayerEvent.PLAY));
 
     while (
       this.currentCommandIndex < this.commands.length &&
@@ -107,7 +115,7 @@ export class Player {
 
   setText(text: string) {
     this.trueText = text;
-    var event = new CustomEvent("changeText", {
+    var event = new CustomEvent(PlayerEvent.CHANGE_TEXT, {
       detail: {
         text,
         cursor: this.cursor,
@@ -121,7 +129,7 @@ export class Player {
   }
 
   scrollTo(line: number) {
-    const event = new CustomEvent("scrollTo", {
+    const event = new CustomEvent(PlayerEvent.SCROLL_TO, {
       detail: {
         line,
       },
@@ -167,7 +175,7 @@ export class Player {
     } else if (commandNo === CommandType.SHOW_TEXT) {
       this.pause();
       this.block();
-      const event = new CustomEvent("showText", {
+      const event = new CustomEvent(PlayerEvent.SHOW_TEXT, {
         detail: {
           message: payload,
         },

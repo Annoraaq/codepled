@@ -1,6 +1,6 @@
 import { TestUtils } from "./../Utils/TestUtils";
 import { CommandType } from "../DiffConverter/Commands";
-import { Player } from "./Player";
+import { PlayerEvent, Player } from "./Player";
 
 TestUtils.fixCustomEventConstructor();
 
@@ -49,7 +49,7 @@ describe("Player", () => {
   });
 
   it("processes multiple delete commands", async () => {
-    const expectedScrollToEvent = new CustomEvent("scrollTo", {
+    const expectedScrollToEvent = new CustomEvent(PlayerEvent.SCROLL_TO, {
       detail: {
         line: 1,
       },
@@ -73,7 +73,7 @@ describe("Player", () => {
   });
 
   it("processes multiple skip commands and jumps into the correct line for delete", async () => {
-    const expectedScrollToEvent = new CustomEvent("scrollTo", {
+    const expectedScrollToEvent = new CustomEvent(PlayerEvent.SCROLL_TO, {
       detail: {
         line: 2,
       },
@@ -90,7 +90,7 @@ describe("Player", () => {
   });
 
   it("processes insert commands", async () => {
-    const expectedScrollToEvent = new CustomEvent("scrollTo", {
+    const expectedScrollToEvent = new CustomEvent(PlayerEvent.SCROLL_TO, {
       detail: {
         line: 2,
       },
@@ -113,7 +113,7 @@ describe("Player", () => {
   });
 
   it("processes show_text command", async () => {
-    const expectedShowTextEvent = new CustomEvent("showText", {
+    const expectedShowTextEvent = new CustomEvent(PlayerEvent.SHOW_TEXT, {
       detail: {
         message: "Text to be shown",
       },
@@ -159,7 +159,7 @@ describe("Player", () => {
   });
 
   it("should not pause if blocked", async () => {
-    const expectedPauseEvent = new CustomEvent("pause");
+    const expectedPauseEvent = new CustomEvent(PlayerEvent.PAUSE);
 
     player.setInitialText("Hello\n");
     player.addCommands([

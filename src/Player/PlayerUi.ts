@@ -2,7 +2,7 @@ import { CommandType } from "./../DiffConverter/Commands";
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
-import { Player } from "./Player";
+import { PlayerEvent, Player } from "./Player";
 
 export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
@@ -23,12 +23,15 @@ export class PlayerUi {
     this.textbox = document.querySelector(".textbox-container");
     this.ta = document.querySelector("#codepled");
 
-    addEventListener("pause", this.onPause);
-    addEventListener("play", this.onPlay);
-    addEventListener("changeText", this.onChangeText);
-    addEventListener("changeCommandIndex", this.onChangeCommandIndex);
-    addEventListener("scrollTo", this.onScrollTo);
-    addEventListener("showText", this.onShowText);
+    addEventListener(PlayerEvent.PAUSE, this.onPause);
+    addEventListener(PlayerEvent.PLAY, this.onPlay);
+    addEventListener(PlayerEvent.CHANGE_TEXT, this.onChangeText);
+    addEventListener(
+      PlayerEvent.CHANGE_COMMAND_INDEX,
+      this.onChangeCommandIndex
+    );
+    addEventListener(PlayerEvent.SCROLL_TO, this.onScrollTo);
+    addEventListener(PlayerEvent.SHOW_TEXT, this.onShowText);
   }
 
   addCommands(commands: Command[]): void {
