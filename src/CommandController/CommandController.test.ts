@@ -1,0 +1,73 @@
+import { CommandType } from "./../DiffConverter/Commands";
+import { CommandController } from "./CommandController";
+describe("CommandController", () => {
+  let commandController: CommandController;
+
+  beforeEach(() => {
+    commandController = new CommandController();
+  });
+
+  it("should count command steps", () => {
+    commandController.setCommands([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+    ]);
+
+    expect(commandController.getTotalSteps()).toEqual(8);
+  });
+
+  it("should add commands", () => {
+    commandController.setCommands([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+    ]);
+
+    commandController.addCommands([[CommandType.DELETE, 3]]);
+
+    expect(commandController.getTotalSteps()).toEqual(11);
+  });
+
+  it("should deliver command for single step", () => {
+    commandController.setCommands([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+    ]);
+
+    expect(commandController.getCommandAtStep(2)).toEqual([
+      CommandType.INSERT,
+      "c",
+    ]);
+
+    expect(commandController.getCommandAtStep(5)).toEqual([
+      CommandType.DELETE,
+      1,
+    ]);
+
+    expect(commandController.getCommandAtStep(8)).toEqual([
+      CommandType.SKIP,
+      27,
+    ]);
+  });
+
+  it("should deliver fast forward commands for step index", () => {
+    commandController.setCommands([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+      [CommandType.INSERT, "hello"],
+    ]);
+
+    expect(commandController.getFastForwardCommands(10)).toEqual([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+      [CommandType.INSERT, "he"],
+    ]);
+
+    expect(commandController.getFastForwardCommands(6)).toEqual([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 2],
+    ]);
+  });
+});

@@ -33,4 +33,20 @@ describe("DiffConverter", () => {
     ];
     expect(diffConverter.createCommands([diff])).toEqual(expectedCommands);
   });
+
+  it("should merge inserts for fast forward", () => {
+    const diff: Diff = [CommandType.INSERT, "asd"];
+    const expectedCommands: Command[] = [[CommandType.INSERT, "asd"]];
+    expect(diffConverter.createCommandsFastForward([diff])).toEqual(
+      expectedCommands
+    );
+  });
+
+  it("should merge deletes for fast forward", () => {
+    const diff: Diff = [CommandType.DELETE, "asd"];
+    const expectedCommands: Command[] = [[CommandType.DELETE, 3]];
+    expect(diffConverter.createCommandsFastForward([diff])).toEqual(
+      expectedCommands
+    );
+  });
 });

@@ -19,8 +19,8 @@ describe("Player", () => {
       [CommandType.DELETE, 1],
       [CommandType.DELETE, 1],
     ]);
-    player.setCurrentCommandIndex(4);
-    expect(player.getCurrentCommandIndex()).toEqual(4);
+    player.setCurrentStepIndex(4);
+    expect(player.getCurrentStepIndex()).toEqual(4);
   });
   let playerUiMock = {
     init: jest.fn(),
@@ -42,9 +42,9 @@ describe("Player", () => {
       [CommandType.SKIP, 1],
       [CommandType.SKIP, 1],
     ]);
-    player.setCurrentCommandIndex(0);
+    player.setCurrentStepIndex(0);
     expect(player.isLastCommand()).toEqual(false);
-    player.setCurrentCommandIndex(1);
+    player.setCurrentStepIndex(1);
     expect(player.isLastCommand()).toEqual(true);
   });
 
@@ -194,5 +194,20 @@ describe("Player", () => {
     await player.play();
 
     expect(player.isPaused()).toEqual(true);
+  });
+
+  it("should get command length", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.INSERT, "w"],
+      [CommandType.INSERT, "o"],
+      [CommandType.INSERT, "r"],
+      [CommandType.INSERT, "l"],
+      [CommandType.INSERT, "d"],
+    ]);
+    player.reset();
+
+    expect(player.getCommandCount()).toEqual(6);
   });
 });

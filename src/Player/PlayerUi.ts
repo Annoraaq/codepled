@@ -103,7 +103,7 @@ export class PlayerUi {
   }
 
   private initSlider(slider: HTMLInputElement) {
-    slider.setAttribute("max", `${this.player.getCommands().length - 1}`);
+    slider.setAttribute("max", `${this.player.getCommandCount() - 1}`);
     slider.value = "0";
     slider.onchange = (e) => {
       const sliderVal = Number((<HTMLInputElement>e.target).value);

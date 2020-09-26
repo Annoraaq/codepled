@@ -342,15 +342,7 @@ describe("PlayerUi", () => {
 
   it("should handle changeCommandIndex event", async () => {
     const slider = <HTMLInputElement>document.querySelector(".slider");
-    jest.spyOn(player, "getCommands").mockReturnValue([
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-      [CommandType.SKIP, 1],
-    ]);
+    jest.spyOn(player, "getCommandCount").mockReturnValue(7);
 
     playerUi.init();
 

@@ -1,3 +1,4 @@
+import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
@@ -11,8 +12,7 @@ export enum PlayerEventType {
 }
 
 export class Player {
-  private commands: Command[];
-  private currentCommandIndex = 0;
+  private currentStepIndex = 0;
   private isPlaying = false;
   private trueText: string;
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
@@ -21,25 +21,26 @@ export class Player {
   private initialText = "";
   private highlightedLines = { start: -1, end: -2 };
   private cursor = 0;
+  private commandController: CommandController;
 
   constructor() {
-    this.commands = [];
+    this.commandController = new CommandController();
   }
 
   addCommands(commands: Command[]): void {
-    this.commands = [...this.commands, ...commands];
+    this.commandController.addCommands(commands);
   }
 
-  getCommands(): Command[] {
-    return this.commands;
+  getCommandCount(): number {
+    return this.commandController.getTotalSteps();
   }
 
   getHighlightedLines(): { start: number; end: number } {
     return this.highlightedLines;
   }
 
-  setCurrentCommandIndex(newIndex: number) {
-    this.currentCommandIndex = newIndex;
+  setCurrentStepIndex(newIndex: number) {
+    this.currentStepIndex = newIndex;
     var event = new CustomEvent(PlayerEventType.CHANGE_COMMAND_INDEX, {
       detail: {
         index: newIndex,
@@ -48,8 +49,8 @@ export class Player {
     dispatchEvent(event);
   }
 
-  getCurrentCommandIndex(): number {
-    return this.currentCommandIndex;
+  getCurrentStepIndex(): number {
+    return this.currentStepIndex;
   }
 
   isPaused(): boolean {
@@ -75,7 +76,7 @@ export class Player {
   }
 
   isLastCommand(): boolean {
-    return this.currentCommandIndex == this.commands.length - 1;
+    return this.currentStepIndex == this.getCommandCount() - 1;
   }
 
   getSpeed(): number {
@@ -90,23 +91,22 @@ export class Player {
 
   async play() {
     if (this._isBlocked) return;
-    if (this.currentCommandIndex >= this.getCommands().length) {
-      this.setCurrentCommandIndex(0);
+    if (this.currentStepIndex >= this.getCommandCount()) {
+      this.setCurrentStepIndex(0);
     }
-    if (this.currentCommandIndex == 0) {
+    if (this.currentStepIndex == 0) {
       this.reset();
     }
 
     this.isPlaying = true;
     dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
 
-    while (
-      this.currentCommandIndex < this.commands.length &&
-      !this.isPaused()
-    ) {
-      this.processCommand(this.commands[this.currentCommandIndex]);
-      this.setCurrentCommandIndex(this.currentCommandIndex + 1);
-      if (this.currentCommandIndex >= this.commands.length) {
+    while (this.currentStepIndex < this.getCommandCount() && !this.isPaused()) {
+      this.processCommand(
+        this.commandController.getCommandAtStep(this.currentStepIndex)
+      );
+      this.setCurrentStepIndex(this.currentStepIndex + 1);
+      if (this.currentStepIndex >= this.getCommandCount()) {
         this.pause();
       }
       await Utils.sleep(this.SPEED[this.speed]);
@@ -138,15 +138,17 @@ export class Player {
   }
 
   forwardTo(targetIndex: number) {
-    if (targetIndex < this.getCurrentCommandIndex()) {
-      this.setCurrentCommandIndex(0);
+    if (targetIndex < this.getCurrentStepIndex()) {
+      this.setCurrentStepIndex(0);
     }
-    if (this.getCurrentCommandIndex() == 0) this.reset();
+    if (this.getCurrentStepIndex() == 0) this.reset();
 
-    while (this.getCurrentCommandIndex() < targetIndex) {
-      this.processCommand(this.getCommands()[this.getCurrentCommandIndex()]);
-      this.setCurrentCommandIndex(this.getCurrentCommandIndex() + 1);
-      if (this.getCurrentCommandIndex() >= this.getCommands().length) {
+    while (this.getCurrentStepIndex() < targetIndex) {
+      this.processCommand(
+        this.commandController.getCommandAtStep(this.getCurrentStepIndex())
+      );
+      this.setCurrentStepIndex(this.getCurrentStepIndex() + 1);
+      if (this.getCurrentStepIndex() >= this.getCommandCount()) {
         this.pause();
         break;
       }
