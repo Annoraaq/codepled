@@ -1,6 +1,6 @@
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
-import { PlayerEvent, Player } from "./Player";
+import { PlayerEventType, Player } from "./Player";
 
 export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
@@ -21,15 +21,15 @@ export class PlayerUi {
     this.textbox = document.querySelector(".textbox-container");
     this.textArea = document.querySelector("#codepled");
 
-    addEventListener(PlayerEvent.PAUSE, this.onPause);
-    addEventListener(PlayerEvent.PLAY, this.onPlay);
-    addEventListener(PlayerEvent.CHANGE_TEXT, this.onChangeText);
+    addEventListener(PlayerEventType.PAUSE, this.onPause);
+    addEventListener(PlayerEventType.PLAY, this.onPlay);
+    addEventListener(PlayerEventType.CHANGE_TEXT, this.onChangeText);
     addEventListener(
-      PlayerEvent.CHANGE_COMMAND_INDEX,
+      PlayerEventType.CHANGE_COMMAND_INDEX,
       this.onChangeCommandIndex
     );
-    addEventListener(PlayerEvent.SCROLL_TO, this.onScrollTo);
-    addEventListener(PlayerEvent.SHOW_TEXT, this.onShowText);
+    addEventListener(PlayerEventType.SCROLL_TO, this.onScrollTo);
+    addEventListener(PlayerEventType.SHOW_TEXT, this.onShowText);
   }
 
   addCommands(commands: Command[]): void {
@@ -168,7 +168,7 @@ export class PlayerUi {
   private onPlay = () =>
     (this.playButton.innerHTML = '<i class="fas fa-pause"></i>');
 
-  private onChangeText = (event: any) => {
+  private onChangeText = (event: CustomEvent) => {
     this.textArea.innerHTML =
       this.htmlEncode(event.detail.text.substr(0, event.detail.cursor)) +
       this.cursorText +
@@ -176,11 +176,11 @@ export class PlayerUi {
     this.highlight();
   };
 
-  private onChangeCommandIndex = (event: any) => {
+  private onChangeCommandIndex = (event: CustomEvent) => {
     this.slider.value = `${event.detail.index}`;
   };
 
-  private onScrollTo = (event: any) => {
+  private onScrollTo = (event: CustomEvent) => {
     const codepled = document.querySelector("#codepled");
     const clientHeight = codepled.clientHeight;
     const padding = parseFloat(
@@ -193,7 +193,7 @@ export class PlayerUi {
       lineHeight * (event.detail.line - 1) + padding;
   };
 
-  private onShowText = (event: any) => {
+  private onShowText = (event: CustomEvent) => {
     const isLastCommand = this.player.isLastCommand();
     this.disableControls();
     this.showMessage(event.detail.message).then(() => {

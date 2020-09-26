@@ -1,7 +1,7 @@
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
-export enum PlayerEvent {
+export enum PlayerEventType {
   PAUSE = "PLAYER_PAUSE",
   PLAY = "PLAYER_PLAY",
   CHANGE_TEXT = "PLAYER_CHANGE_TEXT",
@@ -20,7 +20,7 @@ export class Player {
   private speed = 1;
   private initialText = "";
   private highlightedLines = { start: -1, end: -2 };
-  cursor = 0;
+  private cursor = 0;
 
   constructor() {
     this.commands = [];
@@ -40,7 +40,7 @@ export class Player {
 
   setCurrentCommandIndex(newIndex: number) {
     this.currentCommandIndex = newIndex;
-    var event = new CustomEvent(PlayerEvent.CHANGE_COMMAND_INDEX, {
+    var event = new CustomEvent(PlayerEventType.CHANGE_COMMAND_INDEX, {
       detail: {
         index: newIndex,
       },
@@ -59,7 +59,7 @@ export class Player {
   pause(): void {
     if (this._isBlocked) return;
     this.isPlaying = false;
-    dispatchEvent(new CustomEvent(PlayerEvent.PAUSE));
+    dispatchEvent(new CustomEvent(PlayerEventType.PAUSE));
   }
 
   isBlocked(): boolean {
@@ -98,7 +98,7 @@ export class Player {
     }
 
     this.isPlaying = true;
-    dispatchEvent(new CustomEvent(PlayerEvent.PLAY));
+    dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
 
     while (
       this.currentCommandIndex < this.commands.length &&
@@ -115,7 +115,7 @@ export class Player {
 
   setText(text: string) {
     this.trueText = text;
-    var event = new CustomEvent(PlayerEvent.CHANGE_TEXT, {
+    var event = new CustomEvent(PlayerEventType.CHANGE_TEXT, {
       detail: {
         text,
         cursor: this.cursor,
@@ -129,7 +129,7 @@ export class Player {
   }
 
   scrollTo(line: number) {
-    const event = new CustomEvent(PlayerEvent.SCROLL_TO, {
+    const event = new CustomEvent(PlayerEventType.SCROLL_TO, {
       detail: {
         line,
       },
@@ -175,7 +175,7 @@ export class Player {
     } else if (commandNo === CommandType.SHOW_TEXT) {
       this.pause();
       this.block();
-      const event = new CustomEvent(PlayerEvent.SHOW_TEXT, {
+      const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
           message: payload,
         },
