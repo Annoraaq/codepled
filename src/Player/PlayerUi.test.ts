@@ -67,6 +67,13 @@ describe("PlayerUi", () => {
     expect(setInitalTextSpy).toHaveBeenCalledWith("initial text");
   });
 
+  it("should init slider", () => {
+    const slider = <HTMLInputElement>document.querySelector(".slider");
+    jest.spyOn(player, "getCommandCount").mockReturnValue(2);
+    playerUi.init();
+    expect(slider.max).toEqual("2");
+  });
+
   it("should handle a changeText event", () => {
     const textArea = document.querySelector("#codepled");
     const linesContainer = document.querySelector(".lines");

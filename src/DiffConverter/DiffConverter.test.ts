@@ -49,4 +49,22 @@ describe("DiffConverter", () => {
       expectedCommands
     );
   });
+
+  it("should merge commands for fast forward", () => {
+    const diffs: Diff[] = [
+      [CommandType.INSERT, "Hello World"],
+      [CommandType.SKIP, "Hello"],
+      [CommandType.DELETE, "asd"],
+      [CommandType.DELETE, "asd"],
+    ];
+    const expectedCommands: Command[] = [
+      [CommandType.INSERT, "Hello World"],
+      [CommandType.SKIP, 5],
+      [CommandType.DELETE, 3],
+      [CommandType.DELETE, 3],
+    ];
+    expect(diffConverter.createCommandsFastForward(diffs)).toEqual(
+      expectedCommands
+    );
+  });
 });

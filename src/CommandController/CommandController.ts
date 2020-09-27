@@ -9,6 +9,14 @@ export class CommandController {
   private commands: Command[] = [];
   private stepMapping: Map<number, CommandIndex> = new Map();
 
+  private cloneCommands(): Command[] {
+    let cloned: Command[] = [];
+    this.commands.forEach((command) => {
+      cloned.push([command[0], command[1]]);
+    });
+    return cloned;
+  }
+
   addCommands(commands: Command[]) {
     this.setCommands([...this.commands, ...commands]);
   }
@@ -78,8 +86,10 @@ export class CommandController {
   }
 
   getFastForwardCommands(stepNo: number): Command[] {
-    const { index, offset } = this.stepMapping.get(stepNo);
-    const ffCommands = this.commands.slice(0, index + 1);
+    if (stepNo === 0) return [];
+    if (stepNo > this.getTotalSteps()) stepNo = this.getTotalSteps();
+    const { index, offset } = this.stepMapping.get(stepNo - 1);
+    const ffCommands = this.cloneCommands().slice(0, index + 1);
     const [commandType, payload] = this.commands[index];
     let newPayload = payload;
     switch (commandType) {

@@ -138,24 +138,39 @@ export class Player {
   }
 
   forwardTo(targetIndex: number) {
-    if (targetIndex < this.getCurrentStepIndex()) {
-      this.setCurrentStepIndex(0);
-    }
-    if (this.getCurrentStepIndex() == 0) this.reset();
+    this.reset();
 
-    while (this.getCurrentStepIndex() < targetIndex) {
-      this.processCommand(
-        this.commandController.getCommandAtStep(this.getCurrentStepIndex())
-      );
-      this.setCurrentStepIndex(this.getCurrentStepIndex() + 1);
-      if (this.getCurrentStepIndex() >= this.getCommandCount()) {
-        this.pause();
-        break;
-      }
+    const ffCommands = this.commandController.getFastForwardCommands(
+      targetIndex
+    );
+
+    for (let command of ffCommands) {
+      this.fastProcessCommand(command);
+    }
+
+    this.setText(this.getText());
+    this.setCurrentStepIndex(targetIndex);
+  }
+
+  private fastProcessCommand([commandNo, payload]: any[]) {
+    if (commandNo === CommandType.INSERT) {
+      const newText =
+        this.getText().substr(0, this.cursor) +
+        payload +
+        this.getText().substr(this.cursor);
+      this.cursor += payload.length;
+      this.trueText = newText;
+    } else if (commandNo === CommandType.DELETE) {
+      const newText =
+        this.getText().substr(0, this.cursor) +
+        this.getText().substr(this.cursor + payload);
+      this.trueText = newText;
+    } else if (commandNo === CommandType.SKIP) {
+      this.cursor += payload;
     }
   }
 
-  processCommand([commandNo, payload]: any[]) {
+  private processCommand([commandNo, payload]: any[]) {
     if (commandNo === CommandType.INSERT) {
       const newText =
         this.getText().substr(0, this.cursor) +

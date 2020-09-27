@@ -210,4 +210,32 @@ describe("Player", () => {
 
     expect(player.getCommandCount()).toEqual(6);
   });
+
+  it("should forward to", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.INSERT, "world"],
+      [CommandType.DELETE, 3],
+    ]);
+    player.reset();
+
+    player.forwardTo(0);
+    expect(player.getText()).toEqual("Hello\n");
+
+    player.forwardTo(1);
+    expect(player.getText()).toEqual("Hello\n");
+
+    player.forwardTo(2);
+    expect(player.getText()).toEqual("Hello\nw");
+
+    player.forwardTo(3);
+    expect(player.getText()).toEqual("Hello\nwo");
+
+    player.forwardTo(9);
+    expect(player.getText()).toEqual("Hello\nworld");
+
+    player.forwardTo(10);
+    expect(player.getText()).toEqual("Hello\nworld");
+  });
 });

@@ -58,16 +58,33 @@ describe("CommandController", () => {
       [CommandType.INSERT, "hello"],
     ]);
 
+    expect(commandController.getFastForwardCommands(0)).toEqual([]);
+
+    expect(commandController.getFastForwardCommands(2)).toEqual([
+      [CommandType.INSERT, "ab"],
+    ]);
+
+    expect(commandController.getFastForwardCommands(3)).toEqual([
+      [CommandType.INSERT, "abc"],
+    ]);
+
     expect(commandController.getFastForwardCommands(10)).toEqual([
       [CommandType.INSERT, "abcde"],
       [CommandType.DELETE, 3],
       [CommandType.SKIP, 27],
-      [CommandType.INSERT, "he"],
+      [CommandType.INSERT, "h"],
     ]);
 
     expect(commandController.getFastForwardCommands(6)).toEqual([
       [CommandType.INSERT, "abcde"],
-      [CommandType.DELETE, 2],
+      [CommandType.DELETE, 1],
+    ]);
+
+    expect(commandController.getFastForwardCommands(100)).toEqual([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+      [CommandType.INSERT, "hello"],
     ]);
   });
 });
