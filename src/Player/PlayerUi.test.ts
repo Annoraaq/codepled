@@ -83,16 +83,16 @@ describe("PlayerUi", () => {
     dispatchEvent(
       new CustomEvent(PlayerEventType.CHANGE_TEXT, {
         detail: {
-          text: "Hello\nWorld",
+          text: "Hello\nWorld\nLine3",
           cursor: 7,
         },
       })
     );
 
     expect(textArea.innerHTML).toEqual(
-      '<div class="line">Hello</div>\n<div class="line">W<span class="cursor"></span>orld</div>'
+      '<div class="line">Hello\n</div><div class="line">W<span class="cursor"></span>orld\n</div><div class="line">Line3\n</div>'
     );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>");
+    expect(linesContainer.innerHTML).toEqual("1<br>2<br>3<br>");
     expect(mockedHljs.configure).toHaveBeenCalled();
     expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
   });
@@ -168,9 +168,9 @@ describe("PlayerUi", () => {
     );
     await TestUtils.tick();
     expect(textArea.innerHTML).toEqual(
-      '<div class="line"><span class="cursor"></span>Hello</div>\n' +
-        `<div class="line" ${highlightStyle}>World</div>\n` +
-        `<div class="line" ${highlightStyle}>Line 3</div>`
+      '<div class="line"><span class="cursor"></span>Hello\n</div>' +
+        `<div class="line" ${highlightStyle}>World\n</div>` +
+        `<div class="line" ${highlightStyle}>Line 3\n</div>`
     );
   });
 
@@ -178,7 +178,7 @@ describe("PlayerUi", () => {
     const textArea = document.querySelector("#codepled");
     const paddingTop = 10;
     const lineHeight = 10;
-    const linesCount = 100;
+    const linesCount = 101;
     const clientHeight = linesCount * lineHeight + 2 * paddingTop;
     const codeContainer = document.querySelector(".code-container");
 

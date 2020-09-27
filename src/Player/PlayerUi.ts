@@ -69,8 +69,8 @@ export class PlayerUi {
   private highlightLines(block: Element) {
     block.innerHTML = block.innerHTML
       .split("\n")
-      .map((ls) => `<div class="line">${ls}</div>`)
-      .join("\n");
+      .map((ls) => `<div class="line">${ls}\n</div>`)
+      .join("");
 
     const options = [
       { ...this.player.getHighlightedLines(), color: "#004212" },
