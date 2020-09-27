@@ -90,9 +90,7 @@ export class PlayerUi {
       innerStr += i + "<br />";
     }
     const linesContainer = document.querySelector(".lines");
-    if (linesContainer) {
-      linesContainer.innerHTML = innerStr;
-    }
+    linesContainer.innerHTML = innerStr;
   }
 
   private htmlEncode(value: string) {
