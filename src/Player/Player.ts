@@ -16,7 +16,6 @@ export class Player {
   private isPlaying = false;
   private trueText: string;
   private SPEED: { [key: number]: number } = { 3: 10, 2: 50, 1: 100 };
-  private _isBlocked = false;
   private speed = 1;
   private initialText = "";
   private highlightedLines = { start: -1, end: -2 };
@@ -58,13 +57,8 @@ export class Player {
   }
 
   pause(): void {
-    if (this._isBlocked) return;
     this.isPlaying = false;
     dispatchEvent(new CustomEvent(PlayerEventType.PAUSE));
-  }
-
-  isBlocked(): boolean {
-    return this._isBlocked;
   }
 
   isLastCommand(): boolean {
@@ -76,13 +70,11 @@ export class Player {
   }
 
   increaseSpeed(): void {
-    if (this._isBlocked) return;
     this.speed = (this.speed + 1) % 4;
     if (this.speed == 0) this.speed = 1;
   }
 
   async play() {
-    if (this._isBlocked) return;
     if (this.currentStepIndex >= this.getCommandCount()) {
       this.setCurrentStepIndex(0);
     }

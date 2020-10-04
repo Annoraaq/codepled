@@ -131,7 +131,6 @@ describe("Player", () => {
     player.reset();
     await player.play();
 
-    expect(player.isBlocked()).toEqual(false);
     expect(player.getSpeed()).toEqual(1);
     player.increaseSpeed();
     expect(player.getSpeed()).toEqual(2);
