@@ -191,6 +191,8 @@ export class Player {
     } else if (commandNo === CommandType.SET_CURSOR) {
       this.cursor = payload;
       this.setText(this.getText());
+    } else if (commandNo === CommandType.PAUSE) {
+      this.pause();
     }
   }
 

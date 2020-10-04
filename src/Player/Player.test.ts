@@ -172,21 +172,6 @@ describe("Player", () => {
     expect(player.getCursor()).toEqual(0);
   });
 
-  it("should not pause if blocked", async () => {
-    const expectedPauseEvent = new CustomEvent(PlayerEventType.PAUSE);
-
-    player.setInitialText("Hello\n");
-    player.addCommands([
-      [CommandType.SHOW_TEXT, "Text to be shown"],
-      [CommandType.DELETE, 1],
-    ]);
-    player.reset();
-    await player.play();
-
-    player.pause();
-    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedPauseEvent);
-  });
-
   it("should play on playPause if paused", () => {
     player.reset();
     player.playPause();
@@ -243,5 +228,18 @@ describe("Player", () => {
 
     player.forwardTo(10);
     expect(player.getText()).toEqual("Hello\nworld");
+  });
+
+  it("processes pause command", async () => {
+    const expectedShowTextEvent = new CustomEvent(PlayerEventType.PAUSE);
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.PAUSE, undefined],
+      [CommandType.INSERT, "W"],
+    ]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("Hello\n");
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
   });
 });
