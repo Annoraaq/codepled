@@ -203,6 +203,9 @@ export class Player {
       this.setText(this.getText());
     } else if (commandNo === CommandType.SCROLL_TO) {
       this.scrollTo(payload);
+    } else if (commandNo === CommandType.SET_CURSOR) {
+      this.cursor = payload;
+      this.setText(this.getText());
     }
   }
 

@@ -5,5 +5,6 @@ export enum CommandType {
   SHOW_TEXT = 2,
   HIGHLIGHT_LINES = 3,
   SCROLL_TO = 4,
+  SET_CURSOR = 5,
 }
 export type Command = [number, any];

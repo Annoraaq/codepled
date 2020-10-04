@@ -158,6 +158,19 @@ describe("Player", () => {
     expect(player.getSpeed()).toEqual(1);
   });
 
+  it("processes set_cursor commands", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.SET_CURSOR, 0],
+    ]);
+    player.reset();
+    await player.play();
+
+    expect(player.getText()).toEqual("Hello\n");
+    expect(player.getCursor()).toEqual(0);
+  });
+
   it("should not pause if blocked", async () => {
     const expectedPauseEvent = new CustomEvent(PlayerEventType.PAUSE);
 
