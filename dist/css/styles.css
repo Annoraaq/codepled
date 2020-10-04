@@ -15,6 +15,10 @@ body {
     opacity: 0;
   }
 }
+.content {
+  display: flex;
+  flex-direction: row-reverse;
+}
 .code-container {
   font-size: 12px;
   flex-grow: 1;
@@ -93,7 +97,8 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
-  max-height: 50%;
+  box-sizing: border-box;
+  width: 50%;
 }
 .textbox__content {
   white-space: pre-wrap;
@@ -126,7 +131,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   height: auto;
   position: absolute;
   min-height: auto;
