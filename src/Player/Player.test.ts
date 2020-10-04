@@ -124,7 +124,6 @@ describe("Player", () => {
     await player.play();
     expect(player.getText()).toEqual("Hello\n");
     expect(player.isPaused()).toEqual(true);
-    expect(player.isBlocked()).toEqual(true);
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
   });
 
@@ -139,22 +138,6 @@ describe("Player", () => {
     player.increaseSpeed();
     expect(player.getSpeed()).toEqual(3);
     player.increaseSpeed();
-    expect(player.getSpeed()).toEqual(1);
-  });
-
-  it("should not increase speed if blocked", async () => {
-    player.setInitialText("Hello\n");
-    player.addCommands([
-      [CommandType.SHOW_TEXT, "Text to be shown"],
-      [CommandType.DELETE, 1],
-    ]);
-    player.reset();
-    await player.play();
-
-    expect(player.isBlocked()).toEqual(true);
-    expect(player.getSpeed()).toEqual(1);
-    player.increaseSpeed();
-
     expect(player.getSpeed()).toEqual(1);
   });
 
@@ -197,14 +180,6 @@ describe("Player", () => {
     player.reset();
     player["isPlaying"] = true;
     player.playPause();
-
-    expect(player.isPaused()).toEqual(true);
-  });
-
-  it("should not play if blocked", async () => {
-    player.reset();
-    player.block();
-    await player.play();
 
     expect(player.isPaused()).toEqual(true);
   });

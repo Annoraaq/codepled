@@ -67,14 +67,6 @@ export class Player {
     return this._isBlocked;
   }
 
-  block() {
-    this._isBlocked = true;
-  }
-
-  unblock() {
-    this._isBlocked = false;
-  }
-
   isLastCommand(): boolean {
     return this.currentStepIndex == this.getCommandCount() - 1;
   }
@@ -191,7 +183,6 @@ export class Player {
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SHOW_TEXT) {
       this.pause();
-      this.block();
       const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
           message: payload,

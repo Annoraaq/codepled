@@ -98,13 +98,6 @@ describe("PlayerUi", () => {
   });
 
   it("processes show_text command", async () => {
-    jest.spyOn(player, "isLastCommand").mockReturnValue(false);
-    const unblockSpy = jest.spyOn(player, "unblock");
-    const slider = <HTMLInputElement>document.querySelector(".slider");
-    const sliderContainer = document.querySelector(".slider-container");
-    const textboxContainer = <HTMLElement>(
-      document.querySelector(".textbox-container")
-    );
     const textboxContent = <HTMLElement>(
       document.querySelector(".textbox__content")
     );
@@ -117,37 +110,7 @@ describe("PlayerUi", () => {
       })
     );
 
-    expect(slider.disabled).toEqual(true);
-    expect(sliderContainer.classList.contains("disabled")).toEqual(true);
-    expect(textboxContainer.style.display).toEqual("flex");
     expect(textboxContent.innerHTML).toEqual("Text to be shown");
-    textboxContainer.querySelector("i").click();
-    await TestUtils.tick();
-    expect(textboxContainer.style.display).toEqual("none");
-
-    expect(unblockSpy).toHaveBeenCalled();
-    expect(slider.disabled).toEqual(false);
-    expect(sliderContainer.classList.contains("disabled")).toEqual(false);
-  });
-
-  it("should resume playing after show_text", async () => {
-    jest.spyOn(player, "isLastCommand").mockReturnValue(false);
-    const playSpy = jest.spyOn(player, "play");
-    const textboxContainer = <HTMLElement>(
-      document.querySelector(".textbox-container")
-    );
-
-    playerUi.init();
-    dispatchEvent(
-      new CustomEvent(PlayerEventType.SHOW_TEXT, {
-        detail: {
-          message: "Text to be shown",
-        },
-      })
-    );
-    textboxContainer.querySelector("i").click();
-    await TestUtils.tick();
-    expect(playSpy).toHaveBeenCalled();
   });
 
   it("should highlight line", async () => {

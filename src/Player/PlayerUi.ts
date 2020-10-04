@@ -12,8 +12,6 @@ export class PlayerUi {
 
   private wasPlayingOnSliderMove = false;
 
-  private textContinue: () => void;
-
   constructor(private player: Player = new Player()) {
     this.playButton = document.querySelector(".play");
     this.slider = <HTMLInputElement>document.querySelector(".slider");
@@ -40,20 +38,11 @@ export class PlayerUi {
     this.initPlayButton(this.playButton);
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);
-    this.initTextbox(this.textbox);
     this.player.reset();
   }
 
   setInitialText(initialText: string) {
     this.player.setInitialText(initialText);
-  }
-
-  private async showMessage(message: string) {
-    this.textbox.style.display = "flex";
-    document.querySelector(".textbox__content").innerHTML = message;
-    return new Promise((resolve) => {
-      this.textContinue = resolve;
-    });
   }
 
   private highlight() {
@@ -138,28 +127,6 @@ export class PlayerUi {
     };
   }
 
-  private initTextbox(textbox: HTMLElement) {
-    textbox.style.display = "none";
-
-    textbox.querySelector("i").onclick = () => {
-      if (this.textContinue) {
-        textbox.style.display = "none";
-        this.textContinue();
-      }
-    };
-  }
-
-  private disableControls() {
-    this.slider.disabled = true;
-    document.querySelector(".slider-container").classList.add("disabled");
-  }
-
-  private enableControls() {
-    this.player.unblock();
-    this.slider.disabled = false;
-    document.querySelector(".slider-container").classList.remove("disabled");
-  }
-
   private onPause = () =>
     (this.playButton.innerHTML = '<i class="fas fa-play"></i>');
 
@@ -192,13 +159,7 @@ export class PlayerUi {
   };
 
   private onShowText = (event: CustomEvent) => {
-    const isLastCommand = this.player.isLastCommand();
-    this.disableControls();
-    this.showMessage(event.detail.message).then(() => {
-      this.enableControls();
-      if (!isLastCommand) {
-        this.player.play();
-      }
-    });
+    document.querySelector(".textbox__content").innerHTML =
+      event.detail.message;
   };
 }
