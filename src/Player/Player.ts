@@ -174,10 +174,12 @@ export class Player {
       this.setText(this.getText());
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SHOW_TEXT) {
-      this.pause();
+      if (payload.pause) {
+        this.pause();
+      }
       const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
-          message: payload,
+          message: payload.message,
         },
       });
       dispatchEvent(event);

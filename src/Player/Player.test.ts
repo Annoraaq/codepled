@@ -119,11 +119,30 @@ describe("Player", () => {
       },
     });
     player.setInitialText("Hello\n");
-    player.addCommands([[CommandType.SHOW_TEXT, "Text to be shown"]]);
+    player.addCommands([
+      [CommandType.SHOW_TEXT, { message: "Text to be shown" }],
+      [CommandType.INSERT, "W"],
+    ]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("WHello\n");
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
+  });
+
+  it("processes show_text command and pause", async () => {
+    const expectedShowTextEvent = new CustomEvent(PlayerEventType.SHOW_TEXT, {
+      detail: {
+        message: "Text to be shown",
+      },
+    });
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SHOW_TEXT, { message: "Text to be shown", pause: true }],
+      [CommandType.INSERT, "W"],
+    ]);
     player.reset();
     await player.play();
     expect(player.getText()).toEqual("Hello\n");
-    expect(player.isPaused()).toEqual(true);
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
   });
 
