@@ -5,6 +5,20 @@ body {
   margin: 0;
   padding: 0;
 }
+
+header {
+  color: #c9c9c9;
+  font-family: "Rubik", sans-serif;
+  font-size: 20px;
+  padding: 10px 10px;
+  text-align: center;
+  background: #111111;
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  z-index: 2;
+}
+
 .cursor {
   border: 1px solid white;
   animation: blinker 1s linear infinite;
@@ -18,12 +32,15 @@ body {
 .content {
   display: flex;
   flex-direction: row-reverse;
+  align-items: stretch;
+  flex-grow: 1;
+  overflow: scroll;
 }
 .code-container {
   font-size: 12px;
   flex-grow: 1;
   align-items: stretch;
-  overflow: scroll;
+  overflow-x: scroll;
 }
 .inner-container {
   display: flex;
@@ -36,9 +53,10 @@ body {
   display: block;
   font-family: Menlo, Monaco, "Courier New", monospace;
   color: #787878;
-  background: rgb(29, 31, 33);
+  /* background: rgb(29, 31, 33); */
   overflow: auto;
   height: auto;
+  flex-shrink: 0;
 }
 #codepled {
   font-size: 12px;
@@ -46,7 +64,7 @@ body {
   white-space: pre;
   font-family: Menlo, Monaco, "Courier New", monospace;
   flex-grow: 1;
-  overflow: hidden;
+  overflow: scroll;
   height: auto;
 }
 .play {
@@ -82,6 +100,7 @@ body {
   cursor: pointer; /* Cursor on hover */
 }
 .slider-container {
+  background-color: #111111;
   height: 50px;
   width: 100%;
   align-items: center;
@@ -90,9 +109,18 @@ body {
   flex-grow: 0;
 }
 .textbox-container {
-  color: white;
-  padding: 10px;
+  background: #1d1f21;
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+
+  flex-shrink: 0;
+  color: #cacaca;
+  padding: 50px;
   font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 17px;
+  line-height: 28px;
+  font-weight: 400;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -128,6 +156,7 @@ body {
   display: block;
 }
 .container {
+  background: #1d1f21;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

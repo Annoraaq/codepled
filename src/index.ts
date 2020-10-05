@@ -31,8 +31,7 @@ player.addCommands([
     2,
     {
       message: `It is a simple list node object that contains data as well as a pointer to the next element in the list. But as simple as this data structure might be the complexity comes with the operations. <br />
-     <h3>Insertion</h3>
-     The complexity in both runtime and code depends on where you want to insert an element into the list. It is fairly easy to append an element to the beginning of the list in O(1). If you want to add an element after any node than you can do this in O(1) if you have a pointer to that node. Otherwise you first need to traverse the list to find the node which is only possible in O(n).
+     <h3>Insertion</h3>The complexity in both runtime and code depends on where you want to insert an element into the list. It is fairly easy to append an element to the beginning of the list in O(1). If you want to add an element after any node than you can do this in O(1) if you have a pointer to that node. Otherwise you first need to traverse the list to find the node which is only possible in O(n).
     `,
       pause: true,
     },
