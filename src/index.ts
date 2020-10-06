@@ -37,6 +37,7 @@ player.addCommands([
     },
   ],
   ...diffConverter.createCommandsFastForward(diff2),
+  [6, undefined],
   [5, 0],
   [
     2,

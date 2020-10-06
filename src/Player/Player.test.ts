@@ -242,4 +242,19 @@ describe("Player", () => {
     expect(player.getText()).toEqual("Hello\n");
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
   });
+
+  it("should keep a text stack", async () => {
+    player.addCommands([
+      [CommandType.SHOW_TEXT, { message: "Hello" }],
+      [CommandType.SHOW_TEXT, { message: "World" }],
+    ]);
+    player.reset();
+    expect(player.getTexts()).toEqual([]);
+    await player.play();
+
+    expect(player.getTexts()).toEqual(["Hello", "World"]);
+
+    player.reset();
+    expect(player.getTexts()).toEqual([]);
+  });
 });

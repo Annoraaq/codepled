@@ -98,19 +98,30 @@ describe("PlayerUi", () => {
   });
 
   it("processes show_text command", async () => {
+    jest.spyOn(player, "getTexts").mockReturnValue(["Hello", "World"]);
     const textboxContent = <HTMLElement>(
       document.querySelector(".textbox__content")
     );
+
+    const scrollHeight = 111;
+
+    jest
+      .spyOn(textboxContent, "scrollHeight", "get")
+      .mockImplementation(() => scrollHeight);
     playerUi.init();
     dispatchEvent(
       new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
-          message: "Text to be shown",
+          message: "whatever",
         },
       })
     );
 
-    expect(textboxContent.innerHTML).toEqual("Text to be shown");
+    expect(textboxContent.innerHTML).toEqual(
+      '<div class="section">Hello</div>' +
+        '<div class="section active">World</div>'
+    );
+    expect(textboxContent.scrollTop).toEqual(scrollHeight);
   });
 
   it("should highlight line", async () => {

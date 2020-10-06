@@ -159,7 +159,18 @@ export class PlayerUi {
   };
 
   private onShowText = (event: CustomEvent) => {
-    document.querySelector(".textbox__content").innerHTML =
-      event.detail.message;
+    const textboxContent = document.querySelector(".textbox__content");
+    let newContent = "";
+    this.player.getTexts().forEach((text, index) => {
+      const isLastEntry = index === this.player.getTexts().length - 1;
+      let classes = "section";
+      if (isLastEntry) {
+        classes += " active";
+      }
+      newContent += `<div class="${classes}">${text}</div>`;
+    });
+
+    textboxContent.innerHTML = newContent;
+    textboxContent.scrollTop = textboxContent.scrollHeight;
   };
 }

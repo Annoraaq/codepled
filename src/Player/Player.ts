@@ -1,6 +1,7 @@
 import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
+import { textSpanIsEmpty } from "typescript";
 
 export enum PlayerEventType {
   PAUSE = "PLAYER_PAUSE",
@@ -21,6 +22,7 @@ export class Player {
   private highlightedLines = { start: -1, end: -2 };
   private cursor = 0;
   private commandController: CommandController;
+  private texts: string[] = [];
 
   constructor() {
     this.commandController = new CommandController();
@@ -177,6 +179,7 @@ export class Player {
       if (payload.pause) {
         this.pause();
       }
+      this.texts.push(payload.message);
       const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
           message: payload.message,
@@ -204,6 +207,7 @@ export class Player {
   reset() {
     this.cursor = 0;
     this.setText(this.initialText);
+    this.texts = [];
     this.highlightedLines = { start: -1, end: -2 };
   }
 
@@ -217,5 +221,9 @@ export class Player {
 
   playPause(): void {
     !this.isPlaying ? this.play() : this.pause();
+  }
+
+  getTexts(): string[] {
+    return this.texts;
   }
 }

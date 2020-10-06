@@ -8,7 +8,7 @@ body {
 
 header {
   color: #c9c9c9;
-  font-family: "Rubik", sans-serif;
+  font-family: Menlo, Monaco, "Courier New", monospace;
   font-size: 20px;
   padding: 10px 10px;
   text-align: center;
@@ -115,8 +115,6 @@ header {
   box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
 
   flex-shrink: 0;
-  color: #cacaca;
-  padding: 50px;
   font-family: Menlo, Monaco, "Courier New", monospace;
   font-size: 17px;
   line-height: 28px;
@@ -132,6 +130,7 @@ header {
   overflow-y: scroll;
   max-height: 100%;
   width: 100%;
+  padding: 50px;
 }
 .sliderbox {
   height: 25px;
@@ -185,4 +184,25 @@ header {
 .slider-container.disabled input {
   cursor: not-allowed;
   background: gray;
+}
+
+.section {
+  color: #575757;
+}
+
+.section.active {
+  color: #cacaca;
+  -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 2s; /* Firefox < 16 */
+  -ms-animation: fadein 2s; /* Internet Explorer */
+  -o-animation: fadein 2s; /* Opera < 12.1 */
+  animation: fadein 2s;
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
