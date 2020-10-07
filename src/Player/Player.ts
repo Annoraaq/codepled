@@ -1,7 +1,6 @@
 import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
-import { textSpanIsEmpty } from "typescript";
 
 export enum PlayerEventType {
   PAUSE = "PLAYER_PAUSE",
@@ -22,7 +21,7 @@ export class Player {
   private highlightedLines = { start: -1, end: -2 };
   private cursor = 0;
   private commandController: CommandController;
-  private texts: string[] = [];
+  private texts: { text: string; stepIndex: number }[] = [];
 
   constructor() {
     this.commandController = new CommandController();
@@ -130,9 +129,9 @@ export class Player {
       targetIndex
     );
 
-    for (let command of ffCommands) {
+    ffCommands.forEach((command) => {
       this.fastProcessCommand(command);
-    }
+    });
 
     this.setText(this.getText());
     this.setCurrentStepIndex(targetIndex);
@@ -152,17 +151,27 @@ export class Player {
         this.getText().substr(this.cursor);
       this.cursor += payload.length;
       this.trueText = newText;
+      this.currentStepIndex += payload.length;
     } else if (commandNo === CommandType.DELETE) {
       const newText =
         this.getText().substr(0, this.cursor) +
         this.getText().substr(this.cursor + payload);
       this.trueText = newText;
+      this.currentStepIndex += payload;
     } else if (commandNo === CommandType.SKIP) {
       this.cursor += payload;
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.SHOW_TEXT) {
-      this.texts.push(payload.message);
+      this.currentStepIndex++;
+      this.texts.push({
+        text: payload.message,
+        stepIndex: this.currentStepIndex,
+      });
     } else if (commandNo === CommandType.SET_CURSOR) {
       this.cursor = payload;
+      this.currentStepIndex++;
+    } else {
+      this.currentStepIndex++;
     }
   }
 
@@ -189,7 +198,10 @@ export class Player {
       if (payload.pause) {
         this.pause();
       }
-      this.texts.push(payload.message);
+      this.texts.push({
+        text: payload.message,
+        stepIndex: this.currentStepIndex + 1,
+      });
       const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
           message: payload.message,
@@ -219,6 +231,7 @@ export class Player {
     this.setText(this.initialText);
     this.texts = [];
     this.highlightedLines = { start: -1, end: -2 };
+    this.currentStepIndex = 0;
   }
 
   setInitialText(initialText: string) {
@@ -233,7 +246,7 @@ export class Player {
     !this.isPlaying ? this.play() : this.pause();
   }
 
-  getTexts(): string[] {
+  getTexts(): { text: string; stepIndex: number }[] {
     return this.texts;
   }
 }

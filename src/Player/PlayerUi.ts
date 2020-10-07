@@ -158,10 +158,10 @@ export class PlayerUi {
       lineHeight * (event.detail.line - 1) + padding;
   };
 
-  private onShowText = (event: CustomEvent) => {
+  private onShowText = (_event: CustomEvent) => {
     const textboxContent = document.querySelector(".textbox__content");
     let newContent = "";
-    this.player.getTexts().forEach((text, index) => {
+    this.player.getTexts().forEach(({ text }, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;
       let classes = "section";
       if (isLastEntry) {
@@ -172,5 +172,14 @@ export class PlayerUi {
 
     textboxContent.innerHTML = newContent;
     textboxContent.scrollTop = textboxContent.scrollHeight;
+
+    document.querySelectorAll(".section").forEach((section, index) => {
+      const isLastEntry = index === this.player.getTexts().length - 1;
+      if (!isLastEntry) {
+        (<HTMLElement>section).onclick = () => {
+          this.player.forwardTo(this.player.getTexts()[index]?.stepIndex);
+        };
+      }
+    });
   };
 }

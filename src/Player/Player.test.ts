@@ -11,17 +11,6 @@ describe("Player", () => {
   beforeEach(() => {
     dispatchEventSpy.mockClear();
   });
-  it("should set current command index", () => {
-    player.addCommands([
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-      [CommandType.DELETE, 1],
-    ]);
-    player.setCurrentStepIndex(4);
-    expect(player.getCurrentStepIndex()).toEqual(4);
-  });
   let playerUiMock = {
     init: jest.fn(),
     setInitialText: jest.fn(),
@@ -37,6 +26,18 @@ describe("Player", () => {
     player = new Player();
   });
 
+  it("should set current command index", () => {
+    player.addCommands([
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+    ]);
+    player.setCurrentStepIndex(4);
+    expect(player.getCurrentStepIndex()).toEqual(4);
+  });
+
   it("should detect last command", () => {
     player.addCommands([
       [CommandType.SKIP, 1],
@@ -46,6 +47,28 @@ describe("Player", () => {
     expect(player.isLastCommand()).toEqual(false);
     player.setCurrentStepIndex(1);
     expect(player.isLastCommand()).toEqual(true);
+  });
+
+  it("should reset", async () => {
+    player.setInitialText("Hello");
+    player.addCommands([
+      [CommandType.INSERT, "zz"],
+      [CommandType.SHOW_TEXT, { message: "abc" }],
+      [CommandType.HIGHLIGHT_LINES, { start: 3, end: 4 }],
+    ]);
+    await player.play();
+    expect(player.getCursor()).toEqual(2);
+    expect(player.getText()).toEqual("zzHello");
+    expect(player.getTexts()).toEqual([{ text: "abc", stepIndex: 3 }]);
+    expect(player.getHighlightedLines()).toEqual({ start: 3, end: 4 });
+    expect(player.getCurrentStepIndex()).toEqual(4);
+
+    player.reset();
+    expect(player.getCursor()).toEqual(0);
+    expect(player.getText()).toEqual("Hello");
+    expect(player.getTexts()).toEqual([]);
+    expect(player.getHighlightedLines()).toEqual({ start: -1, end: -2 });
+    expect(player.getCurrentStepIndex()).toEqual(0);
   });
 
   it("processes multiple delete commands", async () => {
@@ -264,19 +287,44 @@ describe("Player", () => {
       [CommandType.INSERT, "world"],
       [CommandType.SHOW_TEXT, { message: "world" }],
       [CommandType.DELETE, 3],
+      [CommandType.SHOW_TEXT, { message: "world2" }],
+      [CommandType.SET_CURSOR, 3],
+      [CommandType.SHOW_TEXT, { message: "world3" }],
+      [CommandType.PAUSE, undefined],
+      [CommandType.SHOW_TEXT, { message: "world4" }],
     ]);
     player.reset();
 
     player.forwardTo(2);
     expect(player.getCursor()).toEqual(6);
-    expect(player.getTexts()).toEqual(["hello"]);
+    expect(player.getTexts()).toEqual([{ text: "hello", stepIndex: 2 }]);
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
     dispatchEventSpy.mockClear();
 
     player.forwardTo(8);
     expect(player.getCursor()).toEqual(11);
-    expect(player.getTexts()).toEqual(["hello", "world"]);
-    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
+    expect(player.getTexts()).toEqual([
+      { text: "hello", stepIndex: 2 },
+      { text: "world", stepIndex: 8 },
+    ]);
+
+    player.forwardTo(12);
+    expect(player.getCursor()).toEqual(11);
+    expect(player.getTexts()).toEqual(
+      expect.arrayContaining([{ text: "world2", stepIndex: 12 }])
+    );
+
+    player.forwardTo(14);
+    expect(player.getCursor()).toEqual(3);
+    expect(player.getTexts()).toEqual(
+      expect.arrayContaining([{ text: "world3", stepIndex: 14 }])
+    );
+
+    player.forwardTo(16);
+    expect(player.getCursor()).toEqual(3);
+    expect(player.getTexts()).toEqual(
+      expect.arrayContaining([{ text: "world4", stepIndex: 16 }])
+    );
   });
 
   it("processes pause command", async () => {
@@ -301,7 +349,10 @@ describe("Player", () => {
     expect(player.getTexts()).toEqual([]);
     await player.play();
 
-    expect(player.getTexts()).toEqual(["Hello", "World"]);
+    expect(player.getTexts()).toEqual([
+      { text: "Hello", stepIndex: 1 },
+      { text: "World", stepIndex: 2 },
+    ]);
 
     player.reset();
     expect(player.getTexts()).toEqual([]);

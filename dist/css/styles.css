@@ -130,7 +130,6 @@ header {
   overflow-y: scroll;
   max-height: 100%;
   width: 100%;
-  padding: 50px;
 }
 .sliderbox {
   height: 25px;
@@ -187,7 +186,19 @@ header {
 }
 
 .section {
-  color: #575757;
+  color: #2c2c2c;
+  padding: 50px;
+}
+
+.section:hover {
+  background: #2b2e31;
+  color: #cacaca;
+  cursor: pointer;
+}
+
+.section.active:hover {
+  background: none;
+  cursor: auto;
 }
 
 .section.active {

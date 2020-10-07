@@ -98,7 +98,10 @@ describe("PlayerUi", () => {
   });
 
   it("processes show_text command", async () => {
-    jest.spyOn(player, "getTexts").mockReturnValue(["Hello", "World"]);
+    jest.spyOn(player, "getTexts").mockReturnValue([
+      { text: "Hello", stepIndex: 0 },
+      { text: "World", stepIndex: 1 },
+    ]);
     const textboxContent = <HTMLElement>(
       document.querySelector(".textbox__content")
     );
@@ -334,5 +337,36 @@ describe("PlayerUi", () => {
     );
 
     expect(slider.value).toEqual("5");
+  });
+
+  it("should jump to step index on section click", async () => {
+    jest.spyOn(player, "getTexts").mockReturnValue([
+      { text: "some text", stepIndex: 3 },
+      { text: "some other text", stepIndex: 28 },
+    ]);
+    const forwardSpy = jest.spyOn(player, "forwardTo").mockImplementation();
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "Hello" },
+      })
+    );
+
+    const sections = document.querySelectorAll(".section");
+    expect(sections.length).toEqual(2);
+
+    expect(sections[0].classList.contains("active")).toEqual(false);
+
+    expect(sections[1].classList.contains("active")).toEqual(true);
+
+    (<HTMLElement>sections[0]).click();
+
+    expect(forwardSpy).toHaveBeenCalledWith(3);
+
+    (<HTMLElement>sections[1]).click();
+
+    expect(forwardSpy).not.toHaveBeenCalledWith(28);
   });
 });
