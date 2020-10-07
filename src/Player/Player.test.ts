@@ -213,25 +213,74 @@ describe("Player", () => {
 
     player.forwardTo(0);
     expect(player.getText()).toEqual("Hello\n");
+    expect(player.getCursor()).toEqual(0);
 
     player.forwardTo(1);
     expect(player.getText()).toEqual("Hello\n");
+    expect(player.getCursor()).toEqual(6);
 
     player.forwardTo(2);
     expect(player.getText()).toEqual("Hello\nw");
+    expect(player.getCursor()).toEqual(7);
 
     player.forwardTo(3);
     expect(player.getText()).toEqual("Hello\nwo");
+    expect(player.getCursor()).toEqual(8);
 
     player.forwardTo(9);
     expect(player.getText()).toEqual("Hello\nworld");
+    expect(player.getCursor()).toEqual(11);
 
     player.forwardTo(10);
     expect(player.getText()).toEqual("Hello\nworld");
+    expect(player.getCursor()).toEqual(11);
+  });
+
+  it("should set cursor when forward to", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.INSERT, "world"],
+      [CommandType.SET_CURSOR, 2],
+      [CommandType.INSERT, "ll"],
+    ]);
+    player.reset();
+
+    player.forwardTo(7);
+    expect(player.getText()).toEqual("Hello\nworld");
+    expect(player.getCursor()).toEqual(2);
+  });
+
+  it("should forward to show_text", async () => {
+    const expectedShowTextEvent = new CustomEvent(PlayerEventType.SHOW_TEXT, {
+      detail: {
+        message: "",
+      },
+    });
+    player.setInitialText("Hello\n");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.SHOW_TEXT, { message: "hello" }],
+      [CommandType.INSERT, "world"],
+      [CommandType.SHOW_TEXT, { message: "world" }],
+      [CommandType.DELETE, 3],
+    ]);
+    player.reset();
+
+    player.forwardTo(2);
+    expect(player.getCursor()).toEqual(6);
+    expect(player.getTexts()).toEqual(["hello"]);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
+    dispatchEventSpy.mockClear();
+
+    player.forwardTo(8);
+    expect(player.getCursor()).toEqual(11);
+    expect(player.getTexts()).toEqual(["hello", "world"]);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
   });
 
   it("processes pause command", async () => {
-    const expectedShowTextEvent = new CustomEvent(PlayerEventType.PAUSE);
+    const expectedEvent = new CustomEvent(PlayerEventType.PAUSE);
     player.setInitialText("Hello\n");
     player.addCommands([
       [CommandType.PAUSE, undefined],
@@ -240,7 +289,7 @@ describe("Player", () => {
     player.reset();
     await player.play();
     expect(player.getText()).toEqual("Hello\n");
-    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedEvent);
   });
 
   it("should keep a text stack", async () => {

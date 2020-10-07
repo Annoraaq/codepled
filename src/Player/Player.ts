@@ -136,6 +136,12 @@ export class Player {
 
     this.setText(this.getText());
     this.setCurrentStepIndex(targetIndex);
+    const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
+      detail: {
+        message: "",
+      },
+    });
+    dispatchEvent(event);
   }
 
   private fastProcessCommand([commandNo, payload]: any[]) {
@@ -153,6 +159,10 @@ export class Player {
       this.trueText = newText;
     } else if (commandNo === CommandType.SKIP) {
       this.cursor += payload;
+    } else if (commandNo === CommandType.SHOW_TEXT) {
+      this.texts.push(payload.message);
+    } else if (commandNo === CommandType.SET_CURSOR) {
+      this.cursor = payload;
     }
   }
 
