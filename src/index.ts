@@ -42,8 +42,7 @@ player.addCommands([
   [
     2,
     {
-      message: `<h2>Random access</h2>
-    To access an element at any given index in the list you have to start at the head and follow the list until you reached the specified index. This operation has O(n) time complexity.
+      message: `<h3>Random access</h3>To access an element at any given index in the list you have to start at the head and follow the list until you reached the specified index. This operation has O(n) time complexity.
     `,
       pause: true,
     },
@@ -53,8 +52,7 @@ player.addCommands([
   [
     2,
     {
-      message: `<h2>Find</h2>
-    Finding a specific element is similar to accessing a random element. The only difference is that you need to compare the data of the current element with the one you are looking for. The runtime complexity of this operation is O(n).
+      message: `<h3>Find</h3>Finding a specific element is similar to accessing a random element. The only difference is that you need to compare the data of the current element with the one you are looking for. The runtime complexity of this operation is O(n).
     `,
       pause: true,
     },
@@ -64,8 +62,7 @@ player.addCommands([
   [
     2,
     {
-      message: `<h2>Random removal</h2>
-    Removing any element from the list is a combination of finding the element and its predecessor and updating the next pointers. This operations also has a runtime complexity of O(n) caused by the find operation.
+      message: `<h3>Random removal</h3>Removing any element from the list is a combination of finding the element and its predecessor and updating the next pointers. This operations also has a runtime complexity of O(n) caused by the find operation.
     `,
       pause: true,
     },
