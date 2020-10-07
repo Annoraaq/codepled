@@ -107,6 +107,7 @@ header {
   display: flex;
   flex-direction: row;
   flex-grow: 0;
+  flex-shrink: 0;
 }
 .textbox-container {
   background: #1d1f21;
@@ -186,7 +187,7 @@ header {
 }
 
 .section {
-  color: #2c2c2c;
+  color: #474747;
   padding: 50px;
 }
 
