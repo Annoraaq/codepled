@@ -53,10 +53,10 @@ header {
   display: block;
   font-family: Menlo, Monaco, "Courier New", monospace;
   color: #787878;
-  /* background: rgb(29, 31, 33); */
   overflow: auto;
   height: auto;
   flex-shrink: 0;
+  min-width: 20px;
 }
 #codepled {
   font-size: 12px;
