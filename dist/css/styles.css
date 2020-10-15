@@ -218,3 +218,53 @@ header {
     opacity: 1;
   }
 }
+
+.markers {
+  position: absolute;
+}
+
+.marker {
+  display: block;
+  position: absolute;
+  background-color: black;
+  font-size: 10px;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  width: 20px;
+  height: 20px;
+  left: 200px;
+  bottom: 20px;
+  border-radius: 20px;
+  border: 2px solid rgb(255, 163, 114);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+  box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+}
+
+.marker::after {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 19px;
+  background: #ffa372;
+  margin: auto;
+  padding: 0;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+  box-shadow: 0px 0px 5px 0px rgba(255, 163, 114, 1);
+}
+
+.marker:hover {
+  border-color: #ffffff;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+  cursor: pointer;
+}
+.marker:hover::after {
+  background: #ffffff;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 1);
+}
