@@ -20,14 +20,16 @@ header .title {
   margin: auto;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 header h1 {
   padding: 10px 10px;
-  background: #1d1f21;
-  color: rgb(255, 163, 114);
-  font-family: Menlo, Monaco, "Courier New", monospace;
+  /* background: #1d1f21; */
+  background: rgba(255, 163, 114, 0.4);
+  color: rgb(255, 213, 190);
+  /* font-family: Menlo, Monaco, "Courier New", monospace; */
+  font-family: Helvetica, Arial;
   font-weight: normal;
   font-size: 15px;
   margin: 0;
@@ -35,7 +37,7 @@ header h1 {
   line-height: 20px;
 }
 
-header .title::before {
+/* header .title::before {
   content: "";
   width: 0;
   height: 0;
@@ -43,14 +45,15 @@ header .title::before {
   border-right: 20px solid #1d1f21;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-}
+} */
 
 header .title::after {
   content: "";
   width: 0;
   height: 0;
-  border-left: 20px solid #1d1f21;
-  border-right: 20px solid transparent;
+  /* border-left: 20px solid #1d1f21; */
+  border-left: 10px solid rgba(255, 163, 114, 0.4);
+  border-right: 10px solid transparent;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
 }
