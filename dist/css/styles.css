@@ -7,16 +7,52 @@ body {
 }
 
 header {
-  color: #c9c9c9;
-  font-family: Menlo, Monaco, "Courier New", monospace;
-  font-size: 20px;
-  padding: 10px 10px;
-  text-align: center;
   background: #111111;
   -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   z-index: 2;
+  text-align: center;
+}
+
+header .title {
+  display: inline-block;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+header h1 {
+  padding: 10px 10px;
+  background: #1d1f21;
+  color: rgb(255, 163, 114);
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-weight: normal;
+  font-size: 15px;
+  margin: 0;
+  height: 20px;
+  line-height: 20px;
+}
+
+header .title::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid #1d1f21;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
+header .title::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 20px solid #1d1f21;
+  border-right: 20px solid transparent;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
 }
 
 .cursor {
@@ -188,10 +224,12 @@ header {
 
 .section {
   color: #474747;
+  filter: blur(0.7px);
   padding: 50px;
 }
 
 .section:hover {
+  filter: none;
   background: #2b2e31;
   color: #cacaca;
   cursor: pointer;
@@ -203,6 +241,7 @@ header {
 }
 
 .section.active {
+  filter: none;
   color: #cacaca;
   -webkit-animation: fadein 1.375s; /* Safari, Chrome and Opera > 12.1 */
   -moz-animation: fadein 1.375s; /* Firefox < 16 */
@@ -233,7 +272,7 @@ header {
   line-height: 20px;
   width: 20px;
   height: 20px;
-  left: 200px;
+  left: 69px;
   bottom: 20px;
   border-radius: 20px;
   border: 2px solid rgb(255, 163, 114);
