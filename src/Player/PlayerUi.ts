@@ -160,41 +160,9 @@ export class PlayerUi {
   };
 
   private onShowText = (_event: CustomEvent) => {
+    this.createTableOfContents();
+
     const textboxContent = document.querySelector(".textbox__content");
-
-    const tableOfContents = document.querySelector(".table-of-contents");
-    tableOfContents.innerHTML = `
-          <div class="close"><i class="fas fa-angle-left"></i></div>
-          <div class="bookmark-title">
-            Table of Contents
-          </div>`;
-
-    let lastIndexInRange = -1;
-    this.player.getTextSteps().forEach(({ stepNo }, index) => {
-      if (stepNo <= this.player.getCurrentStepIndex()) {
-        lastIndexInRange = index;
-      }
-    });
-
-    this.player.getTextSteps().forEach(({ content, stepNo }, index) => {
-      const newEl = document.createElement("div");
-      newEl.classList.add("bookmark");
-      newEl.innerHTML = `
-            <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-            <div class="bookmark__title">${Utils.stripHtml(
-              content.substr(0, 20)
-            )}</div>`;
-      tableOfContents.appendChild(newEl);
-      newEl.onclick = () => {
-        this.player.forwardTo(stepNo);
-      };
-      if (index == lastIndexInRange) {
-        newEl.classList.add("active");
-      } else {
-        newEl.classList.remove("active");
-      }
-    });
-
     let newContent = "";
     this.player.getTexts().forEach(({ text }, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;
@@ -217,4 +185,44 @@ export class PlayerUi {
       }
     });
   };
+
+  private createTableOfContents() {
+    const tableOfContents = document.querySelector(".table-of-contents");
+    tableOfContents.innerHTML = `
+          <div class="close"><i class="fas fa-angle-left"></i></div>
+          <div class="bookmark-title">
+            Table of Contents
+          </div>`;
+
+    const lastIndexInRange = this.getLastIndexInRange();
+
+    this.player.getTextSteps().forEach(({ content, stepNo }, index) => {
+      const bookmarkElem = document.createElement("div");
+      bookmarkElem.classList.add("bookmark");
+      bookmarkElem.innerHTML = `
+            <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+            <div class="bookmark__title">${Utils.stripHtml(
+              content.substr(0, 20)
+            )}</div>`;
+      tableOfContents.appendChild(bookmarkElem);
+      bookmarkElem.onclick = () => {
+        this.player.forwardTo(stepNo);
+      };
+      if (index == lastIndexInRange) {
+        bookmarkElem.classList.add("active");
+      } else {
+        bookmarkElem.classList.remove("active");
+      }
+    });
+  }
+
+  private getLastIndexInRange(): number {
+    let lastIndexInRange = -1;
+    this.player.getTextSteps().forEach(({ stepNo }, index) => {
+      if (stepNo <= this.player.getCurrentStepIndex()) {
+        lastIndexInRange = index;
+      }
+    });
+    return lastIndexInRange;
+  }
 }
