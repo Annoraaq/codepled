@@ -70,16 +70,17 @@ header .title::after {
 }
 .content {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: stretch;
   flex-grow: 1;
   overflow: scroll;
 }
 .code-container {
   font-size: 12px;
-  flex-grow: 1;
+  flex-shrink: 1;
   align-items: stretch;
   overflow-x: scroll;
+  width: 50%;
 }
 .inner-container {
   display: flex;
@@ -154,7 +155,9 @@ header .title::after {
   -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
 
-  flex-shrink: 0;
+  position: relative;
+  z-index: 0;
+  flex-shrink: 1;
   font-family: Menlo, Monaco, "Courier New", monospace;
   font-size: 17px;
   line-height: 28px;
@@ -259,4 +262,64 @@ header .title::after {
   to {
     opacity: 1;
   }
+}
+
+.table-of-contents {
+  width: 250px;
+  position: relative;
+  z-index: 1;
+  background: #1d1f21;
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.table-of-contents .bookmark-title {
+  background: #111111;
+  color: rgb(151, 151, 151);
+  padding: 10px;
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+.table-of-contents .bookmark {
+  /* background: #303030; */
+  color: rgb(180, 180, 180);
+  padding: 10px;
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 12px;
+  display: flex;
+  cursor: pointer;
+}
+
+.table-of-contents .bookmark:hover {
+  color: rgb(224, 224, 224);
+}
+
+.table-of-contents .bookmark__title {
+  margin-left: 10px;
+}
+
+.table-of-contents .close {
+  position: absolute;
+  right: 0;
+  background: #16181a;
+  color: rgb(161, 161, 161);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  padding: 0px 3px;
+  cursor: pointer;
+}
+
+.table-of-contents .close:hover {
+  background: #212427;
+}
+
+.table-of-contents .bookmark.active {
+  background: rgba(255, 163, 114, 0.4);
+  color: rgb(255, 213, 190);
 }
