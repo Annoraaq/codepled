@@ -13,4 +13,8 @@ export class TestUtils {
       return ev;
     });
   }
+
+  static removeWhitespace(textWithWhitespace: string): string {
+    return textWithWhitespace.replace(/ /g, "");
+  }
 }

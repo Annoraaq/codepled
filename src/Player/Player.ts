@@ -75,6 +75,10 @@ export class Player {
     if (this.speed == 0) this.speed = 1;
   }
 
+  getTextSteps(): { content: string; stepNo: number }[] {
+    return this.commandController.getTextSteps();
+  }
+
   async play() {
     if (this.currentStepIndex >= this.getCommandCount()) {
       this.setCurrentStepIndex(0);

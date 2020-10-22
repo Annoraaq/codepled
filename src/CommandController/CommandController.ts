@@ -8,13 +8,10 @@ interface CommandIndex {
 export class CommandController {
   private commands: Command[] = [];
   private stepMapping: Map<number, CommandIndex> = new Map();
+  private textSteps: { content: string; stepNo: number }[] = [];
 
-  private cloneCommands(): Command[] {
-    let cloned: Command[] = [];
-    this.commands.forEach((command) => {
-      cloned.push([command[0], command[1]]);
-    });
-    return cloned;
+  getTextSteps(): { content: string; stepNo: number }[] {
+    return this.textSteps;
   }
 
   addCommands(commands: Command[]) {
@@ -54,6 +51,14 @@ export class CommandController {
             stepNo++;
             commandOffset++;
           }
+          break;
+        case CommandType.SHOW_TEXT:
+          this.textSteps.push({ content: payload.message, stepNo: stepNo + 1 });
+          this.stepMapping.set(stepNo, {
+            index: commandIndex,
+            offset: commandOffset,
+          });
+          stepNo++;
           break;
         default:
           this.stepMapping.set(stepNo, {
@@ -102,5 +107,13 @@ export class CommandController {
     }
     ffCommands[ffCommands.length - 1][1] = newPayload;
     return ffCommands;
+  }
+
+  private cloneCommands(): Command[] {
+    let cloned: Command[] = [];
+    this.commands.forEach((command) => {
+      cloned.push([command[0], command[1]]);
+    });
+    return cloned;
   }
 }

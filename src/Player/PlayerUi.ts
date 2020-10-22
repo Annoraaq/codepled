@@ -1,5 +1,6 @@
 import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
+import { Utils } from "../Utils/Utils";
 import { PlayerEventType, Player } from "./Player";
 
 export class PlayerUi {
@@ -160,6 +161,40 @@ export class PlayerUi {
 
   private onShowText = (_event: CustomEvent) => {
     const textboxContent = document.querySelector(".textbox__content");
+
+    const tableOfContents = document.querySelector(".table-of-contents");
+    tableOfContents.innerHTML = `
+          <div class="close"><i class="fas fa-angle-left"></i></div>
+          <div class="bookmark-title">
+            Table of Contents
+          </div>`;
+
+    let lastIndexInRange = -1;
+    this.player.getTextSteps().forEach(({ stepNo }, index) => {
+      if (stepNo <= this.player.getCurrentStepIndex()) {
+        lastIndexInRange = index;
+      }
+    });
+
+    this.player.getTextSteps().forEach(({ content, stepNo }, index) => {
+      const newEl = document.createElement("div");
+      newEl.classList.add("bookmark");
+      newEl.innerHTML = `
+            <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+            <div class="bookmark__title">${Utils.stripHtml(
+              content.substr(0, 20)
+            )}</div>`;
+      tableOfContents.appendChild(newEl);
+      newEl.onclick = () => {
+        this.player.forwardTo(stepNo);
+      };
+      if (index == lastIndexInRange) {
+        newEl.classList.add("active");
+      } else {
+        newEl.classList.remove("active");
+      }
+    });
+
     let newContent = "";
     this.player.getTexts().forEach(({ text }, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;

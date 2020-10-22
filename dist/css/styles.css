@@ -284,7 +284,6 @@ header .title::after {
 }
 
 .table-of-contents .bookmark {
-  /* background: #303030; */
   color: rgb(180, 180, 180);
   padding: 10px;
   font-family: Helvetica, Arial;

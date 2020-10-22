@@ -21,17 +21,19 @@ describe("PlayerUi", () => {
     mockedHljs.configure.mockReset();
     document.body.innerHTML = `
     <div class="container">
-      <div class="code-container">
-        <div class="inner-container">
-          <div class="lines"></div>
-          <div id="codepled" class="language-js"></div>
-        </div>
+      <div class="table-of-contents">
       </div>
       <div class="textbox-container">
         <div class="textbox__content"></div>
         <button class="button next-button">
           <i class="fas fa-arrow-right"></i>
         </button>
+      </div>
+      <div class="code-container">
+        <div class="inner-container">
+          <div class="lines"></div>
+          <div id="codepled" class="language-js"></div>
+        </div>
       </div>
       <div class="slider-container">
         <div class="play"><i class="fas fa-play"></i></div>
@@ -47,6 +49,7 @@ describe("PlayerUi", () => {
     player = new Player();
     playerUi = new PlayerUi(player);
     mockedUtils.sleep.mockImplementation(() => Promise.resolve());
+    mockedUtils.stripHtml.mockImplementation((a) => `[NO_HTML]${a}`);
     mockedHljs.configure.mockReset();
     mockedHljs.highlightBlock.mockReset();
   });
@@ -368,5 +371,56 @@ describe("PlayerUi", () => {
     (<HTMLElement>sections[1]).click();
 
     expect(forwardSpy).not.toHaveBeenCalledWith(28);
+  });
+
+  it("should highlight the correct table of contents", async () => {
+    jest.spyOn(player, "getTextSteps").mockReturnValue([
+      { content: "some text", stepNo: 3 },
+      { content: "some other text", stepNo: 28 },
+    ]);
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "" },
+      })
+    );
+
+    const expectedHtml = `
+    <div class="close"><i class="fas fa-angle-left"></i></div>
+    <div class="bookmark-title">
+      Table of Contents
+    </div><div class="bookmark">
+      <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+      <div class="bookmark__title">[NO_HTML]some text</div></div><div class="bookmark">
+      <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+      <div class="bookmark__title">[NO_HTML]some other text</div></div>`;
+
+    expect(
+      TestUtils.removeWhitespace(
+        document.querySelector(".table-of-contents").innerHTML
+      )
+    ).toEqual(TestUtils.removeWhitespace(expectedHtml));
+  });
+
+  it("should forward on click on bookmark", async () => {
+    jest.spyOn(player, "getTextSteps").mockReturnValue([
+      { content: "some text", stepNo: 3 },
+      { content: "some other text", stepNo: 28 },
+    ]);
+    const forwardSpy = jest.spyOn(player, "forwardTo").mockImplementation();
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "" },
+      })
+    );
+
+    const bookmarks = document.querySelectorAll(".bookmark");
+    (<HTMLElement>bookmarks[1]).click();
+    expect(forwardSpy).toHaveBeenCalledWith(28);
   });
 });

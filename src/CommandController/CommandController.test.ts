@@ -87,4 +87,22 @@ describe("CommandController", () => {
       [CommandType.INSERT, "hello"],
     ]);
   });
+
+  it("should give correct showText entries", () => {
+    commandController.setCommands([
+      [CommandType.INSERT, "abcde"],
+      [CommandType.SHOW_TEXT, { message: "first text" }],
+      [CommandType.DELETE, 3],
+      [CommandType.SHOW_TEXT, { message: "second text" }],
+      [CommandType.SKIP, 27],
+      [CommandType.INSERT, "hello"],
+      [CommandType.SHOW_TEXT, { message: "third text" }],
+    ]);
+
+    expect(commandController.getTextSteps()).toEqual([
+      { content: "first text", stepNo: 6 },
+      { content: "second text", stepNo: 10 },
+      { content: "third text", stepNo: 17 },
+    ]);
+  });
 });
