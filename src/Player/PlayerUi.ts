@@ -160,6 +160,34 @@ export class PlayerUi {
 
   private onShowText = (_event: CustomEvent) => {
     const textboxContent = document.querySelector(".textbox__content");
+    const markersContainer = document.querySelector(".markers");
+    markersContainer.innerHTML = "";
+    const slider = document.querySelector(".sliderbox input");
+
+    const leftBorderPx = 69;
+    const sliderThumbWidth = 15;
+    const totalSteps = this.player.getCommandCount() + 1;
+    const totalWidth = slider.clientWidth - sliderThumbWidth;
+    console.log(totalWidth);
+    const pxPerStep = totalWidth / totalSteps;
+    const positions = this.player
+      .getTextSteps()
+      .map((textStep) => [
+        textStep,
+        leftBorderPx + sliderThumbWidth / 2 + textStep * pxPerStep,
+      ]);
+
+    positions.forEach(([textStep, pos], index) => {
+      const newEl = document.createElement("div");
+      newEl.classList.add("marker");
+      newEl.innerHTML = '<i class="fas fa-list-ul"></i>';
+      newEl.style.left = pos + "px";
+      markersContainer.appendChild(newEl);
+      newEl.onclick = () => {
+        this.player.forwardTo(textStep);
+      };
+    });
+
     let newContent = "";
     this.player.getTexts().forEach(({ text }, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;

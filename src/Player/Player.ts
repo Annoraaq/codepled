@@ -35,6 +35,10 @@ export class Player {
     return this.commandController.getTotalSteps();
   }
 
+  getTextSteps(): number[] {
+    return this.commandController.getTextSteps();
+  }
+
   getHighlightedLines(): { start: number; end: number } {
     return this.highlightedLines;
   }
