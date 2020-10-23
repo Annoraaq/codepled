@@ -22,6 +22,7 @@ describe("PlayerUi", () => {
     document.body.innerHTML = `
     <div class="container">
       <div class="table-of-contents">
+        <div class="toc__open"><i class="fas fa-angle-right"></i></div>
         <header class="toc__title">
             Table of Contents
         </header>
@@ -430,5 +431,22 @@ describe("PlayerUi", () => {
     const bookmarks = document.querySelectorAll(".bookmark");
     (<HTMLElement>bookmarks[1]).click();
     expect(forwardSpy).toHaveBeenCalledWith(28);
+  });
+
+  it("should hide toc when click on close", async () => {
+    const toc = <HTMLElement>document.querySelector(".table-of-contents");
+    const openToc = <HTMLElement>document.querySelector(".toc__open");
+    playerUi.init();
+
+    expect(openToc.style.display).toEqual("none");
+
+    const closeToc = <HTMLElement>document.querySelector(".toc__close");
+    closeToc.click();
+    expect(toc.style.display).toEqual("none");
+    expect(openToc.style.display).toEqual("flex");
+
+    openToc.click();
+    expect(toc.style.display).toEqual("flex");
+    expect(openToc.style.display).toEqual("none");
   });
 });

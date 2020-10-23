@@ -313,7 +313,7 @@ header .title::after {
 }
 
 .toc__bookmarks {
-  width: 250px;
+  width: 200px;
   overflow-y: scroll;
   margin: 0;
   padding: 0;
@@ -325,12 +325,33 @@ header .title::after {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  width: 7px;
+  width: 10px;
   padding: 0px 3px;
   cursor: pointer;
+  font-size: 20px;
+  text-align: center;
 }
 
-.toc__close:hover {
+.toc__open {
+  background: #16181a;
+  color: rgb(161, 161, 161);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 10px;
+  font-size: 20px;
+  padding: 0px 3px;
+  cursor: pointer;
+  z-index: 1;
+  text-align: center;
+
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.toc__close:hover,
+.toc__open:hover {
   background: #212427;
 }
 

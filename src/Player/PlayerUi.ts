@@ -9,7 +9,7 @@ export class PlayerUi {
   private playButton: HTMLElement;
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
-  private textbox: HTMLElement;
+  private tableOfContents: HTMLElement;
 
   private wasPlayingOnSliderMove = false;
 
@@ -17,8 +17,8 @@ export class PlayerUi {
     this.playButton = document.querySelector(".play");
     this.slider = <HTMLInputElement>document.querySelector(".slider");
     this.speedButton = document.querySelector(".speed");
-    this.textbox = document.querySelector(".textbox-container");
     this.textArea = document.querySelector("#codepled");
+    this.tableOfContents = document.querySelector(".table-of-contents");
 
     addEventListener(PlayerEventType.PAUSE, this.onPause);
     addEventListener(PlayerEventType.PLAY, this.onPlay);
@@ -39,6 +39,7 @@ export class PlayerUi {
     this.initPlayButton(this.playButton);
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);
+    this.initToc(this.tableOfContents);
     this.player.reset();
   }
 
@@ -126,6 +127,25 @@ export class PlayerUi {
       const speedMeter = document.querySelector(".speedmeter");
       speedMeter.textContent = `${this.player.getSpeed()}`;
     };
+  }
+
+  private initToc(tableOfContents: HTMLElement) {
+    const tocClose: HTMLElement = tableOfContents.querySelector(".toc__close");
+    const tocOpen: HTMLElement = document.querySelector(".toc__open");
+    console.log(tocOpen);
+
+    tocClose.onclick = () => {
+      tableOfContents.style.display = "none";
+      tocOpen.style.display = "flex";
+    };
+
+    tocOpen.style.display = "none";
+    tocOpen.onclick = () => {
+      tableOfContents.style.display = "flex";
+      tocOpen.style.display = "none";
+    };
+
+    this.createTableOfContents();
   }
 
   private onPause = () =>
