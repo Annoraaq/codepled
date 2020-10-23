@@ -15,6 +15,6 @@ export class TestUtils {
   }
 
   static removeWhitespace(textWithWhitespace: string): string {
-    return textWithWhitespace.replace(/ /g, "");
+    return textWithWhitespace.replace(/ /g, "").replace(/\n/g, "");
   }
 }

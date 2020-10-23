@@ -265,22 +265,33 @@ header .title::after {
 }
 
 .table-of-contents {
-  width: 250px;
   position: relative;
   z-index: 1;
   background: #1d1f21;
   -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
 }
 
-.table-of-contents .bookmark-title {
+.toc__content {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.toc__title {
   background: #111111;
   color: rgb(151, 151, 151);
   padding: 10px;
   font-family: Helvetica, Arial;
   font-weight: normal;
   font-size: 15px;
+  text-align: left;
+  flex-grow: 0;
 }
 
 .table-of-contents .bookmark {
@@ -301,20 +312,25 @@ header .title::after {
   margin-left: 10px;
 }
 
-.table-of-contents .close {
-  position: absolute;
-  right: 0;
+.toc__bookmarks {
+  width: 250px;
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+.toc__close {
   background: #16181a;
   color: rgb(161, 161, 161);
   display: flex;
   justify-content: center;
   flex-direction: column;
-  height: 100%;
+  width: 7px;
   padding: 0px 3px;
   cursor: pointer;
 }
 
-.table-of-contents .close:hover {
+.toc__close:hover {
   background: #212427;
 }
 

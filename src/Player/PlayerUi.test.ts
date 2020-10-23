@@ -22,6 +22,14 @@ describe("PlayerUi", () => {
     document.body.innerHTML = `
     <div class="container">
       <div class="table-of-contents">
+        <header class="toc__title">
+            Table of Contents
+        </header>
+        <div class="toc__content">
+          <ul class="toc__bookmarks">
+          </ul>
+          <div class="toc__close"><i class="fas fa-angle-left"></i></div>
+        </div>
       </div>
       <div class="textbox-container">
         <div class="textbox__content"></div>
@@ -388,18 +396,18 @@ describe("PlayerUi", () => {
     );
 
     const expectedHtml = `
-    <div class="close"><i class="fas fa-angle-left"></i></div>
-    <div class="bookmark-title">
-      Table of Contents
-    </div><div class="bookmark">
+    <li class="bookmark">
       <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-      <div class="bookmark__title">[NO_HTML]some text</div></div><div class="bookmark">
+      <div class="bookmark__title">[NO_HTML]some text</div>
+    </li>
+    <li class="bookmark">
       <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-      <div class="bookmark__title">[NO_HTML]some other text</div></div>`;
+      <div class="bookmark__title">[NO_HTML]some other text</div>
+    </li>`;
 
     expect(
       TestUtils.removeWhitespace(
-        document.querySelector(".table-of-contents").innerHTML
+        document.querySelector(".toc__bookmarks").innerHTML
       )
     ).toEqual(TestUtils.removeWhitespace(expectedHtml));
   });

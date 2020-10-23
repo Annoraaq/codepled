@@ -187,24 +187,20 @@ export class PlayerUi {
   };
 
   private createTableOfContents() {
-    const tableOfContents = document.querySelector(".table-of-contents");
-    tableOfContents.innerHTML = `
-          <div class="close"><i class="fas fa-angle-left"></i></div>
-          <div class="bookmark-title">
-            Table of Contents
-          </div>`;
+    const tocContent = document.querySelector(".toc__bookmarks");
+    tocContent.innerHTML = "";
 
     const lastIndexInRange = this.getLastIndexInRange();
 
     this.player.getTextSteps().forEach(({ content, stepNo }, index) => {
-      const bookmarkElem = document.createElement("div");
+      const bookmarkElem = document.createElement("li");
       bookmarkElem.classList.add("bookmark");
       bookmarkElem.innerHTML = `
             <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
             <div class="bookmark__title">${Utils.stripHtml(
               content.substr(0, 20)
             )}</div>`;
-      tableOfContents.appendChild(bookmarkElem);
+      tocContent.appendChild(bookmarkElem);
       bookmarkElem.onclick = () => {
         this.player.forwardTo(stepNo);
       };
