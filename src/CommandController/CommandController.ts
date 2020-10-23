@@ -1,8 +1,10 @@
 import { Command, CommandType } from "../DiffConverter/Commands";
+import { Utils } from "../Utils/Utils";
 
 interface CommandIndex {
   index: number;
   offset: number;
+  length: number;
 }
 
 export class CommandController {
@@ -16,6 +18,47 @@ export class CommandController {
 
   addCommands(commands: Command[]) {
     this.setCommands([...this.commands, ...commands]);
+  }
+
+  private mapInsertCommand(
+    payload: string,
+    commandIndex: number,
+    stepNo: number
+  ) {
+    let commandOffset = 0;
+    let current = "";
+    for (let i = 0; i < payload.length; i++) {
+      if (!Utils.isAlphanumeric(payload[i])) {
+        if (current.length > 0) {
+          this.stepMapping.set(stepNo, {
+            index: commandIndex,
+            offset: commandOffset - 1,
+            length: current.length,
+          });
+          stepNo++;
+          current = "";
+        }
+        this.stepMapping.set(stepNo, {
+          index: commandIndex,
+          offset: commandOffset,
+          length: 1,
+        });
+        stepNo++;
+      } else {
+        current += payload[i];
+        if (i == payload.length - 1) {
+          this.stepMapping.set(stepNo, {
+            index: commandIndex,
+            offset: commandOffset,
+            length: current.length,
+          });
+          stepNo++;
+          current = "";
+        }
+      }
+      commandOffset++;
+    }
+    return stepNo;
   }
 
   setCommands(commands: Command[]) {
@@ -33,20 +76,14 @@ export class CommandController {
 
       switch (commandType) {
         case CommandType.INSERT:
-          for (let i = 0; i < payload.length; i++) {
-            this.stepMapping.set(stepNo, {
-              index: commandIndex,
-              offset: commandOffset,
-            });
-            stepNo++;
-            commandOffset++;
-          }
+          stepNo = this.mapInsertCommand(payload, commandIndex, stepNo);
           break;
         case CommandType.DELETE:
           for (let i = 0; i < payload; i++) {
             this.stepMapping.set(stepNo, {
               index: commandIndex,
               offset: commandOffset,
+              length: 1,
             });
             stepNo++;
             commandOffset++;
@@ -57,6 +94,7 @@ export class CommandController {
           this.stepMapping.set(stepNo, {
             index: commandIndex,
             offset: commandOffset,
+            length: 1,
           });
           stepNo++;
           break;
@@ -64,6 +102,7 @@ export class CommandController {
           this.stepMapping.set(stepNo, {
             index: commandIndex,
             offset: commandOffset,
+            length: 1,
           });
           stepNo++;
           break;
@@ -76,12 +115,12 @@ export class CommandController {
   }
 
   getCommandAtStep(stepNo: number): Command {
-    const { index, offset } = this.stepMapping.get(stepNo);
+    const { index, offset, length } = this.stepMapping.get(stepNo);
     const [commandType, payload] = this.commands[index];
     let newPayload = payload;
     switch (commandType) {
       case CommandType.INSERT:
-        newPayload = payload[offset];
+        newPayload = payload.substr(offset - length + 1, length);
         break;
       case CommandType.DELETE:
         newPayload = 1;

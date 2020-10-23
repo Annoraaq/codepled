@@ -9,11 +9,11 @@ describe("CommandController", () => {
 
   it("should count command steps", () => {
     commandController.setCommands([
-      [CommandType.INSERT, "abcde"],
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.DELETE, 3],
     ]);
 
-    expect(commandController.getTotalSteps()).toEqual(8);
+    expect(commandController.getTotalSteps()).toEqual(6);
   });
 
   it("should add commands", () => {
@@ -24,19 +24,19 @@ describe("CommandController", () => {
 
     commandController.addCommands([[CommandType.DELETE, 3]]);
 
-    expect(commandController.getTotalSteps()).toEqual(11);
+    expect(commandController.getTotalSteps()).toEqual(7);
   });
 
   it("should deliver command for single step", () => {
     commandController.setCommands([
-      [CommandType.INSERT, "abcde"],
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.DELETE, 3],
       [CommandType.SKIP, 27],
     ]);
 
     expect(commandController.getCommandAtStep(2)).toEqual([
       CommandType.INSERT,
-      "c",
+      "cde",
     ]);
 
     expect(commandController.getCommandAtStep(5)).toEqual([
@@ -44,7 +44,7 @@ describe("CommandController", () => {
       1,
     ]);
 
-    expect(commandController.getCommandAtStep(8)).toEqual([
+    expect(commandController.getCommandAtStep(6)).toEqual([
       CommandType.SKIP,
       27,
     ]);
@@ -52,7 +52,7 @@ describe("CommandController", () => {
 
   it("should deliver fast forward commands for step index", () => {
     commandController.setCommands([
-      [CommandType.INSERT, "abcde"],
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.DELETE, 3],
       [CommandType.SKIP, 27],
       [CommandType.INSERT, "hello"],
@@ -60,28 +60,48 @@ describe("CommandController", () => {
 
     expect(commandController.getFastForwardCommands(0)).toEqual([]);
 
-    expect(commandController.getFastForwardCommands(2)).toEqual([
+    expect(commandController.getFastForwardCommands(1)).toEqual([
       [CommandType.INSERT, "ab"],
     ]);
 
+    expect(commandController.getFastForwardCommands(2)).toEqual([
+      [CommandType.INSERT, "ab."],
+    ]);
+
     expect(commandController.getFastForwardCommands(3)).toEqual([
-      [CommandType.INSERT, "abc"],
+      [CommandType.INSERT, "ab.cde"],
     ]);
 
-    expect(commandController.getFastForwardCommands(10)).toEqual([
-      [CommandType.INSERT, "abcde"],
-      [CommandType.DELETE, 3],
-      [CommandType.SKIP, 27],
-      [CommandType.INSERT, "h"],
-    ]);
-
-    expect(commandController.getFastForwardCommands(6)).toEqual([
-      [CommandType.INSERT, "abcde"],
+    expect(commandController.getFastForwardCommands(4)).toEqual([
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.DELETE, 1],
     ]);
 
+    expect(commandController.getFastForwardCommands(5)).toEqual([
+      [CommandType.INSERT, "ab.cde"],
+      [CommandType.DELETE, 2],
+    ]);
+
+    expect(commandController.getFastForwardCommands(6)).toEqual([
+      [CommandType.INSERT, "ab.cde"],
+      [CommandType.DELETE, 3],
+    ]);
+
+    expect(commandController.getFastForwardCommands(7)).toEqual([
+      [CommandType.INSERT, "ab.cde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+    ]);
+
+    expect(commandController.getFastForwardCommands(8)).toEqual([
+      [CommandType.INSERT, "ab.cde"],
+      [CommandType.DELETE, 3],
+      [CommandType.SKIP, 27],
+      [CommandType.INSERT, "hello"],
+    ]);
+
     expect(commandController.getFastForwardCommands(100)).toEqual([
-      [CommandType.INSERT, "abcde"],
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.DELETE, 3],
       [CommandType.SKIP, 27],
       [CommandType.INSERT, "hello"],
@@ -90,7 +110,7 @@ describe("CommandController", () => {
 
   it("should give correct showText entries", () => {
     commandController.setCommands([
-      [CommandType.INSERT, "abcde"],
+      [CommandType.INSERT, "ab.cde"],
       [CommandType.SHOW_TEXT, { message: "first text" }],
       [CommandType.DELETE, 3],
       [CommandType.SHOW_TEXT, { message: "second text" }],
@@ -100,9 +120,9 @@ describe("CommandController", () => {
     ]);
 
     expect(commandController.getTextSteps()).toEqual([
-      { content: "first text", stepNo: 6 },
-      { content: "second text", stepNo: 10 },
-      { content: "third text", stepNo: 17 },
+      { content: "first text", stepNo: 4 },
+      { content: "second text", stepNo: 8 },
+      { content: "third text", stepNo: 11 },
     ]);
   });
 });

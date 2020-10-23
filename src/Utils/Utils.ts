@@ -8,4 +8,12 @@ export class Utils {
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
   }
+
+  static isAlphanumeric(char: string) {
+    const ascii = char.charCodeAt(0);
+    const isDigit = ascii >= 48 && ascii <= 57;
+    const isUcLetter = ascii >= 65 && ascii <= 90;
+    const isLcLetter = ascii >= 97 && ascii <= 122;
+    return isDigit || isUcLetter || isLcLetter;
+  }
 }

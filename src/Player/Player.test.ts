@@ -59,9 +59,9 @@ describe("Player", () => {
     await player.play();
     expect(player.getCursor()).toEqual(2);
     expect(player.getText()).toEqual("zzHello");
-    expect(player.getTexts()).toEqual([{ text: "abc", stepIndex: 3 }]);
+    expect(player.getTexts()).toEqual([{ text: "abc", stepIndex: 2 }]);
     expect(player.getHighlightedLines()).toEqual({ start: 3, end: 4 });
-    expect(player.getCurrentStepIndex()).toEqual(4);
+    expect(player.getCurrentStepIndex()).toEqual(3);
 
     player.reset();
     expect(player.getCursor()).toEqual(0);
@@ -243,14 +243,10 @@ describe("Player", () => {
     expect(player.getCursor()).toEqual(6);
 
     player.forwardTo(2);
-    expect(player.getText()).toEqual("Hello\nw");
-    expect(player.getCursor()).toEqual(7);
+    expect(player.getText()).toEqual("Hello\nworld");
+    expect(player.getCursor()).toEqual(11);
 
-    player.forwardTo(3);
-    expect(player.getText()).toEqual("Hello\nwo");
-    expect(player.getCursor()).toEqual(8);
-
-    player.forwardTo(9);
+    player.forwardTo(5);
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(11);
 
@@ -269,7 +265,7 @@ describe("Player", () => {
     ]);
     player.reset();
 
-    player.forwardTo(7);
+    player.forwardTo(3);
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(2);
   });
@@ -301,14 +297,14 @@ describe("Player", () => {
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedShowTextEvent);
     dispatchEventSpy.mockClear();
 
-    player.forwardTo(8);
+    player.forwardTo(4);
     expect(player.getCursor()).toEqual(11);
     expect(player.getTexts()).toEqual([
       { text: "hello", stepIndex: 2 },
       { text: "world", stepIndex: 8 },
     ]);
 
-    player.forwardTo(12);
+    player.forwardTo(8);
     expect(player.getCursor()).toEqual(11);
     expect(player.getTexts()).toEqual(
       expect.arrayContaining([{ text: "world2", stepIndex: 12 }])

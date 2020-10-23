@@ -132,7 +132,6 @@ export class PlayerUi {
   private initToc(tableOfContents: HTMLElement) {
     const tocClose: HTMLElement = tableOfContents.querySelector(".toc__close");
     const tocOpen: HTMLElement = document.querySelector(".toc__open");
-    console.log(tocOpen);
 
     tocClose.onclick = () => {
       tableOfContents.style.display = "none";
