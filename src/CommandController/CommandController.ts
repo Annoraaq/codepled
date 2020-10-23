@@ -1,4 +1,8 @@
-import { Command, CommandType } from "../DiffConverter/Commands";
+import {
+  Command,
+  CommandType,
+  FastForwardCommand,
+} from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
 interface CommandIndex {
@@ -10,6 +14,7 @@ interface CommandIndex {
 export class CommandController {
   private commands: Command[] = [];
   private stepMapping: Map<number, CommandIndex> = new Map();
+  private commandIndexToSteps: Map<number, number> = new Map();
   private textSteps: { content: string; stepNo: number }[] = [];
 
   getTextSteps(): { content: string; stepNo: number }[] {
@@ -20,11 +25,32 @@ export class CommandController {
     this.setCommands([...this.commands, ...commands]);
   }
 
+  private getStepsForInsert(payload: string) {
+    let steps = 0;
+    let current = "";
+    for (let i = 0; i < payload.length; i++) {
+      if (!Utils.isAlphanumeric(payload[i])) {
+        if (current.length > 0) {
+          steps++;
+          current = "";
+        }
+        steps++;
+      } else {
+        current += payload[i];
+        if (i == payload.length - 1) {
+          steps++;
+          current = "";
+        }
+      }
+    }
+    return steps;
+  }
+
   private mapInsertCommand(
     payload: string,
     commandIndex: number,
     stepNo: number
-  ) {
+  ): number {
     let commandOffset = 0;
     let current = "";
     for (let i = 0; i < payload.length; i++) {
@@ -79,15 +105,13 @@ export class CommandController {
           stepNo = this.mapInsertCommand(payload, commandIndex, stepNo);
           break;
         case CommandType.DELETE:
-          for (let i = 0; i < payload; i++) {
-            this.stepMapping.set(stepNo, {
-              index: commandIndex,
-              offset: commandOffset,
-              length: 1,
-            });
-            stepNo++;
-            commandOffset++;
-          }
+          this.stepMapping.set(stepNo, {
+            index: commandIndex,
+            offset: commandOffset,
+            length: payload,
+          });
+          stepNo++;
+          commandOffset += payload;
           break;
         case CommandType.SHOW_TEXT:
           this.textSteps.push({ content: payload.message, stepNo: stepNo + 1 });
@@ -123,35 +147,42 @@ export class CommandController {
         newPayload = payload.substr(offset - length + 1, length);
         break;
       case CommandType.DELETE:
-        newPayload = 1;
+        newPayload = payload;
         break;
     }
     return [commandType, newPayload];
   }
 
-  getFastForwardCommands(stepNo: number): Command[] {
-    if (stepNo === 0) return [];
-    if (stepNo > this.getTotalSteps()) stepNo = this.getTotalSteps();
-    const { index, offset } = this.stepMapping.get(stepNo - 1);
-    const ffCommands = this.cloneCommands().slice(0, index + 1);
-    const [commandType, payload] = this.commands[index];
-    let newPayload = payload;
-    switch (commandType) {
+  getFastForwardCommands(stepNoExclusive: number): FastForwardCommand[] {
+    if (stepNoExclusive === 0) return [];
+    if (stepNoExclusive > this.getTotalSteps())
+      stepNoExclusive = this.getTotalSteps();
+    const lastCommandInfo = this.stepMapping.get(stepNoExclusive - 1);
+    const ffCommands = this.cloneCommandsAsFastForward().slice(
+      0,
+      lastCommandInfo.index + 1
+    );
+    const lastCommand = ffCommands[ffCommands.length - 1];
+    switch (lastCommand.type) {
       case CommandType.INSERT:
-        newPayload = payload.substr(0, offset + 1);
-        break;
-      case CommandType.DELETE:
-        newPayload = offset + 1;
+        lastCommand.payload = lastCommand.payload.substr(
+          0,
+          lastCommandInfo.offset + 1
+        );
+        lastCommand.steps = this.getStepsForInsert(lastCommand.payload);
         break;
     }
-    ffCommands[ffCommands.length - 1][1] = newPayload;
     return ffCommands;
   }
 
-  private cloneCommands(): Command[] {
-    let cloned: Command[] = [];
-    this.commands.forEach((command) => {
-      cloned.push([command[0], command[1]]);
+  private cloneCommandsAsFastForward(): FastForwardCommand[] {
+    let cloned: FastForwardCommand[] = [];
+    this.commands.forEach(([type, payload]) => {
+      let steps = 1;
+      if (type === CommandType.INSERT) {
+        steps = this.getStepsForInsert(payload);
+      }
+      cloned.push({ type, payload, steps });
     });
     return cloned;
   }

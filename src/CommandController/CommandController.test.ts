@@ -13,7 +13,7 @@ describe("CommandController", () => {
       [CommandType.DELETE, 3],
     ]);
 
-    expect(commandController.getTotalSteps()).toEqual(6);
+    expect(commandController.getTotalSteps()).toEqual(4);
   });
 
   it("should add commands", () => {
@@ -24,7 +24,7 @@ describe("CommandController", () => {
 
     commandController.addCommands([[CommandType.DELETE, 3]]);
 
-    expect(commandController.getTotalSteps()).toEqual(7);
+    expect(commandController.getTotalSteps()).toEqual(3);
   });
 
   it("should deliver command for single step", () => {
@@ -39,12 +39,12 @@ describe("CommandController", () => {
       "cde",
     ]);
 
-    expect(commandController.getCommandAtStep(5)).toEqual([
+    expect(commandController.getCommandAtStep(3)).toEqual([
       CommandType.DELETE,
-      1,
+      3,
     ]);
 
-    expect(commandController.getCommandAtStep(6)).toEqual([
+    expect(commandController.getCommandAtStep(4)).toEqual([
       CommandType.SKIP,
       27,
     ]);
@@ -61,50 +61,40 @@ describe("CommandController", () => {
     expect(commandController.getFastForwardCommands(0)).toEqual([]);
 
     expect(commandController.getFastForwardCommands(1)).toEqual([
-      [CommandType.INSERT, "ab"],
+      { type: CommandType.INSERT, payload: "ab", steps: 1 },
     ]);
 
     expect(commandController.getFastForwardCommands(2)).toEqual([
-      [CommandType.INSERT, "ab."],
+      { type: CommandType.INSERT, payload: "ab.", steps: 2 },
     ]);
 
     expect(commandController.getFastForwardCommands(3)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
+      { type: CommandType.INSERT, payload: "ab.cde", steps: 3 },
     ]);
 
     expect(commandController.getFastForwardCommands(4)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 1],
+      { type: CommandType.INSERT, payload: "ab.cde", steps: 3 },
+      { type: CommandType.DELETE, payload: 3, steps: 1 },
     ]);
 
     expect(commandController.getFastForwardCommands(5)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 2],
+      { type: CommandType.INSERT, payload: "ab.cde", steps: 3 },
+      { type: CommandType.DELETE, payload: 3, steps: 1 },
+      { type: CommandType.SKIP, payload: 27, steps: 1 },
     ]);
 
     expect(commandController.getFastForwardCommands(6)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 3],
-    ]);
-
-    expect(commandController.getFastForwardCommands(7)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 3],
-      [CommandType.SKIP, 27],
-    ]);
-
-    expect(commandController.getFastForwardCommands(8)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 3],
-      [CommandType.SKIP, 27],
-      [CommandType.INSERT, "hello"],
+      { type: CommandType.INSERT, payload: "ab.cde", steps: 3 },
+      { type: CommandType.DELETE, payload: 3, steps: 1 },
+      { type: CommandType.SKIP, payload: 27, steps: 1 },
+      { type: CommandType.INSERT, payload: "hello", steps: 1 },
     ]);
 
     expect(commandController.getFastForwardCommands(100)).toEqual([
-      [CommandType.INSERT, "ab.cde"],
-      [CommandType.DELETE, 3],
-      [CommandType.SKIP, 27],
-      [CommandType.INSERT, "hello"],
+      { type: CommandType.INSERT, payload: "ab.cde", steps: 3 },
+      { type: CommandType.DELETE, payload: 3, steps: 1 },
+      { type: CommandType.SKIP, payload: 27, steps: 1 },
+      { type: CommandType.INSERT, payload: "hello", steps: 1 },
     ]);
   });
 
@@ -121,8 +111,8 @@ describe("CommandController", () => {
 
     expect(commandController.getTextSteps()).toEqual([
       { content: "first text", stepNo: 4 },
-      { content: "second text", stepNo: 8 },
-      { content: "third text", stepNo: 11 },
+      { content: "second text", stepNo: 6 },
+      { content: "third text", stepNo: 9 },
     ]);
   });
 });

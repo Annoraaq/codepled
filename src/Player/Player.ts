@@ -1,3 +1,4 @@
+import { FastForwardCommand } from "./../DiffConverter/Commands";
 import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
@@ -147,31 +148,31 @@ export class Player {
     dispatchEvent(event);
   }
 
-  private fastProcessCommand([commandNo, payload]: any[]) {
-    if (commandNo === CommandType.INSERT) {
+  private fastProcessCommand({ type, payload, steps }: FastForwardCommand) {
+    if (type === CommandType.INSERT) {
       const newText =
         this.getText().substr(0, this.cursor) +
         payload +
         this.getText().substr(this.cursor);
       this.cursor += payload.length;
       this.trueText = newText;
-      this.currentStepIndex += payload.length;
-    } else if (commandNo === CommandType.DELETE) {
+      this.currentStepIndex += steps;
+    } else if (type === CommandType.DELETE) {
       const newText =
         this.getText().substr(0, this.cursor) +
         this.getText().substr(this.cursor + payload);
       this.trueText = newText;
-      this.currentStepIndex += payload;
-    } else if (commandNo === CommandType.SKIP) {
+      this.currentStepIndex += 1;
+    } else if (type === CommandType.SKIP) {
       this.cursor += payload;
       this.currentStepIndex++;
-    } else if (commandNo === CommandType.SHOW_TEXT) {
+    } else if (type === CommandType.SHOW_TEXT) {
       this.currentStepIndex++;
       this.texts.push({
         text: payload.message,
         stepIndex: this.currentStepIndex,
       });
-    } else if (commandNo === CommandType.SET_CURSOR) {
+    } else if (type === CommandType.SET_CURSOR) {
       this.cursor = payload;
       this.currentStepIndex++;
     } else {
