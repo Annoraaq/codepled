@@ -9,3 +9,8 @@ export enum CommandType {
   PAUSE = 6,
 }
 export type Command = [number, any];
+export type FastForwardCommand = {
+  type: CommandType;
+  payload: any;
+  steps: number;
+};
