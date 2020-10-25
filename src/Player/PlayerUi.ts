@@ -15,7 +15,7 @@ export class PlayerUi {
 
   constructor(private player: Player = new Player()) {
     this.playButton = document.querySelector(".play");
-    this.slider = <HTMLInputElement>document.querySelector(".slider");
+    this.slider = document.querySelector(".slider");
     this.speedButton = document.querySelector(".speed");
     this.textArea = document.querySelector("#codepled");
     this.tableOfContents = document.querySelector(".table-of-contents");
@@ -48,13 +48,12 @@ export class PlayerUi {
   }
 
   private highlight() {
+    const codepled = document.querySelector("#codepled");
     hljs.configure({ useBR: false });
-
-    const block = document.querySelector("#codepled");
-    hljs.highlightBlock(<HTMLElement>block);
-    const linesCount = (block.innerHTML.match(/\n/g) || []).length + 1;
+    hljs.highlightBlock(<HTMLElement>codepled);
+    const linesCount = Utils.countLines(codepled.innerHTML);
     this.setLines(linesCount);
-    this.highlightLines(block);
+    this.highlightLines(codepled);
   }
 
   private highlightLines(block: Element) {
@@ -178,12 +177,11 @@ export class PlayerUi {
   };
 
   private onScrollTo = (event: CustomEvent) => {
-    const codepled = document.querySelector("#codepled");
-    const clientHeight = codepled.clientHeight;
+    const clientHeight = this.textArea.clientHeight;
     const padding = parseFloat(
-      window.getComputedStyle(codepled).getPropertyValue("padding-top")
+      window.getComputedStyle(this.textArea).getPropertyValue("padding-top")
     );
-    const linesCount = (codepled.innerHTML.match(/\n/g) || []).length + 1;
+    const linesCount = Utils.countLines(this.textArea.innerHTML);
     const lineHeight = (clientHeight - 2 * padding) / linesCount;
 
     document.querySelector(".code-container").scrollTop =
