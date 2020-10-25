@@ -16,4 +16,8 @@ export class Utils {
     const isLcLetter = ascii >= 97 && ascii <= 122;
     return isDigit || isUcLetter || isLcLetter;
   }
+
+  static countLines(text: string) {
+    return (text.match(/\n/g) || []).length + 1;
+  }
 }

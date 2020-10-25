@@ -88,7 +88,6 @@ header .title::after {
 }
 .lines {
   padding-top: 6px;
-  padding-left: 10px;
   padding-right: 4px;
   display: block;
   font-family: Menlo, Monaco, "Courier New", monospace;
@@ -102,6 +101,7 @@ header .title::after {
   font-size: 12px;
   display: block;
   white-space: pre;
+  padding-left: 0px;
   font-family: Menlo, Monaco, "Courier New", monospace;
   flex-grow: 1;
   overflow: scroll;
@@ -358,4 +358,14 @@ header .title::after {
 .table-of-contents .bookmark.active {
   background: rgba(255, 163, 114, 0.4);
   color: rgb(255, 213, 190);
+}
+
+.lines .line {
+  padding-left: 10px;
+  display: inline-block;
+  width: 100%;
+}
+
+.lines .line.highlighted {
+  background: #33392f;
 }

@@ -64,8 +64,16 @@ export class PlayerUi {
       .join("");
 
     const options = [
-      { ...this.player.getHighlightedLines(), color: "#004212" },
+      { ...this.player.getHighlightedLines(), color: "#33392f" },
     ];
+
+    this.player.getLinesTouchedByInsert().forEach((lineNo) => {
+      options.push({
+        start: lineNo,
+        end: lineNo,
+        color: "#33392f",
+      });
+    });
 
     const lines = block.querySelectorAll(".line");
     for (let option of options) {
@@ -78,7 +86,11 @@ export class PlayerUi {
   private setLines(lineCount: number) {
     let innerStr = "";
     for (let i = 1; i <= lineCount; i++) {
-      innerStr += i + "<br />";
+      let classes = "line";
+      if (this.player.getLinesTouchedByInsert().has(i)) {
+        classes += " highlighted";
+      }
+      innerStr += `<span class="${classes}">${i}</span><br />`;
     }
     const linesContainer = document.querySelector(".lines");
     linesContainer.innerHTML = innerStr;

@@ -23,6 +23,7 @@ export class Player {
   private cursor = 0;
   private commandController: CommandController;
   private texts: { text: string; stepIndex: number }[] = [];
+  private linesTouchedByInsert: Set<number> = new Set<number>();
 
   constructor() {
     this.commandController = new CommandController();
@@ -38,6 +39,10 @@ export class Player {
 
   getHighlightedLines(): { start: number; end: number } {
     return this.highlightedLines;
+  }
+
+  getLinesTouchedByInsert(): Set<number> {
+    return this.linesTouchedByInsert;
   }
 
   setCurrentStepIndex(newIndex: number) {
@@ -154,6 +159,19 @@ export class Player {
         this.getText().substr(0, this.cursor) +
         payload +
         this.getText().substr(this.cursor);
+
+      const linesBeforePayload = Utils.countLines(
+        this.getText().substr(0, this.cursor)
+      );
+      const payloadLines = Utils.countLines(payload);
+      for (
+        let i = linesBeforePayload;
+        i < linesBeforePayload + payloadLines;
+        i++
+      ) {
+        this.linesTouchedByInsert.add(i);
+      }
+
       this.cursor += payload.length;
       this.trueText = newText;
       this.currentStepIndex += steps;
@@ -167,6 +185,7 @@ export class Player {
       this.cursor += payload;
       this.currentStepIndex++;
     } else if (type === CommandType.SHOW_TEXT) {
+      this.linesTouchedByInsert = new Set<number>();
       this.currentStepIndex++;
       this.texts.push({
         text: payload.message,
@@ -186,6 +205,18 @@ export class Player {
         this.getText().substr(0, this.cursor) +
         payload +
         this.getText().substr(this.cursor);
+
+      const linesBeforePayload = Utils.countLines(
+        this.getText().substr(0, this.cursor)
+      );
+      const payloadLines = Utils.countLines(payload);
+      for (
+        let i = linesBeforePayload;
+        i < linesBeforePayload + payloadLines;
+        i++
+      ) {
+        this.linesTouchedByInsert.add(i);
+      }
       this.cursor += payload.length;
       this.setText(newText);
       this.scrollTo(this.getCursorLine());
@@ -200,6 +231,7 @@ export class Player {
       this.setText(this.getText());
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SHOW_TEXT) {
+      this.linesTouchedByInsert = new Set<number>();
       if (payload.pause) {
         this.pause();
       }
@@ -233,10 +265,11 @@ export class Player {
 
   reset() {
     this.cursor = 0;
-    this.setText(this.initialText);
-    this.texts = [];
+    this.linesTouchedByInsert = new Set<number>();
     this.highlightedLines = { start: -1, end: -2 };
+    this.texts = [];
     this.currentStepIndex = 0;
+    this.setText(this.initialText);
   }
 
   setInitialText(initialText: string) {
