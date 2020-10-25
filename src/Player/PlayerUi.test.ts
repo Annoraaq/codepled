@@ -6,12 +6,10 @@ import { PlayerUi } from "./PlayerUi";
 import * as hljs from "highlight.js";
 import { PlayerEventType, Player } from "./Player";
 jest.mock("highlight.js");
-jest.mock("../Utils/Utils");
 
 TestUtils.fixCustomEventConstructor();
 
 const mockedHljs = mocked(hljs, true);
-const mockedUtils = mocked(Utils, true);
 
 let playerUi: PlayerUi;
 let player: Player;
@@ -57,8 +55,8 @@ describe("PlayerUi", () => {
   `;
     player = new Player();
     playerUi = new PlayerUi(player);
-    mockedUtils.sleep.mockImplementation(() => Promise.resolve());
-    mockedUtils.stripHtml.mockImplementation((a) => `[NO_HTML]${a}`);
+    jest.spyOn(Utils, "sleep").mockImplementation(() => Promise.resolve());
+    jest.spyOn(Utils, "stripHtml").mockImplementation((a) => `[NO_HTML]${a}`);
     mockedHljs.configure.mockReset();
     mockedHljs.highlightBlock.mockReset();
   });
