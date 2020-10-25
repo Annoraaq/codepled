@@ -3,6 +3,7 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "sourceMap": true,
+    "downlevelIteration": true,
     "module": "es6",
     "target": "es5",
     "jsx": "react",

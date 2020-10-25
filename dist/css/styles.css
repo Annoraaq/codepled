@@ -84,7 +84,6 @@ header .title::after {
 }
 .lines {
   padding-top: 6px;
-  padding-left: 10px;
   padding-right: 4px;
   display: block;
   font-family: Menlo, Monaco, "Courier New", monospace;
@@ -98,6 +97,7 @@ header .title::after {
   font-size: 12px;
   display: block;
   white-space: pre;
+  padding-left: 0px;
   font-family: Menlo, Monaco, "Courier New", monospace;
   flex-grow: 1;
   overflow: scroll;
@@ -360,4 +360,14 @@ header .title::after {
   align-self: center;
   height: 35px;
   margin-left: 10px;
+}
+
+.lines .line {
+  padding-left: 10px;
+  display: inline-block;
+  width: 100%;
+}
+
+.lines .line.highlighted {
+  background: #33392f;
 }

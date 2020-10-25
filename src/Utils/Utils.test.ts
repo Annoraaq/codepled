@@ -31,4 +31,16 @@ describe("Utils", () => {
       expect(Utils.isAlphanumeric("a!@#")).toEqual(true);
     });
   });
+
+  describe("countLines", () => {
+    it("should count lines", () => {
+      expect(Utils.countLines("")).toEqual(1);
+      expect(Utils.countLines(" ")).toEqual(1);
+      expect(Utils.countLines("Hello")).toEqual(1);
+      expect(Utils.countLines("\n")).toEqual(2);
+      expect(Utils.countLines("Hello\n")).toEqual(2);
+      expect(Utils.countLines("Hello\nWorld")).toEqual(2);
+      expect(Utils.countLines("Hello\nWorld\n")).toEqual(3);
+    });
+  });
 });
