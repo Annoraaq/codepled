@@ -23,6 +23,7 @@ export class Player {
   private cursor = 0;
   private commandController: CommandController;
   private texts: { text: string; stepIndex: number }[] = [];
+  private linesTouchedByInsert: Set<number> = new Set<number>();
 
   constructor() {
     this.commandController = new CommandController();
@@ -38,6 +39,10 @@ export class Player {
 
   getHighlightedLines(): { start: number; end: number } {
     return this.highlightedLines;
+  }
+
+  getLinesTouchedByInsert(): Set<number> {
+    return this.linesTouchedByInsert;
   }
 
   setCurrentStepIndex(newIndex: number) {
@@ -150,28 +155,17 @@ export class Player {
 
   private fastProcessCommand({ type, payload, steps }: FastForwardCommand) {
     if (type === CommandType.INSERT) {
-      const newText =
-        this.getText().substr(0, this.cursor) +
-        payload +
-        this.getText().substr(this.cursor);
-      this.cursor += payload.length;
-      this.trueText = newText;
+      this.processInsert(payload);
       this.currentStepIndex += steps;
     } else if (type === CommandType.DELETE) {
-      const newText =
-        this.getText().substr(0, this.cursor) +
-        this.getText().substr(this.cursor + payload);
-      this.trueText = newText;
+      this.processDelete(payload);
       this.currentStepIndex += 1;
     } else if (type === CommandType.SKIP) {
-      this.cursor += payload;
+      this.processSkip(payload);
       this.currentStepIndex++;
     } else if (type === CommandType.SHOW_TEXT) {
+      this.processShowText(payload);
       this.currentStepIndex++;
-      this.texts.push({
-        text: payload.message,
-        stepIndex: this.currentStepIndex,
-      });
     } else if (type === CommandType.SET_CURSOR) {
       this.cursor = payload;
       this.currentStepIndex++;
@@ -180,33 +174,65 @@ export class Player {
     }
   }
 
+  private addLinesTouchedByInsert(payload: string) {
+    const linesBeforePayload = Utils.countLines(
+      this.getText().substr(0, this.cursor)
+    );
+    const payloadLines = Utils.countLines(payload);
+    for (
+      let i = linesBeforePayload;
+      i < linesBeforePayload + payloadLines;
+      i++
+    ) {
+      this.linesTouchedByInsert.add(i);
+    }
+  }
+
+  private processInsert(payload: string) {
+    this.trueText =
+      this.getText().substr(0, this.cursor) +
+      payload +
+      this.getText().substr(this.cursor);
+    this.addLinesTouchedByInsert(payload);
+    this.cursor += payload.length;
+  }
+
+  private processDelete(payload: number) {
+    this.trueText =
+      this.getText().substr(0, this.cursor) +
+      this.getText().substr(this.cursor + payload);
+  }
+
+  private processSkip(payload: number) {
+    this.cursor += payload;
+  }
+
+  private processShowText(payload: { message: string }) {
+    this.linesTouchedByInsert = new Set<number>();
+    this.texts.push({
+      text: payload.message,
+      stepIndex: this.currentStepIndex + 1,
+    });
+  }
+
   private processCommand([commandNo, payload]: any[]) {
     if (commandNo === CommandType.INSERT) {
-      const newText =
-        this.getText().substr(0, this.cursor) +
-        payload +
-        this.getText().substr(this.cursor);
-      this.cursor += payload.length;
-      this.setText(newText);
+      this.processInsert(payload);
+      this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.DELETE) {
-      const newText =
-        this.getText().substr(0, this.cursor) +
-        this.getText().substr(this.cursor + payload);
-      this.setText(newText);
+      this.processDelete(payload);
+      this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SKIP) {
-      this.cursor += payload;
-      this.setText(this.getText());
+      this.processSkip(payload);
+      this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
     } else if (commandNo === CommandType.SHOW_TEXT) {
+      this.processShowText(payload);
       if (payload.pause) {
         this.pause();
       }
-      this.texts.push({
-        text: payload.message,
-        stepIndex: this.currentStepIndex + 1,
-      });
       const event = new CustomEvent(PlayerEventType.SHOW_TEXT, {
         detail: {
           message: payload.message,
@@ -215,12 +241,12 @@ export class Player {
       dispatchEvent(event);
     } else if (commandNo === CommandType.HIGHLIGHT_LINES) {
       this.highlightedLines = payload;
-      this.setText(this.getText());
+      this.setText(this.trueText);
     } else if (commandNo === CommandType.SCROLL_TO) {
       this.scrollTo(payload);
     } else if (commandNo === CommandType.SET_CURSOR) {
       this.cursor = payload;
-      this.setText(this.getText());
+      this.setText(this.trueText);
     } else if (commandNo === CommandType.PAUSE) {
       this.pause();
     }
@@ -233,10 +259,11 @@ export class Player {
 
   reset() {
     this.cursor = 0;
-    this.setText(this.initialText);
-    this.texts = [];
+    this.linesTouchedByInsert = new Set<number>();
     this.highlightedLines = { start: -1, end: -2 };
+    this.texts = [];
     this.currentStepIndex = 0;
+    this.setText(this.initialText);
   }
 
   setInitialText(initialText: string) {

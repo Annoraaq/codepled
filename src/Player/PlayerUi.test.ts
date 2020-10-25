@@ -6,12 +6,10 @@ import { PlayerUi } from "./PlayerUi";
 import * as hljs from "highlight.js";
 import { PlayerEventType, Player } from "./Player";
 jest.mock("highlight.js");
-jest.mock("../Utils/Utils");
 
 TestUtils.fixCustomEventConstructor();
 
 const mockedHljs = mocked(hljs, true);
-const mockedUtils = mocked(Utils, true);
 
 let playerUi: PlayerUi;
 let player: Player;
@@ -57,8 +55,8 @@ describe("PlayerUi", () => {
   `;
     player = new Player();
     playerUi = new PlayerUi(player);
-    mockedUtils.sleep.mockImplementation(() => Promise.resolve());
-    mockedUtils.stripHtml.mockImplementation((a) => `[NO_HTML]${a}`);
+    jest.spyOn(Utils, "sleep").mockImplementation(() => Promise.resolve());
+    jest.spyOn(Utils, "stripHtml").mockImplementation((a) => `[NO_HTML]${a}`);
     mockedHljs.configure.mockReset();
     mockedHljs.highlightBlock.mockReset();
   });
@@ -104,7 +102,13 @@ describe("PlayerUi", () => {
     expect(textArea.innerHTML).toEqual(
       '<div class="line">Hello\n</div><div class="line">W<span class="cursor"></span>orld\n</div><div class="line">Line3\n</div>'
     );
-    expect(linesContainer.innerHTML).toEqual("1<br>2<br>3<br>");
+    expect(TestUtils.removeWhitespace(linesContainer.innerHTML)).toEqual(
+      TestUtils.removeWhitespace(
+        `<span class="line">1</span><br>
+         <span class="line">2</span><br>
+         <span class="line">3</span><br>`
+      )
+    );
     expect(mockedHljs.configure).toHaveBeenCalled();
     expect(mockedHljs.highlightBlock).toHaveBeenCalledWith(textArea);
   });
@@ -141,7 +145,7 @@ describe("PlayerUi", () => {
 
   it("should highlight line", async () => {
     const textArea = document.querySelector("#codepled");
-    const highlightStyle = 'style="background-color: rgb(0, 66, 18);"';
+    const highlightStyle = 'style="background-color: rgb(51, 57, 47);"';
 
     playerUi.init();
     jest
@@ -160,6 +164,38 @@ describe("PlayerUi", () => {
       '<div class="line"><span class="cursor"></span>Hello\n</div>' +
         `<div class="line" ${highlightStyle}>World\n</div>` +
         `<div class="line" ${highlightStyle}>Line 3\n</div>`
+    );
+  });
+
+  it("should highlight freshly inserted lines", async () => {
+    const textArea = document.querySelector("#codepled");
+    const lines = document.querySelector(".lines");
+    const highlightStyle = 'style="background-color: rgb(51, 57, 47);"';
+
+    playerUi.init();
+    jest
+      .spyOn(player, "getLinesTouchedByInsert")
+      .mockReturnValue(new Set([2, 3]));
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.CHANGE_TEXT, {
+        detail: {
+          text: "Hello\nWorld\nLine 3",
+          cursor: 0,
+        },
+      })
+    );
+    await TestUtils.tick();
+    expect(textArea.innerHTML).toEqual(
+      '<div class="line"><span class="cursor"></span>Hello\n</div>' +
+        `<div class="line" ${highlightStyle}>World\n</div>` +
+        `<div class="line" ${highlightStyle}>Line 3\n</div>`
+    );
+    expect(TestUtils.removeWhitespace(lines.innerHTML)).toEqual(
+      TestUtils.removeWhitespace(
+        `<span class="line">1</span><br>
+       <span class="linehighlighted">2</span><br>
+       <span class="linehighlighted">3</span><br>`
+      )
     );
   });
 
