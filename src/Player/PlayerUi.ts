@@ -66,7 +66,7 @@ export class PlayerUi {
       { ...this.player.getHighlightedLines(), color: "#33392f" },
     ];
 
-    this.player.getLinesTouchedByInsert().forEach((lineNo) => {
+    this.player.getLinesTouched().forEach((lineNo) => {
       options.push({
         start: lineNo,
         end: lineNo,
@@ -86,7 +86,7 @@ export class PlayerUi {
     let innerStr = "";
     for (let i = 1; i <= lineCount; i++) {
       let classes = "line";
-      if (this.player.getLinesTouchedByInsert().has(i)) {
+      if (this.player.getLinesTouched().has(i)) {
         classes += " highlighted";
       }
       innerStr += `<span class="${classes}">${i}</span><br />`;

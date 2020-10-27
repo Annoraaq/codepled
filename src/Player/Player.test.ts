@@ -63,7 +63,7 @@ describe("Player", () => {
     expect(player.getTexts()).toEqual([{ text: "abc", stepIndex: 2 }]);
     expect(player.getHighlightedLines()).toEqual({ start: 3, end: 4 });
     expect(player.getCurrentStepIndex()).toEqual(4);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([1]);
+    expect([...player.getLinesTouched()]).toEqual([1]);
 
     player.reset();
     expect(player.getCursor()).toEqual(0);
@@ -71,7 +71,7 @@ describe("Player", () => {
     expect(player.getTexts()).toEqual([]);
     expect(player.getHighlightedLines()).toEqual({ start: -1, end: -2 });
     expect(player.getCurrentStepIndex()).toEqual(0);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([]);
+    expect([...player.getLinesTouched()]).toEqual([]);
   });
 
   it("processes multiple delete commands", async () => {
@@ -135,7 +135,7 @@ describe("Player", () => {
 
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(11);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([2]);
+    expect([...player.getLinesTouched()]).toEqual([2]);
     expect(dispatchEventSpy).toHaveBeenCalledWith(expectedScrollToEvent);
   });
 
@@ -163,7 +163,7 @@ describe("Player", () => {
     ]);
     player.reset();
     await player.play();
-    expect([...player.getLinesTouchedByInsert()]).toEqual([]);
+    expect([...player.getLinesTouched()]).toEqual([]);
   });
 
   it("processes show_text command and pause", async () => {
@@ -251,27 +251,27 @@ describe("Player", () => {
     player.forwardTo(0);
     expect(player.getText()).toEqual("Hello\n");
     expect(player.getCursor()).toEqual(0);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([]);
+    expect([...player.getLinesTouched()]).toEqual([]);
 
     player.forwardTo(1);
     expect(player.getText()).toEqual("Hello\n");
     expect(player.getCursor()).toEqual(6);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([]);
+    expect([...player.getLinesTouched()]).toEqual([]);
 
     player.forwardTo(2);
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(11);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([2]);
+    expect([...player.getLinesTouched()]).toEqual([2]);
 
     player.forwardTo(5);
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(11);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([2]);
+    expect([...player.getLinesTouched()]).toEqual([2]);
 
     player.forwardTo(10);
     expect(player.getText()).toEqual("Hello\nworld");
     expect(player.getCursor()).toEqual(11);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([2]);
+    expect([...player.getLinesTouched()]).toEqual([2]);
   });
 
   it("should set cursor when forward to", async () => {
@@ -350,7 +350,7 @@ describe("Player", () => {
     player.reset();
 
     player.forwardTo(2);
-    expect([...player.getLinesTouchedByInsert()]).toEqual([]);
+    expect([...player.getLinesTouched()]).toEqual([]);
   });
 
   it("processes pause command", async () => {
@@ -382,5 +382,24 @@ describe("Player", () => {
 
     player.reset();
     expect(player.getTexts()).toEqual([]);
+  });
+
+  it("should mark correct lines as touched", async () => {
+    player.setInitialText("Line1\nLine2\nLine3\nLine4\nLine5");
+    player.addCommands([
+      [CommandType.SKIP, 1],
+      [CommandType.INSERT, "[A]"],
+      [CommandType.SKIP, 6],
+      [CommandType.INSERT, "[B]"],
+      [CommandType.DELETE, 1],
+      [CommandType.SKIP, 17],
+      [CommandType.INSERT, "[C]"],
+      [CommandType.SET_CURSOR, 17],
+      [CommandType.DELETE, 6],
+    ]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("L[A]ine1\nL[B]ne2\nLine4\nL[C]ine5");
+    expect([...player.getLinesTouched()]).toEqual([1, 2, 4]);
   });
 });

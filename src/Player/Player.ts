@@ -3,6 +3,11 @@ import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
+interface Range {
+  from: number;
+  till: number;
+}
+
 export enum PlayerEventType {
   PAUSE = "PLAYER_PAUSE",
   PLAY = "PLAYER_PLAY",
@@ -23,7 +28,7 @@ export class Player {
   private cursor = 0;
   private commandController: CommandController;
   private texts: { text: string; stepIndex: number }[] = [];
-  private linesTouchedByInsert: Set<number> = new Set<number>();
+  private linesTouched: Set<number> = new Set<number>();
 
   constructor() {
     this.commandController = new CommandController();
@@ -41,8 +46,8 @@ export class Player {
     return this.highlightedLines;
   }
 
-  getLinesTouchedByInsert(): Set<number> {
-    return this.linesTouchedByInsert;
+  getLinesTouched(): Set<number> {
+    return this.linesTouched;
   }
 
   setCurrentStepIndex(newIndex: number) {
@@ -184,8 +189,21 @@ export class Player {
       i < linesBeforePayload + payloadLines;
       i++
     ) {
-      this.linesTouchedByInsert.add(i);
+      this.linesTouched.add(i);
     }
+  }
+
+  private removeLineTouchedByInsert(line: number) {
+    this.linesTouched.delete(line);
+    const toAdd: number[] = [];
+    [...this.linesTouched].forEach((lineTouched) => {
+      if (lineTouched > line) {
+        this.linesTouched.delete(lineTouched);
+        toAdd.push(lineTouched - 1);
+      }
+    });
+
+    toAdd.forEach((line) => this.linesTouched.add(line));
   }
 
   private processInsert(payload: string) {
@@ -197,7 +215,38 @@ export class Player {
     this.cursor += payload.length;
   }
 
+  private getDeletedLineNumbers(numberOfCharsToDelete: number): Range {
+    const textBeforeDelete = this.getText().substr(0, this.cursor);
+    const linesBeforeDelete = Utils.countLines(textBeforeDelete);
+    const startsDeletingOnAFreshLine = textBeforeDelete.endsWith("\n");
+
+    const deletedLines =
+      Utils.countLines(
+        this.getText().substr(this.cursor, numberOfCharsToDelete)
+      ) - 1;
+
+    const range = {
+      from: linesBeforeDelete,
+      till: linesBeforeDelete + deletedLines,
+    };
+
+    const isFirstLineOnlyPartiallyDeleted = !startsDeletingOnAFreshLine;
+
+    if (isFirstLineOnlyPartiallyDeleted) range.from++;
+
+    return range;
+  }
+
+  private removeLinesTouched(lines: Range) {
+    for (let lineNo = lines.from; lineNo < lines.till; lineNo++) {
+      this.removeLineTouchedByInsert(lineNo);
+    }
+  }
+
   private processDelete(payload: number) {
+    const linesToDelete = this.getDeletedLineNumbers(payload);
+    this.removeLinesTouched(linesToDelete);
+
     this.trueText =
       this.getText().substr(0, this.cursor) +
       this.getText().substr(this.cursor + payload);
@@ -208,7 +257,7 @@ export class Player {
   }
 
   private processShowText(payload: { message: string }) {
-    this.linesTouchedByInsert = new Set<number>();
+    this.linesTouched = new Set<number>();
     this.texts.push({
       text: payload.message,
       stepIndex: this.currentStepIndex + 1,
@@ -259,7 +308,7 @@ export class Player {
 
   reset() {
     this.cursor = 0;
-    this.linesTouchedByInsert = new Set<number>();
+    this.linesTouched = new Set<number>();
     this.highlightedLines = { start: -1, end: -2 };
     this.texts = [];
     this.currentStepIndex = 0;

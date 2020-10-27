@@ -173,9 +173,7 @@ describe("PlayerUi", () => {
     const highlightStyle = 'style="background-color: rgb(51, 57, 47);"';
 
     playerUi.init();
-    jest
-      .spyOn(player, "getLinesTouchedByInsert")
-      .mockReturnValue(new Set([2, 3]));
+    jest.spyOn(player, "getLinesTouched").mockReturnValue(new Set([2, 3]));
     dispatchEvent(
       new CustomEvent(PlayerEventType.CHANGE_TEXT, {
         detail: {
