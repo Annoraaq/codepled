@@ -402,4 +402,37 @@ describe("Player", () => {
     expect(player.getText()).toEqual("L[A]ine1\nL[B]ne2\nLine4\nL[C]ine5");
     expect([...player.getLinesTouched()]).toEqual([1, 2, 4]);
   });
+
+  it("should mark correct lines when deleting part of a line", async () => {
+    player.setInitialText("Line1\nLine2");
+    player.addCommands([
+      [CommandType.SKIP, 2],
+      [CommandType.DELETE, 1],
+    ]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("Lie1\nLine2");
+    expect([...player.getLinesTouched()]).toEqual([1]);
+  });
+
+  it("should mark correct lines when partially deleting last line", async () => {
+    player.setInitialText("Line1\nLine2\nLine3");
+    player.addCommands([
+      [CommandType.SKIP, 6],
+      [CommandType.DELETE, 8],
+    ]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("Line1\nne3");
+    expect([...player.getLinesTouched()]).toEqual([2]);
+  });
+
+  it("should mark correct lines when partially deleting first line", async () => {
+    player.setInitialText("Line1\nLine2\nLine3");
+    player.addCommands([[CommandType.DELETE, 8]]);
+    player.reset();
+    await player.play();
+    expect(player.getText()).toEqual("ne2\nLine3");
+    expect([...player.getLinesTouched()]).toEqual([1]);
+  });
 });

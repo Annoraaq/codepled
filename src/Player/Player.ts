@@ -215,7 +215,7 @@ export class Player {
     this.cursor += payload.length;
   }
 
-  private getDeletedLineNumbers(numberOfCharsToDelete: number): Range {
+  private getDeletedLines(numberOfCharsToDelete: number): Range {
     const textBeforeDelete = this.getText().substr(0, this.cursor);
     const linesBeforeDelete = Utils.countLines(textBeforeDelete);
     const startsDeletingOnAFreshLine = textBeforeDelete.endsWith("\n");
@@ -244,7 +244,23 @@ export class Player {
   }
 
   private processDelete(payload: number) {
-    const linesToDelete = this.getDeletedLineNumbers(payload);
+    const textBeforeDelete = this.getText().substr(0, this.cursor);
+    const linesBeforeDelete = Utils.countLines(textBeforeDelete);
+    const startsDeletingOnAFreshLine = textBeforeDelete.endsWith("\n");
+    const linesToDelete = this.getDeletedLines(payload);
+
+    if (!startsDeletingOnAFreshLine) {
+      this.linesTouched.add(linesBeforeDelete);
+    }
+
+    const deletedText = this.getText().substr(this.cursor, payload);
+    if (
+      !deletedText.endsWith("\n") &&
+      linesToDelete.till - linesToDelete.from > 0
+    ) {
+      this.linesTouched.add(linesBeforeDelete + 1);
+    }
+
     this.removeLinesTouched(linesToDelete);
 
     this.trueText =
