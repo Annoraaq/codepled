@@ -311,6 +311,25 @@ describe("TouchedLinesDetector", () => {
       expect(touchedLinesDetector.getTouchedLines()).toEqual(new Set([2, 3]));
     });
 
+    it("should process deleting first line ending in an existing one", () => {
+      /*
+    <<Line1
+    Line2
+    L>>ine3
+    */
+      const text = "Line1\nLine2\nLine3";
+      const cursor = 0;
+      const toDelete = 14;
+      touchedLinesDetector.getTouchedLines().add(2);
+      touchedLinesDetector.getTouchedLines().add(4);
+      touchedLinesDetector.getTouchedLines().add(5);
+      touchedLinesDetector.processDelete(text, cursor, toDelete);
+
+      expect(touchedLinesDetector.getTouchedLines()).toEqual(
+        new Set([1, 2, 3])
+      );
+    });
+
     it("should process delete starting and ending in 2 existing lines", () => {
       /*
     Lin<<e1

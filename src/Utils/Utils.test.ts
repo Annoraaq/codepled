@@ -34,7 +34,7 @@ describe("Utils", () => {
 
   describe("countLines", () => {
     it("should count lines", () => {
-      expect(Utils.countLines("")).toEqual(0);
+      expect(Utils.countLines("")).toEqual(1);
       expect(Utils.countLines(" ")).toEqual(1);
       expect(Utils.countLines("Hello")).toEqual(1);
       expect(Utils.countLines("\n")).toEqual(2);

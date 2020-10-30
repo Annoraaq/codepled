@@ -18,7 +18,6 @@ export class Utils {
   }
 
   static countLines(text: string) {
-    if (text == "") return 0;
     const lines = (text.match(/\n/g) || []).length + 1;
     return lines;
   }
