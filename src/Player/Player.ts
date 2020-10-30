@@ -1,12 +1,8 @@
+import { TouchedLinesDetector } from "./../TouchedLinesDetector/TouchedLinesDetector";
 import { FastForwardCommand } from "./../DiffConverter/Commands";
 import { CommandController } from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
-
-interface Range {
-  from: number;
-  till: number;
-}
 
 export enum PlayerEventType {
   PAUSE = "PLAYER_PAUSE",
@@ -28,10 +24,11 @@ export class Player {
   private cursor = 0;
   private commandController: CommandController;
   private texts: { text: string; stepIndex: number }[] = [];
-  private linesTouched: Set<number> = new Set<number>();
+  private touchedLinesDetector: TouchedLinesDetector;
 
   constructor() {
     this.commandController = new CommandController();
+    this.touchedLinesDetector = new TouchedLinesDetector();
   }
 
   addCommands(commands: Command[]): void {
@@ -47,7 +44,7 @@ export class Player {
   }
 
   getLinesTouched(): Set<number> {
-    return this.linesTouched;
+    return this.touchedLinesDetector.getTouchedLines();
   }
 
   setCurrentStepIndex(newIndex: number) {
@@ -88,6 +85,31 @@ export class Player {
 
   getTextSteps(): { content: string; stepNo: number }[] {
     return this.commandController.getTextSteps();
+  }
+
+  reset() {
+    this.cursor = 0;
+    this.touchedLinesDetector.reset();
+    this.highlightedLines = { start: -1, end: -2 };
+    this.texts = [];
+    this.currentStepIndex = 0;
+    this.setText(this.initialText);
+  }
+
+  setInitialText(initialText: string) {
+    this.initialText = initialText;
+  }
+
+  getCursor(): number {
+    return this.cursor;
+  }
+
+  playPause(): void {
+    !this.isPlaying ? this.play() : this.pause();
+  }
+
+  getTexts(): { text: string; stepIndex: number }[] {
+    return this.texts;
   }
 
   async play() {
@@ -179,90 +201,25 @@ export class Player {
     }
   }
 
-  private addLinesTouchedByInsert(payload: string) {
-    const linesBeforePayload = Utils.countLines(
-      this.getText().substr(0, this.cursor)
-    );
-    const payloadLines = Utils.countLines(payload);
-    for (
-      let i = linesBeforePayload;
-      i < linesBeforePayload + payloadLines;
-      i++
-    ) {
-      this.linesTouched.add(i);
-    }
-  }
-
-  private removeLineTouchedByInsert(line: number) {
-    this.linesTouched.delete(line);
-    const toAdd: number[] = [];
-    [...this.linesTouched].forEach((lineTouched) => {
-      if (lineTouched > line) {
-        this.linesTouched.delete(lineTouched);
-        toAdd.push(lineTouched - 1);
-      }
-    });
-
-    toAdd.forEach((line) => this.linesTouched.add(line));
-  }
-
   private processInsert(payload: string) {
+    this.touchedLinesDetector.processInsert(
+      this.getText(),
+      this.cursor,
+      payload
+    );
     this.trueText =
       this.getText().substr(0, this.cursor) +
       payload +
       this.getText().substr(this.cursor);
-    this.addLinesTouchedByInsert(payload);
     this.cursor += payload.length;
   }
 
-  private getDeletedLines(numberOfCharsToDelete: number): Range {
-    const textBeforeDelete = this.getText().substr(0, this.cursor);
-    const linesBeforeDelete = Utils.countLines(textBeforeDelete);
-    const startsDeletingOnAFreshLine = textBeforeDelete.endsWith("\n");
-
-    const deletedLines =
-      Utils.countLines(
-        this.getText().substr(this.cursor, numberOfCharsToDelete)
-      ) - 1;
-
-    const range = {
-      from: linesBeforeDelete,
-      till: linesBeforeDelete + deletedLines,
-    };
-
-    const isFirstLineOnlyPartiallyDeleted = !startsDeletingOnAFreshLine;
-
-    if (isFirstLineOnlyPartiallyDeleted) range.from++;
-
-    return range;
-  }
-
-  private removeLinesTouched(lines: Range) {
-    for (let lineNo = lines.from; lineNo < lines.till; lineNo++) {
-      this.removeLineTouchedByInsert(lineNo);
-    }
-  }
-
   private processDelete(payload: number) {
-    const textBeforeDelete = this.getText().substr(0, this.cursor);
-    const linesBeforeDelete = Utils.countLines(textBeforeDelete);
-    const startsDeletingOnAFreshLine = textBeforeDelete.endsWith("\n");
-    const linesToDelete = this.getDeletedLines(payload);
-
-    if (!startsDeletingOnAFreshLine) {
-      this.linesTouched.add(linesBeforeDelete);
-    }
-
-    const deletedText = this.getText().substr(this.cursor, payload);
-    if (
-      !deletedText.endsWith("\n") &&
-      linesToDelete.till - linesToDelete.from > 0
-    ) {
-      this.linesTouched.add(linesBeforeDelete + 1);
-    }
-
-    this.removeLinesTouched(linesToDelete);
-
+    this.touchedLinesDetector.processDelete(
+      this.getText(),
+      this.cursor,
+      payload
+    );
     this.trueText =
       this.getText().substr(0, this.cursor) +
       this.getText().substr(this.cursor + payload);
@@ -273,7 +230,7 @@ export class Player {
   }
 
   private processShowText(payload: { message: string }) {
-    this.linesTouched = new Set<number>();
+    this.touchedLinesDetector.reset();
     this.texts.push({
       text: payload.message,
       stepIndex: this.currentStepIndex + 1,
@@ -320,30 +277,5 @@ export class Player {
   private getCursorLine() {
     const beforeCursor = this.trueText.substr(0, this.cursor);
     return (beforeCursor.match(/\n/g) || []).length + 1;
-  }
-
-  reset() {
-    this.cursor = 0;
-    this.linesTouched = new Set<number>();
-    this.highlightedLines = { start: -1, end: -2 };
-    this.texts = [];
-    this.currentStepIndex = 0;
-    this.setText(this.initialText);
-  }
-
-  setInitialText(initialText: string) {
-    this.initialText = initialText;
-  }
-
-  getCursor(): number {
-    return this.cursor;
-  }
-
-  playPause(): void {
-    !this.isPlaying ? this.play() : this.pause();
-  }
-
-  getTexts(): { text: string; stepIndex: number }[] {
-    return this.texts;
   }
 }
