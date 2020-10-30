@@ -21,117 +21,127 @@ export class TouchedLinesDetector {
   }
 
   processDelete(text: string, cursor: number, numberOfCharsToDelete: number) {
-    const textBeforeDelete = text.substr(0, cursor);
-    const linesBeforeDelete = Utils.countLines(textBeforeDelete);
     const deletedText = text.substr(cursor, numberOfCharsToDelete);
-    const startsDeletingOnFreshLine = textBeforeDelete.endsWith("\n");
-    const isFirstLineOnlyPartiallyDeleted = !startsDeletingOnFreshLine;
-    const isLastLineOnlyPartiallyDeleted = !deletedText.endsWith("\n");
+    this.removeLinesTouched(
+      this.getLinesToDeleteCompletely(text, cursor, deletedText)
+    );
+    this.addLinesTouchedByDelete(text, cursor, deletedText);
+  }
 
-    const numberOfLinesToDelete = Utils.countLines(deletedText) - 1;
-
-    const linesToDeleteCompletely = {
-      from: linesBeforeDelete,
-      till: linesBeforeDelete + numberOfLinesToDelete,
+  private getCommandDetails(text: string, cursor: number, payload: string) {
+    const textBefore = text.substr(0, cursor);
+    const linesBefore = Utils.countLines(textBefore);
+    const startsOnFreshLine = textBefore.endsWith("\n");
+    const endsWithNewLine = payload.endsWith("\n");
+    const linesToAdd = Utils.countLines(payload) - 1;
+    return {
+      textBefore,
+      linesBefore,
+      startsOnFreshLine,
+      endsWithNewLine,
+      linesToAdd,
     };
+  }
+  private addLinesTouchedByDelete(
+    text: string,
+    cursor: number,
+    deletedText: string
+  ) {
+    const commandDetails = this.getCommandDetails(text, cursor, deletedText);
 
-    if (numberOfLinesToDelete <= 0) {
-      linesToDeleteCompletely.from = 1;
-      linesToDeleteCompletely.till = 0;
-    } else {
-      if (!isFirstLineOnlyPartiallyDeleted && !isLastLineOnlyPartiallyDeleted) {
-        linesToDeleteCompletely.till--;
-      } else if (
-        isFirstLineOnlyPartiallyDeleted &&
-        !isLastLineOnlyPartiallyDeleted
-      ) {
-        linesToDeleteCompletely.from++;
-        linesToDeleteCompletely.till--;
-      } else if (
-        !isFirstLineOnlyPartiallyDeleted &&
-        isLastLineOnlyPartiallyDeleted
-      ) {
-        linesToDeleteCompletely.till--;
-      } else if (
-        isFirstLineOnlyPartiallyDeleted &&
-        isLastLineOnlyPartiallyDeleted
-      ) {
-        linesToDeleteCompletely.till--;
-      }
+    if (!commandDetails.startsOnFreshLine) {
+      this.touchedLines.add(commandDetails.linesBefore);
     }
-
-    this.removeLinesTouched(linesToDeleteCompletely);
-
-    if (!startsDeletingOnFreshLine) {
-      this.touchedLines.add(linesBeforeDelete);
-    }
-
-    if (
-      isLastLineOnlyPartiallyDeleted &&
-      linesToDeleteCompletely.till - linesToDeleteCompletely.from >= 0
-    ) {
-      this.touchedLines.add(linesBeforeDelete);
+    if (!commandDetails.endsWithNewLine) {
+      this.touchedLines.add(commandDetails.linesBefore);
     }
   }
 
-  processInsert(text: string, cursor: number, payload: string) {
-    const textBeforeInsert = text.substr(0, cursor);
-    const linesBeforePayload = Utils.countLines(textBeforeInsert);
-    const startsInsertOnFreshLine = textBeforeInsert.endsWith("\n");
-    const insertEndsWithNewLine = payload.endsWith("\n");
-    const linesToAdd = Utils.countLines(payload) - 1;
-
-    const toAdd = [];
-    let linesToAddCompletely = [];
-    if (!startsInsertOnFreshLine && insertEndsWithNewLine) {
-      toAdd.push(linesBeforePayload);
-      for (let i = 1; i <= linesToAdd; i++) {
-        linesToAddCompletely.push(linesBeforePayload + i);
-      }
-    } else if (!startsInsertOnFreshLine && !insertEndsWithNewLine) {
-      toAdd.push(linesBeforePayload);
-      for (let i = 1; i <= linesToAdd; i++) {
-        linesToAddCompletely.push(linesBeforePayload + i);
-      }
-    } else if (startsInsertOnFreshLine && insertEndsWithNewLine) {
-      for (let i = 0; i < linesToAdd; i++) {
-        linesToAddCompletely.push(linesBeforePayload + i);
-      }
-    } else if (startsInsertOnFreshLine && !insertEndsWithNewLine) {
-      for (let i = 0; i < linesToAdd; i++) {
-        linesToAddCompletely.push(linesBeforePayload + i);
-      }
-      toAdd.push(linesBeforePayload + linesToAdd);
-    }
-
-    linesToAddCompletely.forEach((lineToAdd) => {
-      const toAdd: number[] = [];
-      [...this.touchedLines].forEach((lineTouched) => {
-        if (lineTouched >= lineToAdd) {
-          this.touchedLines.delete(lineTouched);
-          toAdd.push(lineTouched + 1);
+  private getLinesToDeleteCompletely(
+    text: string,
+    cursor: number,
+    deletedText: string
+  ): Range {
+    const commandDetails = this.getCommandDetails(text, cursor, deletedText);
+    const linesToDeleteCompletely = {
+      from: commandDetails.linesBefore,
+      till: commandDetails.linesBefore + commandDetails.linesToAdd - 1,
+    };
+    if (deletedText.length > 0) {
+      if (!commandDetails.startsOnFreshLine) {
+        if (commandDetails.endsWithNewLine) {
+          linesToDeleteCompletely.from++;
         }
-      });
+      }
+    }
+    return linesToDeleteCompletely;
+  }
 
-      toAdd.forEach((line) => this.touchedLines.add(line));
-    });
+  private getLinesToInsertCompletely(
+    text: string,
+    cursor: number,
+    payload: string
+  ): Range {
+    const commandDetails = this.getCommandDetails(text, cursor, payload);
 
-    linesToAddCompletely.forEach((lineToAdd) => {
-      this.touchedLines.add(lineToAdd);
-    });
+    const linesToAddCompletely = {
+      from: commandDetails.linesBefore,
+      till: commandDetails.linesBefore + commandDetails.linesToAdd - 1,
+    };
 
-    toAdd.forEach((lineToAdd) => {
-      this.touchedLines.add(lineToAdd);
-    });
+    if (!commandDetails.startsOnFreshLine) {
+      linesToAddCompletely.from++;
+      linesToAddCompletely.till++;
+    }
+    return linesToAddCompletely;
+  }
+
+  processInsert(text: string, cursor: number, payload: string) {
+    this.insertLinesTouched(
+      this.getLinesToInsertCompletely(text, cursor, payload)
+    );
+    this.addLinesTouchedByInsert(text, cursor, payload);
+  }
+
+  addLinesTouchedByInsert(text: string, cursor: number, payload: string) {
+    const commandDetails = this.getCommandDetails(text, cursor, payload);
+
+    if (!commandDetails.startsOnFreshLine) {
+      this.touchedLines.add(commandDetails.linesBefore);
+    }
+    if (!commandDetails.endsWithNewLine) {
+      this.touchedLines.add(
+        commandDetails.linesBefore + commandDetails.linesToAdd
+      );
+    }
   }
 
   private removeLinesTouched(lines: Range) {
     for (let lineNo = lines.from; lineNo <= lines.till; lineNo++) {
-      this.removeLineTouchedByInsert(lines.from);
+      this.removeLineAndShift(lines.from);
     }
   }
 
-  private removeLineTouchedByInsert(line: number) {
+  private insertLinesTouched(lines: Range) {
+    for (let lineNo = lines.from; lineNo <= lines.till; lineNo++) {
+      this.insertLineAndShift(lines.from);
+    }
+  }
+
+  private insertLineAndShift(line: number) {
+    const toAdd: number[] = [];
+    [...this.touchedLines].forEach((lineTouched) => {
+      if (lineTouched >= line) {
+        this.touchedLines.delete(lineTouched);
+        toAdd.push(lineTouched + 1);
+      }
+    });
+
+    toAdd.forEach((line) => this.touchedLines.add(line));
+    this.touchedLines.add(line);
+  }
+
+  private removeLineAndShift(line: number) {
     this.touchedLines.delete(line);
     const toAdd: number[] = [];
     [...this.touchedLines].forEach((lineTouched) => {
