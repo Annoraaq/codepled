@@ -64,6 +64,12 @@ header .title::after {
     opacity: 0;
   }
 }
+
+@keyframes blinker-light {
+  50% {
+    opacity: 0.5;
+  }
+}
 .content {
   display: flex;
   flex-direction: row;
@@ -212,9 +218,7 @@ header .title::after {
   color: white;
   cursor: pointer;
 }
-.next-button {
-  animation: blinker 2s linear infinite;
-}
+
 .slider-container.disabled .play {
   cursor: not-allowed;
   color: gray;
@@ -370,4 +374,40 @@ header .title::after {
 
 .lines .line.highlighted {
   background: #33392f;
+}
+
+.next-button {
+  position: absolute;
+  display: block;
+  width: 500px;
+  height: 50px;
+  background: white;
+  border: none;
+  bottom: 100px;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  animation: blinker-light 2s linear infinite;
+
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+}
+
+.next-button:hover {
+  animation: none;
+}
+
+.next-button:focus {
+  outline: none;
+}
+
+.next-button .small {
+  display: block;
+  font-family: Helvetica, Arial;
+  font-size: 10px;
 }

@@ -84,6 +84,14 @@ describe("PlayerUi", () => {
     expect(slider.max).toEqual("2");
   });
 
+  it("should init resumeButton", () => {
+    const resumeButton = <HTMLInputElement>(
+      document.querySelector(".next-button")
+    );
+    playerUi.init();
+    expect(resumeButton.style.display).toEqual("none");
+  });
+
   it("should handle a changeText event", () => {
     const textArea = document.querySelector("#codepled");
     const linesContainer = document.querySelector(".lines");
@@ -482,5 +490,35 @@ describe("PlayerUi", () => {
     openToc.click();
     expect(toc.style.display).toEqual("flex");
     expect(openToc.style.display).toEqual("none");
+  });
+
+  it("should resume playing when clicking on resume button", async () => {
+    const resumeButton = <HTMLElement>document.querySelector(".next-button");
+    const playSpy = jest.spyOn(player, "play");
+    playerUi.init();
+
+    resumeButton.click();
+    expect(playSpy).toHaveBeenCalled();
+  });
+
+  it("should show resume button on pause event", async () => {
+    const resumeButton = <HTMLElement>document.querySelector(".next-button");
+    playerUi.init();
+    expect(resumeButton.style.display).toEqual("none");
+
+    dispatchEvent(new CustomEvent(PlayerEventType.PAUSE));
+
+    expect(resumeButton.style.display).toEqual("block");
+  });
+
+  it("should hide resume button on play event", async () => {
+    const resumeButton = <HTMLElement>document.querySelector(".next-button");
+    playerUi.init();
+    dispatchEvent(new CustomEvent(PlayerEventType.PAUSE));
+    expect(resumeButton.style.display).toEqual("block");
+
+    dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
+
+    expect(resumeButton.style.display).toEqual("none");
   });
 });

@@ -1,4 +1,5 @@
 import * as hljs from "highlight.js";
+import { nodeModuleNameResolver } from "typescript";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 import { PlayerEventType, Player } from "./Player";
@@ -10,6 +11,7 @@ export class PlayerUi {
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
   private tableOfContents: HTMLElement;
+  private resumeButton: HTMLElement;
 
   private wasPlayingOnSliderMove = false;
 
@@ -19,6 +21,7 @@ export class PlayerUi {
     this.speedButton = document.querySelector(".speed");
     this.textArea = document.querySelector("#codepled");
     this.tableOfContents = document.querySelector(".table-of-contents");
+    this.resumeButton = document.querySelector(".next-button");
 
     addEventListener(PlayerEventType.PAUSE, this.onPause);
     addEventListener(PlayerEventType.PLAY, this.onPlay);
@@ -40,6 +43,7 @@ export class PlayerUi {
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);
     this.initToc(this.tableOfContents);
+    this.initResumeButton(this.resumeButton);
     this.player.reset();
   }
 
@@ -132,6 +136,13 @@ export class PlayerUi {
     };
   }
 
+  private initResumeButton(resumeButton: HTMLElement) {
+    resumeButton.style.display = "none";
+    resumeButton.onclick = () => {
+      this.player.play();
+    };
+  }
+
   private initSpeedButton(speedButton: HTMLElement) {
     speedButton.onclick = () => {
       this.player.increaseSpeed();
@@ -158,11 +169,15 @@ export class PlayerUi {
     this.createTableOfContents();
   }
 
-  private onPause = () =>
-    (this.playButton.innerHTML = '<i class="fas fa-play"></i>');
+  private onPause = () => {
+    this.playButton.innerHTML = '<i class="fas fa-play"></i>';
+    this.resumeButton.style.display = "block";
+  };
 
-  private onPlay = () =>
-    (this.playButton.innerHTML = '<i class="fas fa-pause"></i>');
+  private onPlay = () => {
+    this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
+    this.resumeButton.style.display = "none";
+  };
 
   private onChangeText = (event: CustomEvent) => {
     this.textArea.innerHTML =
