@@ -1,20 +1,5 @@
 import { DeleteDetector } from "./DeleteDetector/DeleteDetector";
 import { InsertDetector } from "./InsertDetector/InsertDetector";
-import { Utils } from "../Utils/Utils";
-import { textSpanIsEmpty } from "typescript";
-
-interface Range {
-  from: number;
-  till: number;
-}
-
-interface CommandDetails {
-  textBefore: string;
-  linesBefore: number;
-  startsOnFreshLine: boolean;
-  endsWithNewLine: boolean;
-  linesToAdd: number;
-}
 
 export class TouchedLinesDetector {
   private touchedLines: Set<number>;
@@ -24,8 +9,8 @@ export class TouchedLinesDetector {
 
   constructor() {
     this.touchedLines = new Set<number>();
-    this.insertDetector = new InsertDetector(this.touchedLines);
-    this.deleteDetector = new DeleteDetector(this.touchedLines);
+    this.insertDetector = new InsertDetector();
+    this.deleteDetector = new DeleteDetector();
   }
 
   getTouchedLines(): Set<number> {
@@ -41,10 +26,21 @@ export class TouchedLinesDetector {
   }
 
   processDelete(text: string, cursor: number, numberOfCharsToDelete: number) {
-    this.deleteDetector.process(text, cursor, numberOfCharsToDelete);
+    const deletedText = text.substr(cursor, numberOfCharsToDelete);
+    this.touchedLines = this.deleteDetector.process(
+      text,
+      cursor,
+      deletedText,
+      this.touchedLines
+    );
   }
 
   processInsert(text: string, cursor: number, payload: string) {
-    this.insertDetector.process(text, cursor, payload);
+    this.touchedLines = this.insertDetector.process(
+      text,
+      cursor,
+      payload,
+      this.touchedLines
+    );
   }
 }

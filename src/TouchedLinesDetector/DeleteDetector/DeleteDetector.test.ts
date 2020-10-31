@@ -5,7 +5,7 @@ describe("DeleteDetector", () => {
 
   beforeEach(() => {
     touchedLines = new Set();
-    deleteDetector = new DeleteDetector(touchedLines);
+    deleteDetector = new DeleteDetector();
   });
 
   describe("Delete", () => {
@@ -17,11 +17,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 6;
-      const toDelete = 6;
+      const toDelete = "Line2\n";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([3, 4]));
     });
@@ -35,11 +35,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3\nLine4";
       const cursor = 6;
-      const toDelete = 12;
+      const toDelete = "Line2\nLine3\n";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3]));
     });
@@ -52,11 +52,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 8;
-      const toDelete = 1;
+      const toDelete = "n";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 4, 5]));
     });
@@ -69,11 +69,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 3;
-      const toDelete = 9;
+      const toDelete = "e1\nLine2\n";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 3, 4]));
     });
@@ -87,11 +87,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3\nLine4";
       const cursor = 3;
-      const toDelete = 15;
+      const toDelete = "e1\nLine2\nLine3\n";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 3]));
     });
@@ -104,11 +104,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 6;
-      const toDelete = 7;
+      const toDelete = "Line2\nL";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3, 4]));
     });
@@ -122,11 +122,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3\nLine4";
       const cursor = 6;
-      const toDelete = 14;
+      const toDelete = "Line2\nLine3\nL";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3]));
     });
@@ -139,11 +139,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 0;
-      const toDelete = 14;
+      const toDelete = "Line1\nLine2\nL";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 3]));
     });
@@ -156,11 +156,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3";
       const cursor = 3;
-      const toDelete = 5;
+      const toDelete = "e1\nLi";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 3, 4]));
     });
@@ -174,11 +174,11 @@ describe("DeleteDetector", () => {
     */
       const text = "Line1\nLine2\nLine3\nLine4";
       const cursor = 3;
-      const toDelete = 11;
+      const toDelete = "e1\nLine2\nLi";
       touchedLines.add(2);
       touchedLines.add(4);
       touchedLines.add(5);
-      deleteDetector.process(text, cursor, toDelete);
+      deleteDetector.process(text, cursor, toDelete, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 3]));
     });

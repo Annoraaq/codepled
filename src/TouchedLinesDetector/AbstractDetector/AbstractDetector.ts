@@ -1,11 +1,11 @@
 import { Utils } from "../../Utils/Utils";
 
-interface Range {
+export interface Range {
   from: number;
   till: number;
 }
 
-interface CommandDetails {
+export interface CommandDetails {
   textBefore: string;
   linesBefore: number;
   startsOnFreshLine: boolean;
@@ -14,26 +14,32 @@ interface CommandDetails {
 }
 
 export abstract class AbstractDetector {
-  constructor(protected touchedLines: Set<number>) {}
+  protected touchedLines: Set<number>;
 
-  abstract process(
+  process(
     text: string,
     cursor: number,
-    payload: string | number
-  ): void;
+    textToUpdate: string,
+    touchedLines: Set<number>
+  ): Set<number> {
+    this.touchedLines = touchedLines;
+    const commandDetails = this.createCommandDetails(
+      text,
+      cursor,
+      textToUpdate
+    );
+    this.insertLinesTouched(this.getLinesToUpdateCompletely(commandDetails));
+    this.addLinesTouched(commandDetails);
+    return this.touchedLines;
+  }
+
+  protected abstract getLinesToUpdateCompletely(
+    commandDetails: CommandDetails
+  ): Range;
 
   protected abstract processAndShift(line: number): void;
 
-  protected addLinesTouched(commandDetails: CommandDetails) {
-    if (!commandDetails.startsOnFreshLine) {
-      this.touchedLines.add(commandDetails.linesBefore);
-    }
-    if (!commandDetails.endsWithNewLine) {
-      this.touchedLines.add(
-        commandDetails.linesBefore + commandDetails.linesToAdd
-      );
-    }
-  }
+  protected abstract addLinesTouched(commandDetails: CommandDetails): void;
 
   protected insertLinesTouched(lines: Range) {
     for (let lineNo = lines.from; lineNo <= lines.till; lineNo++) {
@@ -41,7 +47,7 @@ export abstract class AbstractDetector {
     }
   }
 
-  protected getCommandDetails(
+  protected createCommandDetails(
     text: string,
     cursor: number,
     payload: string

@@ -1,31 +1,11 @@
-import { Utils } from "../../Utils/Utils";
-import { AbstractDetector } from "../AbstractDetector/AbstractDetector";
-
-interface Range {
-  from: number;
-  till: number;
-}
-
-interface CommandDetails {
-  textBefore: string;
-  linesBefore: number;
-  startsOnFreshLine: boolean;
-  endsWithNewLine: boolean;
-  linesToAdd: number;
-}
+import {
+  AbstractDetector,
+  CommandDetails,
+  Range,
+} from "../AbstractDetector/AbstractDetector";
 
 export class InsertDetector extends AbstractDetector {
-  constructor(touchedLines: Set<number>) {
-    super(touchedLines);
-  }
-
-  process(text: string, cursor: number, payload: string) {
-    const commandDetails = this.getCommandDetails(text, cursor, payload);
-    this.insertLinesTouched(this.getLinesToInsertCompletely(commandDetails));
-    this.addLinesTouched(commandDetails);
-  }
-
-  private getLinesToInsertCompletely(commandDetails: CommandDetails): Range {
+  protected getLinesToUpdateCompletely(commandDetails: CommandDetails): Range {
     const linesToAddCompletely = {
       from: commandDetails.linesBefore,
       till: commandDetails.linesBefore + commandDetails.linesToAdd - 1,
@@ -36,6 +16,17 @@ export class InsertDetector extends AbstractDetector {
       linesToAddCompletely.till++;
     }
     return linesToAddCompletely;
+  }
+
+  protected addLinesTouched(commandDetails: CommandDetails) {
+    if (!commandDetails.startsOnFreshLine) {
+      this.touchedLines.add(commandDetails.linesBefore);
+    }
+    if (!commandDetails.endsWithNewLine) {
+      this.touchedLines.add(
+        commandDetails.linesBefore + commandDetails.linesToAdd
+      );
+    }
   }
 
   protected processAndShift(line: number) {

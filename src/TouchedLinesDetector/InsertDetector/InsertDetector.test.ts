@@ -5,7 +5,7 @@ describe("InsertDetector", () => {
 
   beforeEach(() => {
     touchedLines = new Set();
-    insertDetector = new InsertDetector(touchedLines);
+    insertDetector = new InsertDetector();
   });
 
   describe("Insert", () => {
@@ -20,7 +20,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 5, 6]));
     });
@@ -37,7 +37,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[LineY]\n";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3, 6, 7]));
     });
@@ -53,7 +53,7 @@ describe("InsertDetector", () => {
       const toInsert = "[X]";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 4, 5]));
     });
@@ -70,7 +70,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 5, 6]));
     });
@@ -88,7 +88,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[LineY]\n";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 3, 6, 7]));
     });
@@ -105,7 +105,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[X]";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3, 5, 6]));
     });
@@ -123,7 +123,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[LineY]\n[X]";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([2, 3, 4, 6, 7]));
     });
@@ -140,7 +140,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[X]";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 5, 6]));
     });
@@ -158,7 +158,7 @@ describe("InsertDetector", () => {
       const toInsert = "[LineX]\n[LineY]\n[X]";
       touchedLines.add(4);
       touchedLines.add(5);
-      insertDetector.process(text, cursor, toInsert);
+      insertDetector.process(text, cursor, toInsert, touchedLines);
 
       expect(touchedLines).toEqual(new Set([1, 2, 3, 6, 7]));
     });
