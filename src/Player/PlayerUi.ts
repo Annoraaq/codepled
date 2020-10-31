@@ -140,6 +140,14 @@ export class PlayerUi {
     resumeButton.onclick = () => {
       this.player.play();
     };
+    resumeButton.onclick = () => {
+      this.player.play();
+    };
+    addEventListener("keydown", (event) => {
+      if (event.key == " ") {
+        this.player.play();
+      }
+    });
   }
 
   private initSpeedButton(speedButton: HTMLElement) {
