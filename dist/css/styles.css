@@ -110,14 +110,25 @@ header .title::after {
   height: auto;
 }
 .play {
+  display: block;
   color: white;
   cursor: pointer;
   flex-grow: 1;
-  margin-left: 10px;
+  margin-left: 5px;
   line-height: 25px;
-  height: 25px;
-  width: 15px;
+  height: 30px;
+  width: 30px;
   text-align: center;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.play:focus {
+  border: 2px solid white;
+  outline: none;
+}
+.play:hover {
+  text-shadow: 0px 0px 10px rgb(255, 255, 255);
 }
 .slider {
   -webkit-appearance: none; /* Override default CSS styles */
@@ -183,6 +194,10 @@ header .title::after {
   margin-right: 20px;
   margin-left: 20px;
 }
+
+.play:focus .speedmeter {
+  margin-left: 13px;
+}
 .speedmeter {
   background: #ffa372;
   color: black;
@@ -193,7 +208,7 @@ header .title::after {
   height: 13px;
   line-height: 13px;
   font-family: Menlo, Monaco, "Courier New", monospace;
-  margin-left: 10px;
+  margin-left: 15px;
   text-align: center;
   font-weight: bold;
   display: block;
