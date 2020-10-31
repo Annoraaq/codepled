@@ -513,6 +513,19 @@ describe("PlayerUi", () => {
     expect(playSpy).toHaveBeenCalled();
   });
 
+  it("should not resume playing when pressing spacebar and player is not paused", async () => {
+    const playSpy = jest.spyOn(player, "play");
+    jest.spyOn(player, "isPaused").mockReturnValue(false);
+    playerUi.init();
+
+    const keyDownEvent = new KeyboardEvent("keydown", {
+      key: " ",
+    });
+    dispatchEvent(keyDownEvent);
+
+    expect(playSpy).not.toHaveBeenCalled();
+  });
+
   it("should show resume button on pause event", async () => {
     const resumeButton = <HTMLElement>document.querySelector(".next-button");
     playerUi.init();
