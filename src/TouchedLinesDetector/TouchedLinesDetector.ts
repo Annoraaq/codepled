@@ -2,16 +2,11 @@ import { DeleteDetector } from "./DeleteDetector/DeleteDetector";
 import { InsertDetector } from "./InsertDetector/InsertDetector";
 
 export class TouchedLinesDetector {
-  private touchedLines: Set<number>;
-
-  private insertDetector: InsertDetector;
-  private deleteDetector: DeleteDetector;
-
-  constructor() {
-    this.touchedLines = new Set<number>();
-    this.insertDetector = new InsertDetector();
-    this.deleteDetector = new DeleteDetector();
-  }
+  constructor(
+    private insertDetector = new InsertDetector(),
+    private deleteDetector = new DeleteDetector(),
+    private touchedLines = new Set<number>()
+  ) {}
 
   getTouchedLines(): Set<number> {
     return this.touchedLines;
