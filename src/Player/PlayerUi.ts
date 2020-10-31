@@ -1,5 +1,4 @@
 import * as hljs from "highlight.js";
-import { nodeModuleNameResolver } from "typescript";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 import { PlayerEventType, Player } from "./Player";
