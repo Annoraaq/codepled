@@ -426,7 +426,7 @@ describe("PlayerUi", () => {
 
   it("should highlight the correct table of contents", async () => {
     jest.spyOn(player, "getTextSteps").mockReturnValue([
-      { content: "some text", stepNo: 3 },
+      { title: "some title", content: "some text", stepNo: 3 },
       { content: "some other text", stepNo: 28 },
     ]);
 
@@ -441,7 +441,7 @@ describe("PlayerUi", () => {
     const expectedHtml = `
     <li class="bookmark">
       <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-      <div class="bookmark__title">[NO_HTML]some text</div>
+      <div class="bookmark__title">some title</div>
     </li>
     <li class="bookmark">
       <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>

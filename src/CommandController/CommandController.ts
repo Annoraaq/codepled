@@ -16,13 +16,19 @@ interface Chunk {
   length: number;
 }
 
+export interface TextStep {
+  title?: string;
+  content: string;
+  stepNo: number;
+}
+
 export class CommandController {
   private commands: Command[] = [];
   private stepMapping: Map<number, Subcommand> = new Map();
-  private textSteps: { content: string; stepNo: number }[] = [];
+  private textSteps: TextStep[] = [];
   private stepNo: number;
 
-  getTextSteps(): { content: string; stepNo: number }[] {
+  getTextSteps(): TextStep[] {
     return this.textSteps;
   }
 
@@ -48,6 +54,7 @@ export class CommandController {
           break;
         case CommandType.SHOW_TEXT:
           this.textSteps.push({
+            title: payload.title,
             content: payload.message,
             stepNo: this.stepNo + 1,
           });

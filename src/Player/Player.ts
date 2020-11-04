@@ -1,6 +1,9 @@
 import { TouchedLinesDetector } from "./../TouchedLinesDetector/TouchedLinesDetector";
 import { FastForwardCommand } from "./../DiffConverter/Commands";
-import { CommandController } from "./../CommandController/CommandController";
+import {
+  CommandController,
+  TextStep,
+} from "./../CommandController/CommandController";
 import { Command, CommandType } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 
@@ -83,7 +86,7 @@ export class Player {
     if (this.speed == 0) this.speed = 1;
   }
 
-  getTextSteps(): { content: string; stepNo: number }[] {
+  getTextSteps(): TextStep[] {
     return this.commandController.getTextSteps();
   }
 
