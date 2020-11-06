@@ -496,4 +496,9 @@ header .title::after {
   font-weight: normal;
   font-size: 12px;
   text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.text-content a {
+  color: rgb(255, 213, 190);
 }
