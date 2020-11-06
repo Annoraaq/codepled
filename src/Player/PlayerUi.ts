@@ -7,6 +7,7 @@ export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
   private textArea: HTMLElement;
   private playButton: HTMLElement;
+  private fullscreenButton: HTMLElement;
   private slider: HTMLInputElement;
   private speedButton: HTMLElement;
   private tableOfContents: HTMLElement;
@@ -21,6 +22,7 @@ export class PlayerUi {
     this.textArea = document.querySelector("#codepled");
     this.tableOfContents = document.querySelector(".table-of-contents");
     this.resumeButton = document.querySelector(".next-button");
+    this.fullscreenButton = document.querySelector(".fullscreen");
 
     addEventListener(PlayerEventType.PAUSE, this.onPause);
     addEventListener(PlayerEventType.PLAY, this.onPlay);
@@ -43,6 +45,7 @@ export class PlayerUi {
     this.initSlider(this.slider);
     this.initToc(this.tableOfContents);
     this.initResumeButton(this.resumeButton);
+    this.initFullscreenButton(this.fullscreenButton);
     this.player.reset();
   }
 
@@ -155,6 +158,28 @@ export class PlayerUi {
       this.player.increaseSpeed();
       const speedMeter = document.querySelector(".speedmeter");
       speedMeter.textContent = `${this.player.getSpeed()}`;
+    };
+  }
+
+  private initFullscreenButton(fullscreenButton: HTMLElement) {
+    const icon = <HTMLElement>fullscreenButton.querySelector("i");
+    if (Utils.isFullscreen()) {
+      icon.classList.remove("fa-expand");
+      icon.classList.add("fa-compress");
+    } else {
+      icon.classList.remove("fa-compress");
+      icon.classList.add("fa-expand");
+    }
+    fullscreenButton.onclick = () => {
+      if (Utils.isFullscreen()) {
+        icon.classList.remove("fa-compress");
+        icon.classList.add("fa-expand");
+        Utils.closeFullscreen();
+      } else {
+        icon.classList.remove("fa-expand");
+        icon.classList.add("fa-compress");
+        Utils.enterFullscreen();
+      }
     };
   }
 

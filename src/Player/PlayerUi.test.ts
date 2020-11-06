@@ -50,6 +50,9 @@ describe("PlayerUi", () => {
         <div class="sliderbox">
           <input type="range" min="0" max="99" value="50" class="slider" />
         </div>
+        <button class="play fullscreen">
+          <i class="fas fa-expand"></i>
+        </button>
       </div>
     </div>
   `;
@@ -545,5 +548,46 @@ describe("PlayerUi", () => {
     dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
 
     expect(resumeButton.style.display).toEqual("none");
+  });
+
+  it("should enter full screen on click", async () => {
+    jest.spyOn(Utils, "isFullscreen").mockReturnValue(false);
+    jest.spyOn(Utils, "enterFullscreen").mockClear();
+    jest.spyOn(Utils, "closeFullscreen").mockClear();
+    const fullscreenButton = <HTMLElement>document.querySelector(".fullscreen");
+    const fullscreenButtonIcon = <HTMLElement>(
+      document.querySelector(".fullscreen i")
+    );
+    playerUi.init();
+
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeTruthy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeFalsy();
+
+    fullscreenButton.click();
+
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeFalsy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeTruthy();
+    expect(Utils.enterFullscreen).toHaveBeenCalled();
+    expect(Utils.closeFullscreen).not.toHaveBeenCalled();
+  });
+
+  it("should leave full screen on click", async () => {
+    jest.spyOn(Utils, "isFullscreen").mockReturnValue(true);
+    jest.spyOn(Utils, "enterFullscreen").mockClear();
+    jest.spyOn(Utils, "closeFullscreen").mockClear();
+    const fullscreenButton = <HTMLElement>document.querySelector(".fullscreen");
+    const fullscreenButtonIcon = <HTMLElement>(
+      document.querySelector(".fullscreen i")
+    );
+    playerUi.init();
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeFalsy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeTruthy();
+
+    fullscreenButton.click();
+
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeTruthy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeFalsy();
+    expect(Utils.enterFullscreen).not.toHaveBeenCalled();
+    expect(Utils.closeFullscreen).toHaveBeenCalled();
   });
 });
