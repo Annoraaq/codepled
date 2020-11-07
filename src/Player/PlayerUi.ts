@@ -270,14 +270,16 @@ export class PlayerUi {
 
     this.player.getTextSteps().forEach(({ title, content, stepNo }, index) => {
       const bookmarkElem = document.createElement("li");
+      const bookmarkLink = document.createElement("button");
       bookmarkElem.classList.add("bookmark");
-      bookmarkElem.innerHTML = `
+      bookmarkElem.appendChild(bookmarkLink);
+      bookmarkLink.innerHTML = `
             <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
             <div class="bookmark__title">${
               title ? title : Utils.stripHtml(content.substr(0, 20))
             }</div>`;
       tocContent.appendChild(bookmarkElem);
-      bookmarkElem.onclick = () => {
+      bookmarkLink.onclick = () => {
         this.player.forwardTo(stepNo);
       };
       if (index == lastIndexInRange) {

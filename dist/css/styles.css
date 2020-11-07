@@ -366,18 +366,29 @@ header .title::after {
   flex-grow: 0;
 }
 
-.table-of-contents .bookmark {
+.table-of-contents .bookmark button {
   color: rgb(180, 180, 180);
   padding: 10px;
   font-family: Helvetica, Arial;
   font-weight: normal;
   font-size: 12px;
   display: flex;
+  width: 100%;
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
-.table-of-contents .bookmark:hover {
+.table-of-contents .bookmark button:hover {
   color: rgb(224, 224, 224);
+  background-color: #3a3a3a;
+}
+
+.table-of-contents .bookmark button:focus {
+  border: none;
+  outline: none;
+  color: rgb(224, 224, 224);
+  background-color: #3a3a3a;
 }
 
 .table-of-contents .bookmark__title {
@@ -427,7 +438,7 @@ header .title::after {
   background: #212427;
 }
 
-.table-of-contents .bookmark.active {
+.table-of-contents .bookmark.active button {
   background: rgba(255, 163, 114, 0.4);
   color: rgb(255, 213, 190);
 }

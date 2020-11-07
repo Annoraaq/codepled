@@ -443,12 +443,16 @@ describe("PlayerUi", () => {
 
     const expectedHtml = `
     <li class="bookmark">
-      <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-      <div class="bookmark__title">some title</div>
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">some title</div>
+      </button>
     </li>
     <li class="bookmark">
-      <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
-      <div class="bookmark__title">[NO_HTML]some other text</div>
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">[NO_HTML]some other text</div>
+      </button>
     </li>`;
 
     expect(
@@ -473,7 +477,7 @@ describe("PlayerUi", () => {
       })
     );
 
-    const bookmarks = document.querySelectorAll(".bookmark");
+    const bookmarks = document.querySelectorAll(".bookmark button");
     (<HTMLElement>bookmarks[1]).click();
     expect(forwardSpy).toHaveBeenCalledWith(28);
   });
