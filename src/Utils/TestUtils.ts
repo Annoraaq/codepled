@@ -6,10 +6,8 @@ export class TestUtils {
   static fixCustomEventConstructor() {
     global.CustomEvent = <any>((name: any, params?: { detail: any }) => {
       const ev = new Event(name);
-      // @ts-ignore
-      ev["name"] = name;
-      // @ts-ignore
-      ev["detail"] = params?.detail;
+      (<any>ev)["name"] = name;
+      (<any>ev)["detail"] = params?.detail;
       return ev;
     });
   }

@@ -147,6 +147,7 @@ export class PlayerUi {
       this.player.play();
     };
     addEventListener("keydown", (event) => {
+      event.preventDefault();
       if (event.key == " " && this.player.isPaused()) {
         this.player.play();
       }

@@ -515,9 +515,11 @@ describe("PlayerUi", () => {
     const keyDownEvent = new KeyboardEvent("keydown", {
       key: " ",
     });
+    spyOn(keyDownEvent, "preventDefault");
     dispatchEvent(keyDownEvent);
 
     expect(playSpy).toHaveBeenCalled();
+    expect(keyDownEvent.preventDefault).toHaveBeenCalled();
   });
 
   it("should not resume playing when pressing spacebar and player is not paused", async () => {
