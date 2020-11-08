@@ -556,6 +556,34 @@ describe("PlayerUi", () => {
     expect(resumeButton.style.display).toEqual("none");
   });
 
+  it("should show correct buttons on full screen enabling", async () => {
+    jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
+    jest.spyOn(Utils, "isFullscreen").mockReturnValue(true);
+    const fullscreenButtonIcon = <HTMLElement>(
+      document.querySelector(".fullscreen i")
+    );
+    playerUi.init();
+
+    document.documentElement.dispatchEvent(new Event("fullscreenchange"));
+
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeFalsy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeTruthy();
+  });
+
+  it("should show correct buttons on full screen exit", async () => {
+    jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
+    jest.spyOn(Utils, "isFullscreen").mockReturnValue(false);
+    const fullscreenButtonIcon = <HTMLElement>(
+      document.querySelector(".fullscreen i")
+    );
+    playerUi.init();
+
+    document.documentElement.dispatchEvent(new Event("fullscreenchange"));
+
+    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeTruthy();
+    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeFalsy();
+  });
+
   it("should enter full screen on click", async () => {
     jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
     jest.spyOn(Utils, "isFullscreen").mockReturnValue(false);
@@ -572,8 +600,6 @@ describe("PlayerUi", () => {
 
     fullscreenButton.click();
 
-    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeFalsy();
-    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeTruthy();
     expect(Utils.enterFullscreen).toHaveBeenCalled();
     expect(Utils.closeFullscreen).not.toHaveBeenCalled();
   });
@@ -593,8 +619,6 @@ describe("PlayerUi", () => {
 
     fullscreenButton.click();
 
-    expect(fullscreenButtonIcon.classList.contains("fa-expand")).toBeTruthy();
-    expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeFalsy();
     expect(Utils.enterFullscreen).not.toHaveBeenCalled();
     expect(Utils.closeFullscreen).toHaveBeenCalled();
   });
