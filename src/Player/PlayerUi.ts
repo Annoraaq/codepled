@@ -165,7 +165,6 @@ export class PlayerUi {
   }
 
   private initFullscreenButton(fullscreenButton: HTMLElement) {
-    const icon = <HTMLElement>fullscreenButton.querySelector("i");
     if (!Utils.isFullscreenSupported()) {
       fullscreenButton.style.display = "none";
     }
