@@ -14,6 +14,8 @@ const mockedHljs = mocked(hljs, true);
 let playerUi: PlayerUi;
 let player: Player;
 
+const oldQuerySelector = document.querySelector.bind(document);
+
 describe("PlayerUi", () => {
   beforeEach(() => {
     mockedHljs.configure.mockReset();
@@ -134,6 +136,17 @@ describe("PlayerUi", () => {
     );
 
     const scrollHeight = 111;
+    const lastSectionClientHeight = 11;
+
+    jest.spyOn(document, "querySelector").mockImplementation((selectors) => {
+      const elem = oldQuerySelector(selectors);
+      if (selectors == ".section.active" && elem) {
+        jest
+          .spyOn(elem, "clientHeight", "get")
+          .mockReturnValue(lastSectionClientHeight);
+      }
+      return elem;
+    });
 
     jest
       .spyOn(textboxContent, "scrollHeight", "get")
@@ -151,7 +164,9 @@ describe("PlayerUi", () => {
       '<div class="section">Hello</div>' +
         '<div class="section active">World</div>'
     );
-    expect(textboxContent.scrollTop).toEqual(scrollHeight);
+    expect(textboxContent.scrollTop).toEqual(
+      scrollHeight - lastSectionClientHeight
+    );
   });
 
   it("should highlight line", async () => {

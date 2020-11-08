@@ -247,7 +247,9 @@ export class PlayerUi {
   private onShowText = (_event: CustomEvent) => {
     this.createTableOfContents();
 
-    const textboxContent = document.querySelector(".textbox__content");
+    const textboxContent = <HTMLElement>(
+      document.querySelector(".textbox__content")
+    );
     let newContent = "";
     this.player.getTexts().forEach(({ text }, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;
@@ -259,7 +261,8 @@ export class PlayerUi {
     });
 
     textboxContent.innerHTML = newContent;
-    textboxContent.scrollTop = textboxContent.scrollHeight;
+
+    this.scrollToLastSection(textboxContent);
 
     document.querySelectorAll(".section").forEach((section, index) => {
       const isLastEntry = index === this.player.getTexts().length - 1;
@@ -270,6 +273,14 @@ export class PlayerUi {
       }
     });
   };
+
+  private scrollToLastSection(textboxContent: HTMLElement): void {
+    const lastSection = <HTMLElement>document.querySelector(".section.active");
+
+    textboxContent.scrollTop =
+      textboxContent.scrollHeight -
+      (lastSection ? lastSection.clientHeight : 0);
+  }
 
   private createTableOfContents() {
     const tocContent = document.querySelector(".toc__bookmarks");
