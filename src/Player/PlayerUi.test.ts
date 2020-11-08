@@ -18,6 +18,19 @@ const oldQuerySelector = document.querySelector.bind(document);
 
 describe("PlayerUi", () => {
   beforeEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
     mockedHljs.configure.mockReset();
     document.body.innerHTML = `
     <div class="container">
@@ -644,5 +657,31 @@ describe("PlayerUi", () => {
     playerUi.init();
 
     expect(fullscreenButton.style.display).toEqual("none");
+  });
+
+  it("should close toc on play in portrait mode", async () => {
+    const toc = <HTMLElement>document.querySelector(".table-of-contents");
+    const openToc = <HTMLElement>document.querySelector(".toc__open");
+    jest.spyOn(window, "matchMedia").mockReturnValue(<any>{ matches: true });
+    playerUi.init();
+
+    expect(openToc.style.display).toEqual("none");
+
+    dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
+
+    expect(toc.style.display).toEqual("none");
+    expect(openToc.style.display).toEqual("flex");
+  });
+
+  it("should not close toc on play if not in portrait mode", async () => {
+    const openToc = <HTMLElement>document.querySelector(".toc__open");
+    jest.spyOn(window, "matchMedia").mockReturnValue(<any>{ matches: false });
+    playerUi.init();
+
+    expect(openToc.style.display).toEqual("none");
+
+    dispatchEvent(new CustomEvent(PlayerEventType.PLAY));
+
+    expect(openToc.style.display).toEqual("none");
   });
 });

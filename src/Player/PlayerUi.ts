@@ -197,8 +197,7 @@ export class PlayerUi {
     const tocOpen: HTMLElement = document.querySelector(".toc__open");
 
     tocClose.onclick = () => {
-      tableOfContents.style.display = "none";
-      tocOpen.style.display = "flex";
+      this.closeToc();
     };
 
     tocOpen.style.display = "none";
@@ -210,15 +209,31 @@ export class PlayerUi {
     this.createTableOfContents();
   }
 
+  private closeToc() {
+    const tocOpen: HTMLElement = document.querySelector(".toc__open");
+    this.tableOfContents.style.display = "none";
+    tocOpen.style.display = "flex";
+  }
+
   private onPause = () => {
     this.playButton.innerHTML = '<i class="fas fa-play"></i>';
     this.resumeButton.style.display = "block";
   };
 
   private onPlay = () => {
+    if (this.isPortraitMode()) {
+      this.closeToc();
+    }
     this.playButton.innerHTML = '<i class="fas fa-pause"></i>';
     this.resumeButton.style.display = "none";
   };
+
+  private isPortraitMode(): boolean {
+    const matchMediaResult = matchMedia(
+      "only screen and (max-width: 800px), (orientation: portrait)"
+    );
+    return matchMediaResult.matches;
+  }
 
   private onChangeText = (event: CustomEvent) => {
     this.textArea.innerHTML =
