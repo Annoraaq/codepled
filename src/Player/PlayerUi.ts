@@ -166,24 +166,28 @@ export class PlayerUi {
 
   private initFullscreenButton(fullscreenButton: HTMLElement) {
     const icon = <HTMLElement>fullscreenButton.querySelector("i");
-    if (Utils.isFullscreen()) {
-      icon.classList.remove("fa-expand");
-      icon.classList.add("fa-compress");
+    if (!Utils.supportsFullscreen()) {
+      fullscreenButton.style.display = "none";
     } else {
-      icon.classList.remove("fa-compress");
-      icon.classList.add("fa-expand");
-    }
-    fullscreenButton.onclick = () => {
       if (Utils.isFullscreen()) {
-        icon.classList.remove("fa-compress");
-        icon.classList.add("fa-expand");
-        Utils.closeFullscreen();
-      } else {
         icon.classList.remove("fa-expand");
         icon.classList.add("fa-compress");
-        Utils.enterFullscreen();
+      } else {
+        icon.classList.remove("fa-compress");
+        icon.classList.add("fa-expand");
       }
-    };
+      fullscreenButton.onclick = () => {
+        if (Utils.isFullscreen()) {
+          icon.classList.remove("fa-compress");
+          icon.classList.add("fa-expand");
+          Utils.closeFullscreen();
+        } else {
+          icon.classList.remove("fa-expand");
+          icon.classList.add("fa-compress");
+          Utils.enterFullscreen();
+        }
+      };
+    }
   }
 
   private initToc(tableOfContents: HTMLElement) {

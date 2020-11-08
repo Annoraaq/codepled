@@ -6,7 +6,7 @@ body {
   padding: 0;
 }
 
-header.header {
+.header {
   background: #111111;
   -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
@@ -15,16 +15,27 @@ header.header {
   position: relative;
   text-align: center;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  flex-shrink: 0;
 }
 
-header .title {
+.header__row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.header .title {
   display: flex;
   flex-direction: row;
 }
 
-header h1 {
+.header .responsive {
+  display: none;
+}
+
+.header h1 {
   padding: 10px 10px;
   background: rgba(255, 163, 114, 0.4);
   margin: 0;
@@ -32,7 +43,7 @@ header h1 {
   line-height: 20px;
 }
 
-header h1 a {
+.header h1 a {
   color: rgb(255, 213, 190);
   font-family: Helvetica, Arial;
   font-weight: normal;
@@ -42,19 +53,19 @@ header h1 a {
   line-height: 20px;
 }
 
-header .title:hover h1 {
+.header .title:hover h1 {
   background: rgba(255, 163, 114, 0.541);
 }
 
-header .title:hover::before {
+.header .title:hover::before {
   border-right: 10px solid rgba(255, 163, 114, 0.541);
 }
 
-header .title:hover::after {
+.header .title:hover::after {
   border-left: 10px solid rgba(255, 163, 114, 0.541);
 }
 
-header .title::before {
+.header .title::before {
   content: "";
   width: 0;
   height: 0;
@@ -64,7 +75,7 @@ header .title::before {
   border-bottom: 20px solid transparent;
 }
 
-header .title::after {
+.header .title::after {
   content: "";
   width: 0;
   height: 0;
@@ -127,6 +138,15 @@ header .title::after {
     opacity: 0.5;
   }
 }
+
+.main-content-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  flex-grow: 1;
+  overflow: scroll;
+}
+
 .content {
   display: flex;
   flex-direction: row;
@@ -248,7 +268,7 @@ header .title::after {
   height: 25px;
   flex-grow: 300;
   display: block;
-  margin-right: 0px;
+  margin-right: 20px;
   margin-left: 20px;
 }
 
@@ -336,6 +356,13 @@ header .title::after {
   }
 }
 
+.toc-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
 .table-of-contents {
   position: relative;
   z-index: 1;
@@ -346,6 +373,7 @@ header .title::after {
   display: flex;
   flex-direction: column;
   align-content: stretch;
+  height: 100%;
 }
 
 .toc__content {
@@ -427,10 +455,15 @@ header .title::after {
   cursor: pointer;
   z-index: 1;
   text-align: center;
+  height: 100%;
 
   -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.toc__open--small:before {
+  display: none;
 }
 
 .toc__close:hover,
@@ -515,11 +548,98 @@ header .title::after {
 }
 
 .play.fullscreen {
-  margin-left: 5px;
+  margin-left: -10px;
   margin-right: 5px;
   font-size: 20px;
 
   cursor: pointer;
   height: 40px;
   width: 40px;
+}
+
+.container {
+  height: 100vh;
+}
+
+.header .header__row.responsive {
+  min-height: 30px;
+}
+
+.header .responsive .title h1 {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.header .responsive .title::before {
+  border-top-width: 15px;
+  border-bottom-width: 15px;
+}
+
+.header .responsive .title::after {
+  border-top-width: 15px;
+  border-bottom-width: 15px;
+}
+
+@media only screen and (max-width: 800px) {
+  .content {
+    height: 100%;
+  }
+
+  .main-content-container {
+    flex-direction: column;
+  }
+
+  .textbox-container {
+    width: 100%;
+    flex-shrink: 0;
+    height: 50%;
+    overflow-y: scroll;
+  }
+
+  .code-container {
+    width: 100%;
+    flex-shrink: 0;
+    flex-grow: 1;
+    height: 50%;
+    overflow-y: scroll;
+  }
+
+  .table-of-contents {
+    position: absolute;
+  }
+
+  .toc__bookmarks {
+    width: 300px;
+  }
+
+  .toc__open,
+  .toc__close {
+    width: 30px;
+  }
+
+  .toc__open i::before {
+    display: none;
+  }
+  .toc__open .toc__open--small::before {
+    display: block;
+  }
+
+  .header__row .title {
+    display: none;
+  }
+
+  .header__row .title h1 {
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .next-button {
+    right: 0;
+  }
+
+  .header__row.responsive .title,
+  .header__row.responsive {
+    justify-content: center;
+    display: flex;
+  }
 }

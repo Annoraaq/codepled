@@ -10,44 +10,57 @@
   <body>
     <div class="container">
       <header class="header">
-        <div class="left">
-          <img class="logo" src="./assets/codepled_logo.png" />
+        <div class="header__row">
+          <div class="left">
+            <img class="logo" src="./assets/codepled_logo.png" />
+            <div class="title">
+              <h1><a href="index.html">Singly Linked Lists in JavaScript</a></h1>
+            </div>
+          </div>
+          <nav>
+            <ul>
+              <li>
+                <a href="datenschutz.html">Datenschutz</a>
+              </li>
+              <li>
+                <a href="impressum.html">Impressum</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="header__row responsive">
           <div class="title">
             <h1><a href="index.html">Singly Linked Lists in JavaScript</a></h1>
           </div>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <a href="datenschutz.html">Datenschutz</a>
-            </li>
-            <li>
-              <a href="impressum.html">Impressum</a>
-            </li>
-          </ul>
-        </nav>
+        </header>
       </header>
       <div class="content">
-        <div class="toc__open">
-          <i class="fas fa-angle-right"></i>
-        </div>
-        <div class="table-of-contents">
-          <header class="toc__title">
-              Table of Contents
-          </header>
-          <div class="toc__content">
-            <ul class="toc__bookmarks">
-            </ul>
-            <div class="toc__close"><i class="fas fa-angle-left"></i></div>
+        <div class="toc-container">
+          <div class="toc__open">
+            <i class="toc__open--small fas fa-list"></i>
+            <i class="fas fa-angle-right"></i>
+          </div>
+          <div class="table-of-contents">
+            <header class="toc__title">
+                Table of Contents
+            </header>
+            <div class="toc__content">
+              <ul class="toc__bookmarks">
+              </ul>
+              <div class="toc__close"><i class="fas fa-angle-left"></i></div>
+            </div>
           </div>
         </div>
-        <div class="textbox-container">
-          <div class="textbox__content"></div>
-        </div>
-        <div class="code-container">
-          <div class="inner-container">
-            <div class="lines"></div>
-            <div id="codepled" class="language-js"></div>
+        <div class="main-content-container">
+          <div class="textbox-container">
+            <div class="textbox__content"></div>
+          </div>
+          <div class="code-container">
+            <div class="inner-container">
+              <div class="lines"></div>
+              <div id="codepled" class="language-js"></div>
+            </div>
           </div>
         </div>
       </div>

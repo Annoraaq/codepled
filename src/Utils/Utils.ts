@@ -35,6 +35,16 @@ export class Utils {
     }
   }
 
+  static supportsFullscreen(): boolean {
+    const element = <any>document.documentElement;
+    return (
+      element.requestFullscreen ||
+      element.mozRequestFullScreen ||
+      element.msRequestFullscreen ||
+      element.webkitRequestFullscreen
+    );
+  }
+
   static closeFullscreen() {
     const doc = <any>document;
     if (doc.exitFullscreen) {
