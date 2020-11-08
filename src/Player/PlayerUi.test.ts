@@ -557,6 +557,7 @@ describe("PlayerUi", () => {
   });
 
   it("should enter full screen on click", async () => {
+    jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
     jest.spyOn(Utils, "isFullscreen").mockReturnValue(false);
     jest.spyOn(Utils, "enterFullscreen").mockClear();
     jest.spyOn(Utils, "closeFullscreen").mockClear();
@@ -578,6 +579,7 @@ describe("PlayerUi", () => {
   });
 
   it("should leave full screen on click", async () => {
+    jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
     jest.spyOn(Utils, "isFullscreen").mockReturnValue(true);
     jest.spyOn(Utils, "enterFullscreen").mockClear();
     jest.spyOn(Utils, "closeFullscreen").mockClear();
@@ -595,5 +597,13 @@ describe("PlayerUi", () => {
     expect(fullscreenButtonIcon.classList.contains("fa-compress")).toBeFalsy();
     expect(Utils.enterFullscreen).not.toHaveBeenCalled();
     expect(Utils.closeFullscreen).toHaveBeenCalled();
+  });
+
+  it("should hide fullscreen button if not supported", async () => {
+    jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(false);
+    const fullscreenButton = <HTMLElement>document.querySelector(".fullscreen");
+    playerUi.init();
+
+    expect(fullscreenButton.style.display).toEqual("none");
   });
 });

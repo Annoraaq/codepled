@@ -155,5 +155,47 @@ describe("Utils", () => {
       });
       expect(Utils.isFullscreen()).toBeTruthy();
     });
+
+    describe("isFullscreenSupported", () => {
+      it("should detect missing fullscreen support", () => {
+        document.documentElement["requestFullscreen"] = undefined;
+        (<any>document.documentElement)["mozRequestFullScreen"] = undefined;
+        (<any>document.documentElement)["msRequestFullscreen"] = undefined;
+        (<any>document.documentElement)["webkitRequestFullscreen"] = undefined;
+        expect(Utils.isFullscreenSupported()).toBeFalsy();
+      });
+
+      it("should detect fullscreen support for modern browsers", () => {
+        document.documentElement["requestFullscreen"] = jest.fn();
+        (<any>document.documentElement)["mozRequestFullScreen"] = undefined;
+        (<any>document.documentElement)["msRequestFullscreen"] = undefined;
+        (<any>document.documentElement)["webkitRequestFullscreen"] = undefined;
+        expect(Utils.isFullscreenSupported()).toBeTruthy();
+      });
+
+      it("should detect fullscreen support for mozilla", () => {
+        document.documentElement["requestFullscreen"] = undefined;
+        (<any>document.documentElement)["mozRequestFullScreen"] = jest.fn();
+        (<any>document.documentElement)["msRequestFullscreen"] = undefined;
+        (<any>document.documentElement)["webkitRequestFullscreen"] = undefined;
+        expect(Utils.isFullscreenSupported()).toBeTruthy();
+      });
+
+      it("should detect fullscreen support for microsoft", () => {
+        document.documentElement["requestFullscreen"] = undefined;
+        (<any>document.documentElement)["mozRequestFullScreen"] = undefined;
+        (<any>document.documentElement)["msRequestFullscreen"] = jest.fn();
+        (<any>document.documentElement)["webkitRequestFullscreen"] = undefined;
+        expect(Utils.isFullscreenSupported()).toBeTruthy();
+      });
+
+      it("should detect fullscreen support for webkit", () => {
+        document.documentElement["requestFullscreen"] = undefined;
+        (<any>document.documentElement)["mozRequestFullScreen"] = undefined;
+        (<any>document.documentElement)["msRequestFullscreen"] = undefined;
+        (<any>document.documentElement)["webkitRequestFullscreen"] = jest.fn();
+        expect(Utils.isFullscreenSupported()).toBeTruthy();
+      });
+    });
   });
 });

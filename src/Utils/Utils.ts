@@ -35,7 +35,7 @@ export class Utils {
     }
   }
 
-  static supportsFullscreen(): boolean {
+  static isFullscreenSupported(): boolean {
     const element = <any>document.documentElement;
     return (
       element.requestFullscreen ||
