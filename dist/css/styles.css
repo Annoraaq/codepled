@@ -644,3 +644,7 @@ body {
     display: flex;
   }
 }
+
+.cc-revoke {
+  display: none;
+}

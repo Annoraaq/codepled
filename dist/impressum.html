@@ -2,27 +2,39 @@
 <html>
   <head>
     <title>Impressum</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
 
   <body>
       <header class="header">
-        <div class="left">
-          <img class="logo" src="./assets/codepled_logo.png" />
+        <div class="header__row">
+          <div class="left">
+            <img class="logo" src="./assets/codepled_logo.png" />
+            <div class="title">
+              <h1><a href="index.html">Singly Linked Lists in JavaScript</a></h1>
+            </div>
+          </div>
+          <nav>
+            <ul>
+              <li>
+                <a href="javascript:void(0);" onclick="openCookieBanner()">Cookie Policy</a>
+              </li>
+              <li>
+                <a href="datenschutz.html">Datenschutz</a>
+              </li>
+              <li>
+                <a href="impressum.html">Impressum</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="header__row responsive">
           <div class="title">
             <h1><a href="index.html">Singly Linked Lists in JavaScript</a></h1>
           </div>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <a href="datenschutz.html">Datenschutz</a>
-            </li>
-            <li>
-              <a href="impressum.html">Impressum</a>
-            </li>
-          </ul>
-        </nav>
+        </header>
       </header>
       <div class="text-content">
         <h2>Impressum</h2>
@@ -42,5 +54,41 @@
         codepled@bw-webgestaltung.de
         </p>
       </div>
+      <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+      <script>
+        function configureGACookies() {
+          if (!this.hasConsented()) {
+            window['ga-disable-G-2H3P10FF82'] = true;
+          }
+        }
+        function openCookieBanner() {
+          const cookieBanner = document.querySelector(".cc-revoke");
+          cookieBanner.click();
+        }
+        window.cookieconsent.initialise({
+          "palette": {
+            "popup": {
+              "background": "#000"
+            },
+            "button": {
+              "background": "#ffa372"
+            }
+          },
+          "theme": "classic",
+          "type": "opt-in",
+          "content": {
+            link: 'Data Privacy Policy',
+            href: '/datenschutz.html',
+          },
+          onInitialise: function(status) {
+            configureGACookies.apply(this);
+          },
+
+          onStatusChange: function(status) {
+            configureGACookies.apply(this);
+          },
+        });
+
+      </script>
   </body>
 </html>
