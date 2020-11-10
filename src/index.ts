@@ -55,6 +55,7 @@ player.addCommands([
   [
     2,
     {
+      title: "Find",
       message: `<h3>Find</h3>Finding a specific element is similar to accessing a random element. The only difference is that you need to compare the data of the current element with the one you are looking for. The runtime complexity of this operation is O(n).
     `,
       pause: true,
@@ -65,6 +66,7 @@ player.addCommands([
   [
     2,
     {
+      title: "Random Removal",
       message: `<h3>Random removal</h3>Removing any element from the list is a combination of finding the element and its predecessor and updating the next pointers. This operations also has a runtime complexity of O(n) caused by the find operation.
     `,
       pause: true,
