@@ -489,6 +489,10 @@ body {
   margin-left: 10px;
 }
 
+.logo img {
+  height: 35px;
+}
+
 .lines .line {
   padding-left: 10px;
   display: inline-block;
@@ -654,4 +658,8 @@ body {
 
 .cc-revoke {
   display: none;
+}
+
+header nav ul li a.patreon-button {
+  color: white;
 }
