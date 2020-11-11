@@ -11,7 +11,7 @@ module.exports = {
       template: 'indexTemplate.html'
     }),
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' })
   ],
   module: {
     rules: [
@@ -27,7 +27,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
     filename: '[name].[contenthash].js',

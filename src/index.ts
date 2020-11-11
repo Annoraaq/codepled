@@ -6,6 +6,8 @@ import { input as input4 } from "./../codepleds/linked-list/input4";
 import { input as input5 } from "./../codepleds/linked-list/input5";
 import { DiffConverter } from "./DiffConverter/DiffConverter";
 import { PlayerUi } from "./Player/PlayerUi";
+import "./styles.css";
+
 const dmp = new DiffMatchPatch();
 const diff1 = dmp.diff_main("", input1);
 const diff2 = dmp.diff_main(input1, input2);

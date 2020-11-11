@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.14",
     "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^5.0.1",
     "jest": "^26.4.2",
     "mini-css-extract-plugin": "^1.3.0",
     "ts-jest": "^26.4.0",
