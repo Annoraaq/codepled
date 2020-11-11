@@ -16,6 +16,7 @@ const diffConverter = new DiffConverter();
 
 const player = new PlayerUi();
 player.setInitialText("");
+console.log("test");
 player.addCommands([
   [
     2,
