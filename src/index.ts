@@ -78,3 +78,9 @@ player.addCommands([
   ...diffConverter.createCommandsFastForward(diff5),
 ]);
 player.init();
+
+(function incCounter() {
+  if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+    fetch("https://us-central1-codepled.cloudfunctions.net/incCount");
+  }
+})();
