@@ -5,6 +5,8 @@ import { input as input3 } from "./../codepleds/linked-list/input3";
 import { input as input4 } from "./../codepleds/linked-list/input4";
 import { input as input5 } from "./../codepleds/linked-list/input5";
 import { input as input6 } from "./../codepleds/linked-list/input6";
+import { input as input7 } from "./../codepleds/linked-list/input7";
+import { input as input8 } from "./../codepleds/linked-list/input8";
 import { DiffConverter } from "./DiffConverter/DiffConverter";
 import { PlayerUi } from "./Player/PlayerUi";
 import "./styles.css";
@@ -16,7 +18,9 @@ if (document.querySelector("#codepled")) {
   const diff3 = dmp.diff_main(input2, input3);
   const diff4 = dmp.diff_main(input3, input4);
   const diff5 = dmp.diff_main(input4, input5);
-  const diff6 = dmp.diff_main(input5, input6);
+  const diff6 = dmp.diff_main("", input6);
+  const diff7 = dmp.diff_main(input6, input7);
+  const diff8 = dmp.diff_main(input7, input8);
   const diffConverter = new DiffConverter();
 
   const player = new PlayerUi();
@@ -139,8 +143,44 @@ if (document.querySelector("#codepled")) {
         pause: false,
       },
     ],
+    [7, ""],
     ...diffConverter.createCommandsFastForward(diff6),
     [6, undefined],
+    [
+      2,
+      {
+        title: "DLL: Insertion",
+        message:
+          "<h3>Insertion</h3>" +
+          "<p>Not only do we have to update the next pointers of the nodes but now also the previous pointers. It is easy to mess this up and forget to update a pointer during an interview.</p>",
+        pause: false,
+      },
+    ],
+    ...diffConverter.createCommandsFastForward(diff7),
+    [6, undefined],
+    [
+      2,
+      {
+        title: "DLL: Random Removal",
+        message:
+          "<h3>Random Removal</h3>" +
+          "<p>Random removal simply works by finding the element and then updating the pointers of the previous and next element. If we do not need to find the element to remove then this operation is possible in O(1). This was not possible with a singly linked list because finding the previous element takes O(n) there.</p>",
+        pause: false,
+      },
+    ],
+    ...diffConverter.createCommandsFastForward(diff8),
+    [6, undefined],
+    [
+      2,
+      {
+        title: "Conclusion",
+        message:
+          "<h3>Conclusion</h3>" +
+          "<p>Linked lists are essential for coding interviews. However, clarify with your interviewer if you really need to implement it from scratch. There are coding tasks where it is essential that you recognise to use a linked list but there is no need to implement it. Make sure to know the different operations and their time complexity.</p>" +
+          "<p>I wish you good luck for your interviews!</p>",
+        pause: false,
+      },
+    ],
   ]);
   player.init();
 

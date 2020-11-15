@@ -199,6 +199,9 @@ export class Player {
     } else if (type === CommandType.SET_CURSOR) {
       this.cursor = payload;
       this.currentStepIndex++;
+    } else if (type === CommandType.REPLACE_ALL) {
+      this.processReplaceAll(payload);
+      this.currentStepIndex++;
     } else {
       this.currentStepIndex++;
     }
