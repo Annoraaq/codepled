@@ -274,6 +274,17 @@ describe("Player", () => {
     expect([...player.getLinesTouched()]).toEqual([2]);
   });
 
+  it("should forward to replace all", async () => {
+    player.setInitialText("Hello\n");
+    player.addCommands([[CommandType.REPLACE_ALL, "abc"]]);
+    player.reset();
+
+    player.forwardTo(1);
+    expect(player.getText()).toEqual("abc");
+    expect(player.getCursor()).toEqual(0);
+    expect([...player.getLinesTouched()]).toEqual([1]);
+  });
+
   it("should set cursor when forward to", async () => {
     player.setInitialText("Hello\n");
     player.addCommands([
