@@ -240,6 +240,13 @@ export class Player {
     });
   }
 
+  private processReplaceAll(payload: string) {
+    this.touchedLinesDetector.processReplaceAll(payload);
+    this.cursor = 0;
+    this.setText(payload);
+    this.scrollTo(this.getCursorLine());
+  }
+
   private processCommand([commandNo, payload]: any[]) {
     if (commandNo === CommandType.INSERT) {
       this.processInsert(payload);
@@ -274,6 +281,8 @@ export class Player {
       this.setText(this.trueText);
     } else if (commandNo === CommandType.PAUSE) {
       this.pause();
+    } else if (commandNo === CommandType.REPLACE_ALL) {
+      this.processReplaceAll(payload);
     }
   }
 

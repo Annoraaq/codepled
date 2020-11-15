@@ -1,3 +1,4 @@
+import { Utils } from "../Utils/Utils";
 import { DeleteDetector } from "./DeleteDetector/DeleteDetector";
 import { InsertDetector } from "./InsertDetector/InsertDetector";
 
@@ -37,5 +38,13 @@ export class TouchedLinesDetector {
       payload,
       this.touchedLines
     );
+  }
+
+  processReplaceAll(payload: string) {
+    this.touchedLines.clear();
+    const noOfLines = Utils.countLines(payload);
+    for (let i = 1; i <= noOfLines; i++) {
+      this.touchedLines.add(i);
+    }
   }
 }

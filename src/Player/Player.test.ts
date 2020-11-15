@@ -441,4 +441,21 @@ describe("Player", () => {
     expect(player.getText()).toEqual("ne2\nLine3");
     expect([...player.getLinesTouched()]).toEqual([1]);
   });
+
+  it("processes replace all commands", async () => {
+    const expectedScrollToEvent = new CustomEvent(PlayerEventType.SCROLL_TO, {
+      detail: {
+        line: 1,
+      },
+    });
+    player.setInitialText("Hello\n");
+    player.addCommands([[CommandType.REPLACE_ALL, "abc\ndef"]]);
+    player.reset();
+    await player.play();
+
+    expect(player.getText()).toEqual("abc\ndef");
+    expect(player.getCursor()).toEqual(0);
+    expect([...player.getLinesTouched()]).toEqual([1, 2]);
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expectedScrollToEvent);
+  });
 });

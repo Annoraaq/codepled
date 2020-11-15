@@ -7,6 +7,7 @@ export enum CommandType {
   SCROLL_TO = 4,
   SET_CURSOR = 5,
   PAUSE = 6,
+  REPLACE_ALL = 7,
 }
 export type Command = [number, any];
 export type FastForwardCommand = {

@@ -54,4 +54,12 @@ describe("TouchedLinesDetector", () => {
     touchedLinesDetector.processShowText();
     expect(touchedLinesDetector.getTouchedLines().size).toEqual(0);
   });
+
+  it("should process replace all", () => {
+    touchedLines.add(3);
+    expect(touchedLinesDetector.getTouchedLines().size).toEqual(1);
+
+    touchedLinesDetector.processReplaceAll("Hello\nWorld");
+    expect(touchedLinesDetector.getTouchedLines()).toEqual(new Set([1, 2]));
+  });
 });
