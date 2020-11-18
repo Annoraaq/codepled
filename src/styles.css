@@ -431,6 +431,16 @@ body {
   text-align: left;
 }
 
+.table-of-contents .bookmark--level2 {
+  list-style-type: disc;
+  list-style-position: outside;
+  padding-left: 20px;
+}
+
+.table-of-contents .bookmark--level2 i {
+  display: none;
+}
+
 .toc__bookmarks {
   width: 200px;
   overflow-y: scroll;

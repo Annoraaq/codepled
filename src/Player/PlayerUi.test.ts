@@ -684,4 +684,39 @@ describe("PlayerUi", () => {
 
     expect(openToc.style.display).toEqual("none");
   });
+
+  it("should show a second level element in toc", async () => {
+    jest.spyOn(player, "getTextSteps").mockReturnValue([
+      { content: "some text", stepNo: 3 },
+      { content: "some level 2 text", stepNo: 28, level: 2 },
+    ]);
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "" },
+      })
+    );
+
+    const expectedHtml = `
+    <li class="bookmark">
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">[NO_HTML]some text</div>
+      </button>
+    </li>
+    <li class="bookmark bookmark--level2">
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">[NO_HTML]some level 2 text</div>
+      </button>
+    </li>`;
+
+    expect(
+      TestUtils.removeWhitespace(
+        document.querySelector(".toc__bookmarks").innerHTML
+      )
+    ).toEqual(TestUtils.removeWhitespace(expectedHtml));
+  });
 });

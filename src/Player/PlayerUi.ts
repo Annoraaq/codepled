@@ -303,26 +303,31 @@ export class PlayerUi {
 
     const lastIndexInRange = this.getLastIndexInRange();
 
-    this.player.getTextSteps().forEach(({ title, content, stepNo }, index) => {
-      const bookmarkElem = document.createElement("li");
-      const bookmarkLink = document.createElement("button");
-      bookmarkElem.classList.add("bookmark");
-      bookmarkElem.appendChild(bookmarkLink);
-      bookmarkLink.innerHTML = `
+    this.player
+      .getTextSteps()
+      .forEach(({ title, content, stepNo, level }, index) => {
+        const bookmarkElem = document.createElement("li");
+        const bookmarkLink = document.createElement("button");
+        bookmarkElem.classList.add("bookmark");
+        if (level === 2) {
+          bookmarkElem.classList.add("bookmark--level2");
+        }
+        bookmarkElem.appendChild(bookmarkLink);
+        bookmarkLink.innerHTML = `
             <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
             <div class="bookmark__title">${
               title ? title : Utils.stripHtml(content.substr(0, 20))
             }</div>`;
-      tocContent.appendChild(bookmarkElem);
-      bookmarkLink.onclick = () => {
-        this.player.forwardTo(stepNo);
-      };
-      if (index == lastIndexInRange) {
-        bookmarkElem.classList.add("active");
-      } else {
-        bookmarkElem.classList.remove("active");
-      }
-    });
+        tocContent.appendChild(bookmarkElem);
+        bookmarkLink.onclick = () => {
+          this.player.forwardTo(stepNo);
+        };
+        if (index == lastIndexInRange) {
+          bookmarkElem.classList.add("active");
+        } else {
+          bookmarkElem.classList.remove("active");
+        }
+      });
   }
 
   private getLastIndexInRange(): number {

@@ -101,18 +101,18 @@ describe("CommandController", () => {
   it("should give correct showText entries", () => {
     commandController.setCommands([
       [CommandType.INSERT, "ab.cde"],
-      [CommandType.SHOW_TEXT, { message: "first text" }],
+      [CommandType.SHOW_TEXT, { message: "first text", level: 1 }],
       [CommandType.DELETE, 3],
-      [CommandType.SHOW_TEXT, { message: "second text" }],
+      [CommandType.SHOW_TEXT, { message: "second text", title: "some title" }],
       [CommandType.SKIP, 27],
       [CommandType.INSERT, "hello"],
-      [CommandType.SHOW_TEXT, { message: "third text" }],
+      [CommandType.SHOW_TEXT, { message: "third text", level: 2 }],
     ]);
 
     expect(commandController.getTextSteps()).toEqual([
-      { content: "first text", stepNo: 4 },
-      { content: "second text", stepNo: 6 },
-      { content: "third text", stepNo: 9 },
+      { content: "first text", stepNo: 4, level: 1 },
+      { content: "second text", stepNo: 6, title: "some title" },
+      { content: "third text", stepNo: 9, level: 2 },
     ]);
   });
 });

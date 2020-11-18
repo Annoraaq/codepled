@@ -17,9 +17,10 @@ interface Chunk {
 }
 
 export interface TextStep {
-  title?: string;
   content: string;
   stepNo: number;
+  title?: string;
+  level?: number;
 }
 
 export class CommandController {
@@ -54,9 +55,10 @@ export class CommandController {
           break;
         case CommandType.SHOW_TEXT:
           this.textSteps.push({
-            title: payload.title,
             content: payload.message,
             stepNo: this.stepNo + 1,
+            title: payload.title,
+            level: payload.level,
           });
         default:
           this.addStepMapping(commandIndex, 0, 1);
