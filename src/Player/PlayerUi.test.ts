@@ -457,8 +457,8 @@ describe("PlayerUi", () => {
 
   it("should highlight the correct table of contents", async () => {
     jest.spyOn(player, "getTextSteps").mockReturnValue([
-      { title: "some title", content: "some text", stepNo: 3 },
-      { content: "some other text", stepNo: 28 },
+      { title: "some title", content: "some text", stepNo: 3, toc: true },
+      { content: "some other text", stepNo: 28, toc: true },
     ]);
 
     playerUi.init();
@@ -492,8 +492,8 @@ describe("PlayerUi", () => {
 
   it("should forward on click on bookmark", async () => {
     jest.spyOn(player, "getTextSteps").mockReturnValue([
-      { content: "some text", stepNo: 3 },
-      { content: "some other text", stepNo: 28 },
+      { content: "some text", stepNo: 3, toc: true },
+      { content: "some other text", stepNo: 28, toc: true },
     ]);
     const forwardSpy = jest.spyOn(player, "forwardTo").mockImplementation();
 
@@ -687,8 +687,8 @@ describe("PlayerUi", () => {
 
   it("should show a second level element in toc", async () => {
     jest.spyOn(player, "getTextSteps").mockReturnValue([
-      { content: "some text", stepNo: 3 },
-      { content: "some level 2 text", stepNo: 28, level: 2 },
+      { content: "some text", stepNo: 3, toc: true },
+      { content: "some level 2 text", stepNo: 28, level: 2, toc: true },
     ]);
 
     playerUi.init();
@@ -710,6 +710,35 @@ describe("PlayerUi", () => {
       <button>
         <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
         <div class="bookmark__title">[NO_HTML]some level 2 text</div>
+      </button>
+    </li>`;
+
+    expect(
+      TestUtils.removeWhitespace(
+        document.querySelector(".toc__bookmarks").innerHTML
+      )
+    ).toEqual(TestUtils.removeWhitespace(expectedHtml));
+  });
+
+  it("should not show bookmark in toc", async () => {
+    jest.spyOn(player, "getTextSteps").mockReturnValue([
+      { content: "some text", stepNo: 3, toc: true },
+      { content: "some level 2 text", stepNo: 28, toc: false },
+    ]);
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "" },
+      })
+    );
+
+    const expectedHtml = `
+    <li class="bookmark">
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">[NO_HTML]some text</div>
       </button>
     </li>`;
 

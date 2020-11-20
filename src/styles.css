@@ -354,6 +354,7 @@ body {
   -o-animation: fadein 1.375s; /* Opera < 12.1 */
   animation: fadein 1.375s;
 }
+
 @keyframes fadein {
   from {
     opacity: 0;
@@ -431,14 +432,12 @@ body {
   text-align: left;
 }
 
-.table-of-contents .bookmark--level2 {
-  list-style-type: disc;
-  list-style-position: outside;
+.table-of-contents .bookmark--level2 button {
   padding-left: 20px;
 }
 
 .table-of-contents .bookmark--level2 i {
-  display: none;
+  visibility: hidden;
 }
 
 .toc__bookmarks {

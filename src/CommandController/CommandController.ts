@@ -19,6 +19,7 @@ interface Chunk {
 export interface TextStep {
   content: string;
   stepNo: number;
+  toc: boolean;
   title?: string;
   level?: number;
 }
@@ -59,6 +60,7 @@ export class CommandController {
             stepNo: this.stepNo + 1,
             title: payload.title,
             level: payload.level,
+            toc: payload.toc !== false,
           });
         default:
           this.addStepMapping(commandIndex, 0, 1);

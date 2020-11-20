@@ -305,6 +305,7 @@ export class PlayerUi {
 
     this.player
       .getTextSteps()
+      .filter(({ toc }) => toc)
       .forEach(({ title, content, stepNo, level }, index) => {
         const bookmarkElem = document.createElement("li");
         const bookmarkLink = document.createElement("button");
