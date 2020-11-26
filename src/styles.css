@@ -610,6 +610,10 @@ header nav ul li a.patreon-button {
   line-height: 1.5em;
 }
 
+.section a {
+  color: white;
+}
+
 .section.active h1,
 .section.active h2,
 .section.active h3,
