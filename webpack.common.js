@@ -13,11 +13,11 @@ module.exports = {
       template: 'templates/indexTemplate.html'
     }),
     new HtmlWebpackPlugin({
-      filename: 'impressum.html',
+      filename: 'RENAME/impressum.html',
       template: 'templates/impressumTemplate.html'
     }),
     new HtmlWebpackPlugin({
-      filename: 'datenschutz.html',
+      filename: 'RENAME/datenschutz.html',
       template: 'templates/datenschutzTemplate.html'
     }),
     new CleanWebpackPlugin(),
