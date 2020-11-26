@@ -1,5 +1,5 @@
 import { PlayerUi } from "./Player/PlayerUi";
-import { commands } from "./codepleds/stacks-and-queues";
+import { commands } from "./codepleds/iterating-strings";
 import "./styles.css";
 
 if (document.querySelector("#codepled")) {

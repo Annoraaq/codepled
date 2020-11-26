@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index.ts',
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Basic Interview Data Structures in JavaScript: Stacks and Queues',
+      title: 'How to Iterate Through Strings in JavaScript',
       filename: 'RENAME/index.html',
       template: 'templates/indexTemplate.html'
     }),
