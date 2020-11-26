@@ -455,9 +455,10 @@ describe("PlayerUi", () => {
     expect(forwardSpy).not.toHaveBeenCalledWith(28);
   });
 
-  it("should highlight the correct table of contents", async () => {
+  it("should highlight the correct table of contents on start", async () => {
     jest.spyOn(player, "getTextSteps").mockReturnValue([
       { title: "some title", content: "some text", stepNo: 3, toc: true },
+      { content: "not in toc", stepNo: 4, toc: false },
       { content: "some other text", stepNo: 28, toc: true },
     ]);
 
@@ -471,6 +472,44 @@ describe("PlayerUi", () => {
 
     const expectedHtml = `
     <li class="bookmark">
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">some title</div>
+      </button>
+    </li>
+    <li class="bookmark">
+      <button>
+        <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
+        <div class="bookmark__title">[NO_HTML]some other text</div>
+      </button>
+    </li>`;
+
+    expect(
+      TestUtils.removeWhitespace(
+        document.querySelector(".toc__bookmarks").innerHTML
+      )
+    ).toEqual(TestUtils.removeWhitespace(expectedHtml));
+  });
+
+  it("should highlight the correct table of contents", async () => {
+    jest.spyOn(player, "getTextSteps").mockReturnValue([
+      { title: "some title", content: "some text", stepNo: 3, toc: true },
+      { content: "not in toc", stepNo: 4, toc: false },
+      { content: "some other text", stepNo: 28, toc: true },
+    ]);
+
+    jest.spyOn(player, "getCurrentStepIndex").mockReturnValue(15);
+
+    playerUi.init();
+
+    dispatchEvent(
+      new CustomEvent(PlayerEventType.SHOW_TEXT, {
+        detail: { text: "" },
+      })
+    );
+
+    const expectedHtml = `
+    <li class="bookmark active">
       <button>
         <div class="bookmark__icon"><i class="fas fa-align-left"></i></div>
         <div class="bookmark__title">some title</div>

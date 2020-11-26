@@ -333,11 +333,14 @@ export class PlayerUi {
 
   private getLastIndexInRange(): number {
     let lastIndexInRange = -1;
-    this.player.getTextSteps().forEach(({ stepNo }, index) => {
-      if (stepNo <= this.player.getCurrentStepIndex()) {
-        lastIndexInRange = index;
-      }
-    });
+    this.player
+      .getTextSteps()
+      .filter(({ toc }) => toc)
+      .forEach(({ stepNo }, index) => {
+        if (stepNo <= this.player.getCurrentStepIndex()) {
+          lastIndexInRange = index;
+        }
+      });
     return lastIndexInRange;
   }
 }
