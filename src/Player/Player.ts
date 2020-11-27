@@ -130,7 +130,7 @@ export class Player {
       this.processCommand(
         this.commandController.getCommandAtStep(this.currentStepIndex)
       );
-      this.setCurrentStepIndex(this.currentStepIndex + 1);
+      this.setCurrentStepIndex(this.currentStepIndex);
       if (this.currentStepIndex >= this.getCommandCount()) {
         this.pause();
       }
@@ -255,14 +255,17 @@ export class Player {
       this.processInsert(payload);
       this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.DELETE) {
       this.processDelete(payload);
       this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.SKIP) {
       this.processSkip(payload);
       this.setText(this.trueText);
       this.scrollTo(this.getCursorLine());
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.SHOW_TEXT) {
       this.processShowText(payload);
       if (payload.pause) {
@@ -273,19 +276,25 @@ export class Player {
           message: payload.message,
         },
       });
+      this.currentStepIndex++;
       dispatchEvent(event);
     } else if (commandNo === CommandType.HIGHLIGHT_LINES) {
       this.highlightedLines = payload;
       this.setText(this.trueText);
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.SCROLL_TO) {
       this.scrollTo(payload);
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.SET_CURSOR) {
       this.cursor = payload;
       this.setText(this.trueText);
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.PAUSE) {
       this.pause();
+      this.currentStepIndex++;
     } else if (commandNo === CommandType.REPLACE_ALL) {
       this.processReplaceAll(payload);
+      this.currentStepIndex++;
     }
   }
 
