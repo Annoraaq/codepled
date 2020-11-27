@@ -75,6 +75,7 @@ describe("PlayerUi", () => {
     playerUi = new PlayerUi(player);
     jest.spyOn(Utils, "sleep").mockImplementation(() => Promise.resolve());
     jest.spyOn(Utils, "stripHtml").mockImplementation((a) => `[NO_HTML]${a}`);
+    jest.spyOn(player, "forwardTo").mockImplementation(jest.fn());
     mockedHljs.configure.mockReset();
     mockedHljs.highlightBlock.mockReset();
   });
@@ -93,6 +94,13 @@ describe("PlayerUi", () => {
     const setInitalTextSpy = spyOn(player, "setInitialText");
     playerUi.setInitialText("initial text");
     expect(setInitalTextSpy).toHaveBeenCalledWith("initial text");
+  });
+
+  it("should init player", () => {
+    jest.spyOn(player, "reset");
+    playerUi.init();
+    expect(player.reset).toHaveBeenCalled();
+    expect(player.forwardTo).toHaveBeenCalledWith(1);
   });
 
   it("should init slider", () => {

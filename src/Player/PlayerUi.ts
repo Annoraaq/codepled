@@ -47,6 +47,7 @@ export class PlayerUi {
     this.initResumeButton(this.resumeButton);
     this.initFullscreenButton(this.fullscreenButton);
     this.player.reset();
+    this.player.forwardTo(1);
   }
 
   setInitialText(initialText: string) {
