@@ -627,6 +627,10 @@ header nav ul li a.patreon-button {
   color: white;
 }
 
+.section img {
+  width: 100%;
+}
+
 .header .header__row.responsive {
   min-height: 30px;
   margin-top: 10px;

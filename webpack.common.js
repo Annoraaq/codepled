@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index.ts',
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'How to Iterate Through Strings in JavaScript',
+      title: '5 Ways to Find the Shortest Path in a Graph',
       filename: 'RENAME/index.html',
       template: 'templates/indexTemplate.html'
     }),

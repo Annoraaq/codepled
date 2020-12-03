@@ -1,5 +1,5 @@
 import { PlayerUi } from "./Player/PlayerUi";
-import { commands } from "./codepleds/iterating-strings";
+import { commands } from "./codepleds/5-ways-shortest-path";
 import "./styles.css";
 
 if (document.querySelector("#codepled")) {
