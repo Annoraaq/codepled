@@ -13,10 +13,10 @@ const dmp = new DiffMatchPatch();
 const diff1 = dmp.diff_main("", input1);
 const diff2 = dmp.diff_main(input1, input2);
 const diff3 = dmp.diff_main(input2, input3);
-const diff4 = dmp.diff_main(input1, input4);
+const diff4 = dmp.diff_main(input2, input4);
 const diff5 = dmp.diff_main(input4, input5);
-const diff6 = dmp.diff_main(input1, input6);
-const diff7 = dmp.diff_main(input1, input7);
+const diff6 = dmp.diff_main(input2, input6);
+const diff7 = dmp.diff_main(input2, input7);
 const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
@@ -93,7 +93,7 @@ export const commands: Command[] = [
       pause: true,
     },
   ],
-  [7, input1],
+  [7, input2],
   ...diffConverter.createCommandsFastForward(diff4),
   [5, 0],
   [6, undefined],
@@ -184,7 +184,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, input1],
+  [7, input2],
   ...diffConverter.createCommandsFastForward(diff6),
   [5, 0],
   [6, undefined],
@@ -220,7 +220,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, input1],
+  [7, input2],
   ...diffConverter.createCommandsFastForward(diff7),
   [5, 0],
   [6, undefined],
