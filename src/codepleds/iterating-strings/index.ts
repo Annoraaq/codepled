@@ -7,7 +7,7 @@ import { input as input5 } from "./input5";
 import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
 import { DiffConverter } from "../../DiffConverter/DiffConverter";
-import { Command } from "../../DiffConverter/Commands";
+import { Command, CommandType } from "../../DiffConverter/Commands";
 
 const dmp = new DiffMatchPatch();
 const diff1 = dmp.diff_main("", input1);
@@ -21,7 +21,7 @@ const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Introduction",
       message:
@@ -32,7 +32,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "How to Access a Single Character of a String",
       message:
@@ -42,7 +42,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "charAt()",
       level: 2,
@@ -53,10 +53,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff1),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Bracket notation",
       level: 2,
@@ -68,10 +68,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff2),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Which method is preferable?",
       level: 2,
@@ -82,10 +82,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff3),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -95,7 +95,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Popular Ways to Iterate Strings",
       message:
@@ -105,12 +105,12 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, ""],
+  [CommandType.REPLACE_ALL, ""],
   ...diffConverter.createCommandsFastForward(diff4),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "for loop",
       level: 2,
@@ -121,10 +121,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff5),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "for…of",
       level: 2,
@@ -135,10 +135,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff6),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "forEach()",
       level: 2,
@@ -150,10 +150,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff7),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Conclusion",
       message:
@@ -164,7 +164,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "References",
       message:

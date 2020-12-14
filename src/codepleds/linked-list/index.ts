@@ -8,7 +8,7 @@ import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
 import { input as input8 } from "./input8";
 import { DiffConverter } from "../../DiffConverter/DiffConverter";
-import { Command } from "../../DiffConverter/Commands";
+import { Command, CommandType } from "../../DiffConverter/Commands";
 
 const dmp = new DiffMatchPatch();
 const diff1 = dmp.diff_main("", input1);
@@ -23,7 +23,7 @@ const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Introduction",
       message:
@@ -44,7 +44,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "A Simple Singly Linked List",
       message:
@@ -54,7 +54,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Introduction",
       message: `A simple approach for a singly linked list is the following data structure.</p><p>It is a simple list node object that contains data as well as a pointer to the next element in the list. But as simple as this data structure might be the complexity comes with the operations. <br />`,
@@ -63,10 +63,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff1),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Insertion",
       message:
@@ -76,10 +76,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff2),
-  [6, undefined],
-  [5, 0],
+  [CommandType.PAUSE, undefined],
+  [CommandType.SET_CURSOR, 0],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Random Access",
       message: `<h3>Random access</h3>To access an element at any given index in the list you have to start at the head and follow the list until you reached the specified index. This operation has O(n) time complexity.
@@ -89,10 +89,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff3),
-  [6, undefined],
-  [5, 0],
+  [CommandType.PAUSE, undefined],
+  [CommandType.SET_CURSOR, 0],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Find",
       message: `<h3>Find</h3>Finding a specific element is similar to accessing a random element. The only difference is that you need to compare the data of the current element with the one you are looking for. The runtime complexity of this operation is O(n).
@@ -102,10 +102,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff4),
-  [6, undefined],
-  [5, 0],
+  [CommandType.PAUSE, undefined],
+  [CommandType.SET_CURSOR, 0],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Random Removal",
       message: `<h3>Random removal</h3>Removing any element from the list is a combination of finding the element and its predecessor and updating the next pointers. This operations also has a runtime complexity of O(n) caused by the find operation.
@@ -115,9 +115,9 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff5),
-  [6, undefined],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "More Sophisticated Implementations",
       message:
@@ -128,7 +128,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Doubly Linked List",
       message:
@@ -137,11 +137,11 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, ""],
+  [CommandType.REPLACE_ALL, ""],
   ...diffConverter.createCommandsFastForward(diff6),
-  [6, undefined],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Insertion",
       message:
@@ -152,9 +152,9 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff7),
-  [6, undefined],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Random Removal",
       message:
@@ -165,9 +165,9 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff8),
-  [6, undefined],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    ,
     {
       title: "Conclusion",
       message:

@@ -7,7 +7,7 @@ import { input as input5 } from "./input5";
 import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
 import { DiffConverter } from "../../DiffConverter/DiffConverter";
-import { Command } from "../../DiffConverter/Commands";
+import { Command, CommandType } from "../../DiffConverter/Commands";
 
 const dmp = new DiffMatchPatch();
 const diff1 = dmp.diff_main("", input1);
@@ -21,7 +21,7 @@ const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Introduction",
       message:
@@ -32,10 +32,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff1),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -45,10 +45,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff2),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "1. Depth-First Search (DFS)",
       message:
@@ -58,10 +58,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff3),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -71,7 +71,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Performance",
       level: 2,
@@ -83,7 +83,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "2. Breadth-First Search (BFS)",
       message:
@@ -93,12 +93,12 @@ export const commands: Command[] = [
       pause: true,
     },
   ],
-  [7, input2],
+  [CommandType.REPLACE_ALL, input2],
   ...diffConverter.createCommandsFastForward(diff4),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -108,7 +108,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Performance",
       level: 2,
@@ -122,7 +122,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "3. Bidirectional Search",
       message:
@@ -132,10 +132,10 @@ export const commands: Command[] = [
     },
   ],
   ...diffConverter.createCommandsFastForward(diff5),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -145,7 +145,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "4. Dijkstra’s Algorithm",
       message:
@@ -155,7 +155,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Crash Course: Priority Queues",
       level: 2,
@@ -172,7 +172,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "How does Dijkstra’s algorithm work?",
       level: 2,
@@ -184,12 +184,12 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, input2],
+  [CommandType.REPLACE_ALL, input2],
   ...diffConverter.createCommandsFastForward(diff6),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       toc: false,
       message:
@@ -198,7 +198,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Performance",
       level: 2,
@@ -209,7 +209,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "5. Bellman-Ford Algorithm",
       message:
@@ -220,12 +220,12 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [7, input2],
+  [CommandType.REPLACE_ALL, input2],
   ...diffConverter.createCommandsFastForward(diff7),
-  [5, 0],
-  [6, undefined],
+  [CommandType.SET_CURSOR, 0],
+  [CommandType.PAUSE, undefined],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Performance",
       level: 2,
@@ -236,7 +236,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "Conclusion",
       message:
@@ -259,7 +259,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    2,
+    CommandType.SHOW_TEXT,
     {
       title: "References",
       message:
