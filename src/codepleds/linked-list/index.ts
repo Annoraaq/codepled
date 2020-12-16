@@ -1,4 +1,3 @@
-import { diff_match_patch as DiffMatchPatch } from "diff-match-patch";
 import { input as input1 } from "./input1";
 import { input as input2 } from "./input2";
 import { input as input3 } from "./input3";
@@ -7,19 +6,7 @@ import { input as input5 } from "./input5";
 import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
 import { input as input8 } from "./input8";
-import { DiffConverter } from "../../DiffConverter/DiffConverter";
 import { Command, CommandType } from "../../DiffConverter/Commands";
-
-const dmp = new DiffMatchPatch();
-const diff1 = dmp.diff_main("", input1);
-const diff2 = dmp.diff_main(input1, input2);
-const diff3 = dmp.diff_main(input2, input3);
-const diff4 = dmp.diff_main(input3, input4);
-const diff5 = dmp.diff_main(input4, input5);
-const diff6 = dmp.diff_main("", input6);
-const diff7 = dmp.diff_main(input6, input7);
-const diff8 = dmp.diff_main(input7, input8);
-const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
   [
@@ -62,7 +49,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff1),
+  [CommandType.CREATE_DIFF, { source: "", target: input1 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -75,7 +62,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff2),
+  [CommandType.CREATE_DIFF, { source: input1, target: input2 }],
   [CommandType.PAUSE, undefined],
   [CommandType.SET_CURSOR, 0],
   [
@@ -88,7 +75,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff3),
+  [CommandType.CREATE_DIFF, { source: input2, target: input3 }],
   [CommandType.PAUSE, undefined],
   [CommandType.SET_CURSOR, 0],
   [
@@ -101,7 +88,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff4),
+  [CommandType.CREATE_DIFF, { source: input3, target: input4 }],
   [CommandType.PAUSE, undefined],
   [CommandType.SET_CURSOR, 0],
   [
@@ -114,7 +101,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff5),
+  [CommandType.CREATE_DIFF, { source: input4, target: input5 }],
   [CommandType.PAUSE, undefined],
   [
     CommandType.SHOW_TEXT,
@@ -138,7 +125,7 @@ export const commands: Command[] = [
     },
   ],
   [CommandType.REPLACE_ALL, ""],
-  ...diffConverter.createCommandsFastForward(diff6),
+  [CommandType.CREATE_DIFF, { source: "", target: input6 }],
   [CommandType.PAUSE, undefined],
   [
     CommandType.SHOW_TEXT,
@@ -151,7 +138,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff7),
+  [CommandType.CREATE_DIFF, { source: input6, target: input7 }],
   [CommandType.PAUSE, undefined],
   [
     CommandType.SHOW_TEXT,
@@ -164,7 +151,7 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff8),
+  [CommandType.CREATE_DIFF, { source: input7, target: input8 }],
   [CommandType.PAUSE, undefined],
   [
     ,

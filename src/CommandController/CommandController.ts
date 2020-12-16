@@ -4,6 +4,8 @@ import {
   FastForwardCommand,
 } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
+import { DiffConverter } from "../DiffConverter/DiffConverter";
+import { diff_match_patch as DiffMatchPatch } from "diff-match-patch";
 
 interface Subcommand {
   index: number;
@@ -29,6 +31,8 @@ export class CommandController {
   private stepMapping: Map<number, Subcommand> = new Map();
   private textSteps: TextStep[] = [];
   private stepNo: number;
+  private diffMatchPatch: DiffMatchPatch = new DiffMatchPatch();
+  private diffConverter: DiffConverter = new DiffConverter();
 
   getTextSteps(): TextStep[] {
     return this.textSteps;
@@ -39,7 +43,7 @@ export class CommandController {
   }
 
   setCommands(commands: Command[]) {
-    this.commands = commands;
+    this.commands = this.transformDiffs(commands);
     this.stepMapping = new Map<number, Subcommand>();
     this.stepNo = 0;
 
@@ -107,6 +111,24 @@ export class CommandController {
         break;
     }
     return ffCommands;
+  }
+
+  private transformDiffs(commands: Command[]): Command[] {
+    const transformedCommands: Command[] = [];
+    commands.forEach(([commandType, payload]) => {
+      if (commandType === CommandType.CREATE_DIFF) {
+        const diff = this.diffMatchPatch.diff_main(
+          payload.source,
+          payload.target
+        );
+        this.diffConverter
+          .createCommandsFastForward(diff)
+          .forEach((cmd) => transformedCommands.push(cmd));
+      } else {
+        transformedCommands.push([commandType, payload]);
+      }
+    });
+    return transformedCommands;
   }
 
   private addStepMapping(commandIndex: number, offset: number, length: number) {

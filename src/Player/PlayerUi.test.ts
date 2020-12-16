@@ -76,6 +76,7 @@ describe("PlayerUi", () => {
     jest.spyOn(Utils, "sleep").mockImplementation(() => Promise.resolve());
     jest.spyOn(Utils, "stripHtml").mockImplementation((a) => `[NO_HTML]${a}`);
     jest.spyOn(player, "forwardTo").mockImplementation(jest.fn());
+    jest.spyOn(player, "play").mockImplementation(jest.fn());
     mockedHljs.configure.mockReset();
     mockedHljs.highlightBlock.mockReset();
   });
@@ -584,7 +585,6 @@ describe("PlayerUi", () => {
   });
 
   it("should resume playing when pressing spacebar", async () => {
-    const playSpy = jest.spyOn(player, "play");
     playerUi.init();
 
     const keyDownEvent = new KeyboardEvent("keydown", {
@@ -593,12 +593,11 @@ describe("PlayerUi", () => {
     spyOn(keyDownEvent, "preventDefault");
     dispatchEvent(keyDownEvent);
 
-    expect(playSpy).toHaveBeenCalled();
+    expect(player.play).toHaveBeenCalled();
     expect(keyDownEvent.preventDefault).toHaveBeenCalled();
   });
 
   it("should not resume playing when pressing spacebar and player is not paused", async () => {
-    const playSpy = jest.spyOn(player, "play");
     jest.spyOn(player, "isPaused").mockReturnValue(false);
     playerUi.init();
 
@@ -607,7 +606,7 @@ describe("PlayerUi", () => {
     });
     dispatchEvent(keyDownEvent);
 
-    expect(playSpy).not.toHaveBeenCalled();
+    expect(player.play).not.toHaveBeenCalled();
   });
 
   it("should show resume button on pause event", async () => {

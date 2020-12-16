@@ -8,6 +8,7 @@ export enum CommandType {
   SET_CURSOR = 5,
   PAUSE = 6,
   REPLACE_ALL = 7,
+  CREATE_DIFF = 8,
 }
 export type Command = [number, any];
 export type FastForwardCommand = {

@@ -1,5 +1,6 @@
 import { CommandType } from "./../DiffConverter/Commands";
 import { CommandController } from "./CommandController";
+
 describe("CommandController", () => {
   let commandController: CommandController;
 
@@ -25,6 +26,24 @@ describe("CommandController", () => {
     commandController.addCommands([[CommandType.DELETE, 3]]);
 
     expect(commandController.getTotalSteps()).toEqual(3);
+  });
+
+  it("should transform diff", () => {
+    commandController.setCommands([
+      [CommandType.CREATE_DIFF, { source: "abcde", target: "cdef" }],
+    ]);
+    expect(commandController.getCommandAtStep(0)).toEqual([
+      CommandType.DELETE,
+      2,
+    ]);
+    expect(commandController.getCommandAtStep(1)).toEqual([
+      CommandType.SKIP,
+      3,
+    ]);
+    expect(commandController.getCommandAtStep(2)).toEqual([
+      CommandType.INSERT,
+      "f",
+    ]);
   });
 
   it("should deliver command for single step", () => {

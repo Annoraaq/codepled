@@ -1,4 +1,3 @@
-import { diff_match_patch as DiffMatchPatch } from "diff-match-patch";
 import { input as input1 } from "./input1";
 import { input as input2 } from "./input2";
 import { input as input3 } from "./input3";
@@ -6,19 +5,7 @@ import { input as input4 } from "./input4";
 import { input as input5 } from "./input5";
 import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
-import { DiffConverter } from "../../DiffConverter/DiffConverter";
 import { Command, CommandType } from "../../DiffConverter/Commands";
-import { formatDiagnosticsWithColorAndContext } from "typescript";
-
-const dmp = new DiffMatchPatch();
-const diff1 = dmp.diff_main("", input1);
-const diff2 = dmp.diff_main("", input2);
-const diff3 = dmp.diff_main("", input3);
-const diff4 = dmp.diff_main(input3, input4);
-const diff5 = dmp.diff_main(input4, input5);
-const diff6 = dmp.diff_main(input5, input6);
-const diff7 = dmp.diff_main(input6, input7);
-const diffConverter = new DiffConverter();
 
 export const commands: Command[] = [
   [
@@ -64,7 +51,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff1),
+  [CommandType.CREATE_DIFF, { source: "", target: input1 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -99,7 +86,7 @@ export const commands: Command[] = [
     },
   ],
   [CommandType.REPLACE_ALL, ""],
-  ...diffConverter.createCommandsFastForward(diff2),
+  [CommandType.CREATE_DIFF, { source: "", target: input2 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -114,7 +101,7 @@ export const commands: Command[] = [
     },
   ],
   [CommandType.REPLACE_ALL, ""],
-  ...diffConverter.createCommandsFastForward(diff3),
+  [CommandType.CREATE_DIFF, { source: "", target: input3 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -125,7 +112,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff4),
+  [CommandType.CREATE_DIFF, { source: input3, target: input4 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -148,7 +135,7 @@ export const commands: Command[] = [
       pause: true,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff5),
+  [CommandType.CREATE_DIFF, { source: input4, target: input5 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -162,7 +149,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff6),
+  [CommandType.CREATE_DIFF, { source: input5, target: input6 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
   [
@@ -185,7 +172,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  ...diffConverter.createCommandsFastForward(diff7),
+  [CommandType.CREATE_DIFF, { source: input6, target: input7 }],
   [CommandType.SET_CURSOR, 0],
   [CommandType.PAUSE, undefined],
 ];

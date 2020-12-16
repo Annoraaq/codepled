@@ -1,5 +1,5 @@
 import { PlayerUi } from "./Player/PlayerUi";
-import { commands } from "./codepleds/5-ways-shortest-path";
+import { commands } from "./codepleds/stacks-and-queues";
 import "./styles.css";
 
 if (document.querySelector("#codepled")) {
