@@ -39,7 +39,10 @@ export class PlayerUi {
     this.player.addCommands(commands);
   }
 
-  init() {
+  init(commands?: Command[]) {
+    if (commands) {
+      this.player.addCommands(commands);
+    }
     this.initPlayButton(this.playButton);
     this.initSpeedButton(this.speedButton);
     this.initSlider(this.slider);

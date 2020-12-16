@@ -91,6 +91,16 @@ describe("PlayerUi", () => {
     expect(addCommandSpy).toHaveBeenCalledWith(commands);
   });
 
+  it("should add commands on init", () => {
+    const addCommandSpy = spyOn(player, "addCommands");
+    const commands: Command[] = [
+      [CommandType.DELETE, 1],
+      [CommandType.DELETE, 1],
+    ];
+    playerUi.init(commands);
+    expect(addCommandSpy).toHaveBeenCalledWith(commands);
+  });
+
   it("should set initial text", () => {
     const setInitalTextSpy = spyOn(player, "setInitialText");
     playerUi.setInitialText("initial text");

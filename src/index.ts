@@ -1,12 +1,10 @@
 import { PlayerUi } from "./Player/PlayerUi";
-import { commands } from "./codepleds/stacks-and-queues";
+import { commands } from "../codepleds/stacks-and-queues";
 import "./styles.css";
 
 if (document.querySelector("#codepled")) {
   const player = new PlayerUi();
-  player.setInitialText("");
-  player.addCommands(commands);
-  player.init();
+  player.init(commands);
 
   (function incCounter() {
     if (

@@ -6,7 +6,7 @@ import { input as input5 } from "./input5";
 import { input as input6 } from "./input6";
 import { input as input7 } from "./input7";
 import { input as input8 } from "./input8";
-import { Command, CommandType } from "../../DiffConverter/Commands";
+import { Command, CommandType } from "../../src/DiffConverter/Commands";
 
 export const commands: Command[] = [
   [
