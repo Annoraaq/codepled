@@ -32,47 +32,9 @@ describe("PlayerUi", () => {
       })),
     });
     mockedHljs.configure.mockReset();
-    document.body.innerHTML = `
-    <div class="container">
-      <div class="table-of-contents">
-        <div class="toc__open"><i class="fas fa-angle-right"></i></div>
-        <header class="toc__title">
-            Table of Contents
-        </header>
-        <div class="toc__content">
-          <ul class="toc__bookmarks">
-          </ul>
-          <div class="toc__close"><i class="fas fa-angle-left"></i></div>
-        </div>
-      </div>
-      <div class="textbox-container">
-        <div class="textbox__content"></div>
-        <button class="button next-button">
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-      <div class="code-container">
-        <div class="inner-container">
-          <div class="lines"></div>
-          <div id="codepled" class="language-js"></div>
-        </div>
-      </div>
-      <div class="slider-container">
-        <div class="play"><i class="fas fa-play"></i></div>
-        <div class="play speed">
-          <span class="speedmeter">1</span><i class="fas fa-tachometer-alt"></i>
-        </div>
-        <div class="sliderbox">
-          <input type="range" min="0" max="99" value="50" class="slider" />
-        </div>
-        <button class="play fullscreen">
-          <i class="fas fa-expand"></i>
-        </button>
-      </div>
-    </div>
-  `;
+    document.body.innerHTML = `<div id="my-codepled"></div>`;
     player = new Player();
-    playerUi = new PlayerUi(player);
+    playerUi = new PlayerUi("#my-codepled", player);
     jest.spyOn(Utils, "sleep").mockImplementation(() => Promise.resolve());
     jest.spyOn(Utils, "stripHtml").mockImplementation((a) => `[NO_HTML]${a}`);
     jest.spyOn(player, "forwardTo").mockImplementation(jest.fn());
@@ -130,7 +92,7 @@ describe("PlayerUi", () => {
   });
 
   it("should handle a changeText event", () => {
-    const textArea = document.querySelector("#codepled");
+    const textArea = document.querySelector(".codepled-editor");
     const linesContainer = document.querySelector(".lines");
 
     playerUi.init();
@@ -202,7 +164,7 @@ describe("PlayerUi", () => {
   });
 
   it("should highlight line", async () => {
-    const textArea = document.querySelector("#codepled");
+    const textArea = document.querySelector(".codepled-editor");
     const highlightStyle = 'style="background-color: rgb(51, 57, 47);"';
 
     playerUi.init();
@@ -226,7 +188,7 @@ describe("PlayerUi", () => {
   });
 
   it("should highlight freshly inserted lines", async () => {
-    const textArea = document.querySelector("#codepled");
+    const textArea = document.querySelector(".codepled-editor");
     const lines = document.querySelector(".lines");
     const highlightStyle = 'style="background-color: rgb(51, 57, 47);"';
 
@@ -256,7 +218,7 @@ describe("PlayerUi", () => {
   });
 
   it("should scroll to", () => {
-    const textArea = document.querySelector("#codepled");
+    const textArea = document.querySelector(".codepled-editor");
     const paddingTop = 10;
     const lineHeight = 10;
     const linesCount = 101;

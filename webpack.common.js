@@ -27,7 +27,6 @@ module.exports = {
         { from: 'assets', to: 'assets' },
         { from: 'css', to: 'css' },
         { from: 'webfonts', to: 'webfonts' },
-        { from: 'index.html', to: 'index.html' },
       ],
     }),
   ],

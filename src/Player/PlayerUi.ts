@@ -2,6 +2,7 @@ import * as hljs from "highlight.js";
 import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 import { PlayerEventType, Player } from "./Player";
+import { template as playerTemplate } from "./PlayerTemplate";
 
 export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
@@ -15,11 +16,13 @@ export class PlayerUi {
 
   private wasPlayingOnSliderMove = false;
 
-  constructor(private player: Player = new Player()) {
+  constructor(private selector: string, private player: Player = new Player()) {
+    document.querySelector(selector).innerHTML = playerTemplate;
+
     this.playButton = document.querySelector(".play");
     this.slider = document.querySelector(".slider");
     this.speedButton = document.querySelector(".speed");
-    this.textArea = document.querySelector("#codepled");
+    this.textArea = document.querySelector(".codepled-editor");
     this.tableOfContents = document.querySelector(".table-of-contents");
     this.resumeButton = document.querySelector(".next-button");
     this.fullscreenButton = document.querySelector(".fullscreen");
@@ -39,9 +42,12 @@ export class PlayerUi {
     this.player.addCommands(commands);
   }
 
-  init(commands?: Command[]) {
+  init(commands?: Command[], title?: string) {
     if (commands) {
       this.player.addCommands(commands);
+    }
+    if (title) {
+      this.initTitle(title);
     }
     this.initPlayButton(this.playButton);
     this.initSpeedButton(this.speedButton);
@@ -57,8 +63,14 @@ export class PlayerUi {
     this.player.setInitialText(initialText);
   }
 
+  private initTitle(title: string) {
+    (<HTMLElement>(
+      document.querySelector(this.selector + " .title a")
+    )).innerText = title;
+  }
+
   private highlight() {
-    const codepled = document.querySelector("#codepled");
+    const codepled = document.querySelector(".codepled-editor");
     hljs.configure({ useBR: false });
     hljs.highlightBlock(<HTMLElement>codepled);
     const linesCount = Utils.countLines(codepled.innerHTML);
