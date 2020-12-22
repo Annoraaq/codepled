@@ -14,7 +14,7 @@ export const commands: Command[] = [
       title: "Introduction",
       message:
         "<h1>5 Ways to Find the Shortest Path in a Graph</h1>" +
-        "<p>When it comes to finding the shortest path in a graph, most people think of Dijkstra’s algorithm (also called Dijkstra’s Shortest Path First algorithm). While Dijkstra’s algorithm is indeed very useful, there are simpler approaches that can be used based on the properties of the graph. These can be very handy in competitive programming contests or coding interviews, where you might be forced to code up a shortest-path algorithm by hand. You need the simplest approach possible to reduce the possibility of bugs in your code.</p>" +
+        "<p>When it comes to finding the shortest path in a graph, most people think of Dijkstra's algorithm (also called Dijkstra's Shortest Path First algorithm). While Dijkstra's algorithm is indeed very useful, there are simpler approaches that can be used based on the properties of the graph. These can be very handy in competitive programming contests or coding interviews, where you might be forced to code up a shortest-path algorithm by hand. You need the simplest approach possible to reduce the possibility of bugs in your code.</p>" +
         "<p>For the following algorithms, we will assume that the graphs are stored in an adjacency list of the following form.</p>",
       pause: false,
     },
@@ -135,9 +135,9 @@ export const commands: Command[] = [
   [
     CommandType.SHOW_TEXT,
     {
-      title: "4. Dijkstra’s Algorithm",
+      title: "4. Dijkstra's Algorithm",
       message:
-        "<h2>4. Dijkstra’s Algorithm</h2>" +
+        "<h2>4. Dijkstra's Algorithm</h2>" +
         "<p>This algorithm might be the most famous one for finding the shortest path. Its advantage over a DFS, BFS, and bidirectional search is that you can use it in all graphs with positive edge weights. Don’t try it on graphs that contain negative edge weights because termination is not guaranteed in this case.</p>",
       pause: true,
     },
@@ -149,7 +149,7 @@ export const commands: Command[] = [
       level: 2,
       message:
         "<h3>Crash Course: Priority Queues</h3>" +
-        "<p>To understand Dijkstra’s algorithm, it is essential to understand priority queues. A priority queue is an abstract data structure that allows the following operations:</p>" +
+        "<p>To understand Dijkstra's algorithm, it is essential to understand priority queues. A priority queue is an abstract data structure that allows the following operations:</p>" +
         "<ul>" +
         "<li><strong>isEmpty</strong>: checks if the priority queue contains any elements</li>" +
         "<li><strong>insert</strong>: inserts an element along with a priority value</li>" +
@@ -162,10 +162,10 @@ export const commands: Command[] = [
   [
     CommandType.SHOW_TEXT,
     {
-      title: "How does Dijkstra’s algorithm work?",
+      title: "How does Dijkstra's algorithm work?",
       level: 2,
       message:
-        "<h3>How does Dijkstra’s algorithm work?</h3>" +
+        "<h3>How does Dijkstra's algorithm work?</h3>" +
         "<p>Before we look at the code, let me shortly describe the algorithm so that you get an idea of how it works.</p>" +
         "<p>We start by initializing the shortest path from our start node to every other node in our graph. Initially, this will be infinity for every node other than the start node itself. The start node will be initialized with <i>0</i> because that is the distance to itself. We insert all nodes to our priority queue along with their previously initialized distance to our start node as a priority.</p>" +
         "<p>Now begins the actual work. Until the priority queue is not empty, we extract the node with the current shortest known distance to our start node. Let’s call it <strong>currentNode</strong>. Then we loop over all neighbors of <strong>currentNode</strong>, and for each one, we check if reaching it through <strong>currentNode</strong> is shorter than the currently known shortest path to that neighbor. If so, we update the shortest distance to the neighbor and proceed. But see for yourself.</p>",
@@ -192,7 +192,7 @@ export const commands: Command[] = [
       level: 2,
       message:
         "<h3>Performance</h3>" +
-        "<p>The time complexity of this algorithm highly depends on the implementation of the priority queue. Let <i>n</i> be the number of nodes and <i>e</i> be the number of edges in the graph. If it is implemented by a simple array, Dijkstra’s algorithm will run in <i>O(n²)</i>. However, the more common implementation uses a Fibonacci heap as the priority queue. In this case, the runtime is within <i>O(e + n log(n))</i>.</p>",
+        "<p>The time complexity of this algorithm highly depends on the implementation of the priority queue. Let <i>n</i> be the number of nodes and <i>e</i> be the number of edges in the graph. If it is implemented by a simple array, Dijkstra's algorithm will run in <i>O(n<sup>2</sup>)</i>. However, the more common implementation uses a Fibonacci heap as the priority queue. In this case, the runtime is within <i>O(e + n log(n))</i>.</p>",
       pause: true,
     },
   ],
@@ -202,8 +202,8 @@ export const commands: Command[] = [
       title: "5. Bellman-Ford Algorithm",
       message:
         "<h2>5. Bellman-Ford Algorithm</h2>" +
-        "<p>The last algorithm I am introducing in this story is the Bellman-Ford algorithm. In contrast to Dijkstra’s algorithm, it can deal with negative edge weights. There is only one limitation: The graph is not supposed to contain negative cycles. A negative cycle is a cycle whose edges sum to a negative value. However, the algorithm is able to detect negative cycles and will therefore terminate — albeit without a shortest path.</p>" +
-        "<p>The algorithm is very similar to Dijkstra’s algorithm, but it does not use a priority queue. Instead, it repeatedly loops over all edges, updating the distances to the start node in a similar fashion to Dijkstra’s algorithm. Let <i>n</i> again be the number of nodes in our graph. The Bellman-Ford algorithm loops exactly <i>n-1</i> times over all edges because a cycle-free path in a graph can never contain more edges than <i>n-1</i>.</p>" +
+        "<p>The last algorithm I am introducing in this story is the Bellman-Ford algorithm. In contrast to Dijkstra's algorithm, it can deal with negative edge weights. There is only one limitation: The graph is not supposed to contain negative cycles. A negative cycle is a cycle whose edges sum to a negative value. However, the algorithm is able to detect negative cycles and will therefore terminate — albeit without a shortest path.</p>" +
+        "<p>The algorithm is very similar to Dijkstra's algorithm, but it does not use a priority queue. Instead, it repeatedly loops over all edges, updating the distances to the start node in a similar fashion to Dijkstra's algorithm. Let <i>n</i> again be the number of nodes in our graph. The Bellman-Ford algorithm loops exactly <i>n-1</i> times over all edges because a cycle-free path in a graph can never contain more edges than <i>n-1</i>.</p>" +
         "<p>After repeatedly looping over all edges, the algorithm loops over all edges once again. If one of the distances is still not optimal, it means that there must be a negative cycle in the graph.</p>",
       pause: false,
     },

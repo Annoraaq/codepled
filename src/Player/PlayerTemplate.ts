@@ -7,18 +7,10 @@ export const template = `<div class="codepled">
             <h1><a href="index.html"></a></h1>
           </div>
         </div>
-        <nav>
-          <ul>
-            <li><a href="https://www.patreon.com/bePatron?u=45036169" class="patreon-button"><i
-                  class="fab fa-patreon"></i> Become a Patron!</a></li>
-            <li><a href="datenschutz.html">Datenschutz</a></li>
-            <li><a href="impressum.html">Impressum</a></li>
-          </ul>
-        </nav>
       </div>
       <div class="header__row responsive">
         <div class="title">
-          <h1><a href="index.html"><%= htmlWebpackPlugin.options.title %></a></h1>
+          <h1><a href="index.html"></a></h1>
         </div>
       </div>
     </header>

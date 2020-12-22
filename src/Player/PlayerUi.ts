@@ -3,6 +3,10 @@ import { Command } from "../DiffConverter/Commands";
 import { Utils } from "../Utils/Utils";
 import { PlayerEventType, Player } from "./Player";
 import { template as playerTemplate } from "./PlayerTemplate";
+import "../css/styles.css";
+import { commands } from "../../codepleds/5-ways-shortest-path";
+import "@fortawesome/fontawesome-free/js/all.js";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 export class PlayerUi {
   private cursorText = '<span class="cursor"></span>';
@@ -17,6 +21,11 @@ export class PlayerUi {
   private wasPlayingOnSliderMove = false;
 
   constructor(private selector: string, private player: Player = new Player()) {
+    // console.log(JSON.stringify(commands));
+    // (<HTMLElement>document.querySelector("#debug")).innerText = JSON.stringify(
+    //   commands
+    // );
+
     document.querySelector(selector).innerHTML = playerTemplate;
 
     this.playButton = document.querySelector(".play");
