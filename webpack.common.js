@@ -5,28 +5,20 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    index: './src/index.ts',
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: '5 Ways to Find the Shortest Path in a Graph',
       filename: 'RENAME/index.html',
       template: 'templates/indexTemplate.html'
     }),
-    new HtmlWebpackPlugin({
-      filename: 'RENAME/impressum.html',
-      template: 'templates/impressumTemplate.html'
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'RENAME/datenschutz.html',
-      template: 'templates/datenschutzTemplate.html'
-    }),
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
+    new MiniCssExtractPlugin({ filename: '[name].css' }),
     new CopyPlugin({
       patterns: [
         { from: 'assets', to: 'assets' },
-        { from: 'css', to: 'css' },
-        { from: 'webfonts', to: 'webfonts' },
       ],
     }),
   ],
@@ -41,13 +33,20 @@ module.exports = {
         test: /\.css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        loader: 'file-loader',
+        options: {
+          outputPath: '../dist/fonts',
+        }
+      }
     ],
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
-    filename: '[name].[contenthash].js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist/'),
   },
 };

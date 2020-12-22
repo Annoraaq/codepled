@@ -1,6 +1,8 @@
 import { PlayerUi } from "./Player/PlayerUi";
 import { commands } from "../codepleds/stacks-and-queues";
-import "./styles.css";
+import "@fortawesome/fontawesome-free/js/all.js";
+import "@fortawesome/fontawesome-free/css/all.css";
+import "./css/styles.css";
 
 const player = new PlayerUi("#my-codepled");
 player.init(commands, "Stacks and Queues");

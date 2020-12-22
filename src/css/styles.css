@@ -1,0 +1,733 @@
+@import "tomorrow-night.css";
+
+.codepled {
+  background: #1d1f21;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.codepled .header {
+  background: #111111;
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  z-index: 2;
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.codepled .header__row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.codepled .header .title {
+  display: flex;
+  flex-direction: row;
+}
+
+.codepled .header .responsive {
+  display: none;
+}
+
+.codepled .header h1 {
+  padding: 10px 10px;
+  background: rgba(255, 163, 114, 0.4);
+  margin: 0;
+  height: 20px;
+  line-height: 20px;
+}
+
+.codepled .header h1 a {
+  color: rgb(255, 213, 190);
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 15px;
+  text-decoration: none;
+  display: block;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.codepled .header .title:hover h1 {
+  background: rgba(255, 163, 114, 0.541);
+}
+
+.codepled .header .title:hover::before {
+  border-right: 10px solid rgba(255, 163, 114, 0.541);
+}
+
+.codepled .header .title:hover::after {
+  border-left: 10px solid rgba(255, 163, 114, 0.541);
+}
+
+.codepled .header .title::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid rgba(255, 163, 114, 0.4);
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
+.codepled .header .title::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid rgba(255, 163, 114, 0.4);
+  border-right: 10px solid transparent;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
+.codepled .header .left {
+  display: flex;
+}
+
+.codepled .header nav {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+.codepled .header nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+}
+
+.codepled .header nav ul li {
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.codepled .header nav ul li a {
+  color: rgb(112, 112, 112);
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.codepled header nav ul li a:hover {
+  color: rgb(214, 214, 214);
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.codepled .cursor {
+  border: 1px solid white;
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes blinker-light {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.codepled .main-content-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+.codepled .content {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  flex-grow: 1;
+  overflow: scroll;
+}
+.codepled .code-container {
+  font-size: 12px;
+  flex-shrink: 1;
+  align-items: stretch;
+  overflow-x: scroll;
+  width: 50%;
+}
+.codepled .inner-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.codepled .lines {
+  padding-top: 6px;
+  padding-right: 4px;
+  display: block;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  color: #787878;
+  overflow: auto;
+  height: auto;
+  flex-shrink: 0;
+  min-width: 20px;
+}
+
+.codepled .codepled-editor {
+  font-size: 12px;
+  display: block;
+  white-space: pre;
+  padding-left: 0px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  flex-grow: 1;
+  overflow: scroll;
+  height: auto;
+}
+
+.codepled .play {
+  display: block;
+  color: white;
+  cursor: pointer;
+  flex-grow: 1;
+  margin-left: 5px;
+  line-height: 25px;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.codepled .play:focus {
+  border: 2px solid white;
+  outline: none;
+}
+
+.codepled .play:hover {
+  text-shadow: 0px 0px 10px rgb(255, 255, 255);
+}
+
+.codepled .slider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  height: 5px; /* Specified height */
+  background: white; /* Grey background */
+  outline: none; /* Remove outline */
+  width: 100%;
+}
+
+.codepled .slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 15px; /* Set a specific slider handle width */
+  height: 15px; /* Slider handle height */
+  background: rgb(255, 163, 114); /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.codepled .slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4caf50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.codepled .slider-container {
+  background-color: #111111;
+  height: 50px;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.codepled .textbox-container {
+  background: #1d1f21;
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+
+  position: relative;
+  z-index: 0;
+  flex-shrink: 1;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 17px;
+  line-height: 28px;
+  font-weight: 400;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 50%;
+}
+
+.codepled .textbox__content {
+  white-space: pre-wrap;
+  overflow-y: scroll;
+  max-height: 100%;
+  width: 100%;
+}
+
+.codepled .sliderbox {
+  height: 25px;
+  flex-grow: 300;
+  display: block;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.codepled .play:focus .speedmeter {
+  margin-left: 13px;
+}
+
+.codepled .speedmeter {
+  background: #ffa372;
+  color: black;
+  position: absolute;
+  border-radius: 10px;
+  font-size: 9px;
+  width: 13px;
+  height: 13px;
+  line-height: 13px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  margin-left: 15px;
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+
+.codepled .container {
+  background: #1d1f21;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
+  position: absolute;
+  min-height: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.codepled .button {
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  cursor: pointer;
+}
+
+.codepled .slider-container.disabled .play {
+  cursor: not-allowed;
+  color: gray;
+}
+
+.codepled .slider-container.disabled input {
+  cursor: not-allowed;
+  background: gray;
+}
+
+.codepled .section {
+  color: #474747;
+  filter: blur(0.7px);
+  padding: 50px;
+}
+
+.codepled .section:hover {
+  filter: none;
+  background: #2b2e31;
+  color: #cacaca;
+  cursor: pointer;
+}
+
+.codepled .section.active:hover {
+  background: none;
+  cursor: auto;
+}
+
+.codepled .section.active {
+  filter: none;
+  color: #cacaca;
+  -webkit-animation: fadein 1.375s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 1.375s; /* Firefox < 16 */
+  -ms-animation: fadein 1.375s; /* Internet Explorer */
+  -o-animation: fadein 1.375s; /* Opera < 12.1 */
+  animation: fadein 1.375s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.codepled .toc-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
+.codepled .table-of-contents {
+  position: relative;
+  z-index: 1;
+  background: #1d1f21;
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  height: 100%;
+}
+
+.codepled .toc__content {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.codepled .toc__title {
+  background: #111111;
+  color: rgb(151, 151, 151);
+  padding: 10px;
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 15px;
+  text-align: left;
+  flex-grow: 0;
+}
+
+.codepled .table-of-contents .bookmark button {
+  color: rgb(180, 180, 180);
+  padding: 10px;
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 12px;
+  display: flex;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.codepled .table-of-contents .bookmark button:hover {
+  color: rgb(224, 224, 224);
+  background-color: #3a3a3a;
+}
+
+.codepled .table-of-contents .bookmark button:focus {
+  border: none;
+  outline: none;
+  color: rgb(224, 224, 224);
+  background-color: #3a3a3a;
+}
+
+.codepled .table-of-contents .bookmark__title {
+  margin-left: 10px;
+  text-align: left;
+}
+
+.codepled .table-of-contents .bookmark--level2 button {
+  padding-left: 20px;
+}
+
+.codepled .table-of-contents .bookmark--level2 i {
+  visibility: hidden;
+}
+
+.codepled .toc__bookmarks {
+  width: 200px;
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+.codepled .toc__close {
+  background: #16181a;
+  color: rgb(161, 161, 161);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 10px;
+  padding: 0px 3px;
+  cursor: pointer;
+  font-size: 20px;
+  text-align: center;
+}
+
+.codepled .toc__open {
+  background: #16181a;
+  color: rgb(161, 161, 161);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 10px;
+  font-size: 20px;
+  padding: 0px 3px;
+  cursor: pointer;
+  z-index: 1;
+  text-align: center;
+  height: 100%;
+
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.codepled .toc__open--small:before {
+  display: none;
+}
+
+.codepled .toc__close:hover,
+.codepled .toc__open:hover {
+  background: #212427;
+}
+
+.codepled .table-of-contents .bookmark.active button {
+  background: rgba(255, 163, 114, 0.4);
+  color: rgb(255, 213, 190);
+}
+
+.codepled .logo {
+  align-self: center;
+  height: 35px;
+  margin-left: 10px;
+}
+
+.codepled .logo img {
+  height: 35px;
+}
+
+.codepled .lines .line {
+  padding-left: 10px;
+  display: inline-block;
+  width: 100%;
+}
+
+.codepled .lines .line.highlighted {
+  background: #33392f;
+}
+
+.codepled .next-button {
+  position: absolute;
+  display: block;
+  width: 300px;
+  height: 50px;
+  background: white;
+  border: none;
+  bottom: 60px;
+  z-index: 3;
+  left: 10px;
+  /* right: 0; */
+  margin: auto;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  animation: blinker-light 2s linear infinite;
+
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0i.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+}
+
+.codepled .next-button:hover {
+  animation: none;
+}
+
+.codepled .next-button:focus {
+  outline: none;
+}
+
+.codepled .next-button .small {
+  display: block;
+  font-family: Helvetica, Arial;
+  font-size: 10px;
+}
+
+.codepled .text-content {
+  z-index: 0;
+  position: relative;
+  background: #1d1f21;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  color: rgb(173, 173, 173);
+  font-family: Helvetica, Arial;
+  font-weight: normal;
+  font-size: 12px;
+  text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.codepled .text-content a {
+  color: rgb(255, 213, 190);
+}
+
+.codepled .play.fullscreen {
+  margin-left: -10px;
+  margin-right: 5px;
+  font-size: 20px;
+
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.codepled .container {
+  height: 100vh;
+}
+
+.codepled header nav ul li a.patreon-button {
+  color: white;
+}
+
+.codepled .section.active strong,
+.codepled .section:hover strong {
+  color: white;
+}
+
+.codepled .section.active blockquote,
+.codepled .section:hover blockquote {
+  border-color: white;
+}
+
+.codepled .section blockquote {
+  border-left: 3px solid;
+  margin-left: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-style: italic;
+  font-size: 15px;
+}
+
+.codepled .section h1 {
+  margin-top: 0px;
+  line-height: 1.5em;
+}
+
+.codepled .section a {
+  color: white;
+}
+
+.codepled .section.active h1,
+.codepled .section.active h2,
+.codepled .section.active h3,
+.codepled .section.active h4,
+.codepled .section.active h5,
+.codepled .section:hover h1,
+.codepled .section:hover h2,
+.codepled .section:hover h3,
+.codepled .section:hover h4,
+.codepled .section:hover h5 {
+  color: white;
+}
+
+.codepled .section img {
+  width: 100%;
+}
+
+.codepled .header .header__row.responsive {
+  min-height: 30px;
+  margin-top: 10px;
+}
+
+.codepled .header .responsive .title h1 {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.codepled .header .responsive .title::before {
+  border-top-width: 15px;
+  border-bottom-width: 15px;
+}
+
+.codepled .header .responsive .title::after {
+  border-top-width: 15px;
+  border-bottom-width: 15px;
+}
+
+@media only screen and (max-width: 800px), (orientation: portrait) {
+  .codepled .content {
+    height: 100%;
+  }
+
+  .codepled .main-content-container {
+    flex-direction: column;
+  }
+
+  .codepled .textbox-container {
+    width: 100%;
+    flex-shrink: 0;
+    height: 50%;
+    overflow-y: scroll;
+  }
+
+  .codepled .code-container {
+    width: 100%;
+    flex-shrink: 0;
+    flex-grow: 1;
+    height: 50%;
+    overflow-y: scroll;
+  }
+
+  .codepled .table-of-contents {
+    position: absolute;
+  }
+
+  .codepled .toc__bookmarks {
+    width: 300px;
+  }
+
+  .codepled .toc__open,
+  .codepled .toc__close {
+    width: 30px;
+  }
+
+  .codepled .toc__open i::before {
+    display: none;
+  }
+  .codepled .toc__open .toc__open--small::before {
+    display: block;
+  }
+
+  .codepled .header__row .title {
+    display: none;
+  }
+
+  .codepled .header__row .title h1 {
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .codepled .next-button {
+    right: 0;
+  }
+
+  .codepled .header__row.responsive .title,
+  .codepled .header__row.responsive {
+    justify-content: center;
+    display: flex;
+  }
+}
