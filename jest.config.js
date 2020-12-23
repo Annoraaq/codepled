@@ -9,4 +9,7 @@ module.exports = {
   "transform": {
     "^.+\\.(ts|tsx)$": "ts-jest"
   },
+  "moduleNameMapper": {
+    "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+  }
 }

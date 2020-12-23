@@ -43,6 +43,10 @@ describe("PlayerUi", () => {
     mockedHljs.highlightBlock.mockReset();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should add commands", () => {
     const addCommandSpy = spyOn(player, "addCommands");
     const commands: Command[] = [
@@ -350,6 +354,7 @@ describe("PlayerUi", () => {
     slider.value = "5";
     slider.oninput(undefined);
     slider.onchange(<any>{ target: slider });
+    slider.value = "5";
     expect(forwardToSpy).toHaveBeenCalledWith(5);
     expect(playSpy).toHaveBeenCalledTimes(1);
 
@@ -605,10 +610,11 @@ describe("PlayerUi", () => {
   it("should show correct buttons on full screen enabling", async () => {
     jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
     jest.spyOn(Utils, "isFullscreen").mockReturnValue(true);
+    playerUi.init();
+
     const fullscreenButtonIcon = <HTMLElement>(
       document.querySelector(".fullscreen i")
     );
-    playerUi.init();
 
     document.documentElement.dispatchEvent(new Event("fullscreenchange"));
 
@@ -619,10 +625,10 @@ describe("PlayerUi", () => {
   it("should show correct buttons on full screen exit", async () => {
     jest.spyOn(Utils, "isFullscreenSupported").mockReturnValue(true);
     jest.spyOn(Utils, "isFullscreen").mockReturnValue(false);
+    playerUi.init();
     const fullscreenButtonIcon = <HTMLElement>(
       document.querySelector(".fullscreen i")
     );
-    playerUi.init();
 
     document.documentElement.dispatchEvent(new Event("fullscreenchange"));
 

@@ -1,16 +1,21 @@
 export enum CommandType {
+  DELETE = "DELETE",
+  INSERT = "INSERT",
+  SKIP = "SKIP",
+  SHOW_TEXT = "SHOW_TEXT",
+  HIGHLIGHT_LINES = "HIGHLIGHT_LINES",
+  SCROLL_TO = "SCROLL_TO",
+  SET_CURSOR = "SET_CURSOR",
+  PAUSE = "PAUSE",
+  REPLACE_ALL = "REPLACE_ALL",
+  CREATE_DIFF = "CREATE_DIFF",
+}
+export enum DiffCommandType {
   DELETE = -1,
   INSERT = 1,
   SKIP = 0,
-  SHOW_TEXT = 2,
-  HIGHLIGHT_LINES = 3,
-  SCROLL_TO = 4,
-  SET_CURSOR = 5,
-  PAUSE = 6,
-  REPLACE_ALL = 7,
-  CREATE_DIFF = 8,
 }
-export type Command = [number, any];
+export type Command = [CommandType, any];
 export type FastForwardCommand = {
   type: CommandType;
   payload: any;
