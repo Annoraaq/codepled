@@ -9,18 +9,11 @@ module.exports = {
     index: './src/Player/PlayerUi.ts',
   },
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   title: '5 Ways to Find the Shortest Path in a Graph',
-    //   filename: 'RENAME/index.html',
-    //   template: 'templates/indexTemplate.html'
-    // }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({ filename: '[name].css' }),
     new CopyPlugin({
       patterns: [
         { from: 'assets', to: 'assets' },
-        { from: 'templates/indexTemplate.html', to: 'index.html' },
-        { from: 'codepleds/5-ways-shortest-path/hallo.js', to: 'codepleds/hello.js' },
       ],
     }),
   ],
