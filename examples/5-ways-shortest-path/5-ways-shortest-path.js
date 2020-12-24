@@ -1,15 +1,14 @@
-import { input as input1 } from "./input1";
-import { input as input2 } from "./input2";
-import { input as input3 } from "./input3";
-import { input as input4 } from "./input4";
-import { input as input5 } from "./input5";
-import { input as input6 } from "./input6";
-import { input as input7 } from "./input7";
-import { Command, CommandType } from "../../src/DiffConverter/Commands";
+const input1 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n";
+const input2 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n";
+const input3 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n \nconst shortestPathDfs = (startNode, stopNode) => { \n  const previous = new Map(); \n  let shortestDistance = -1; \n  const dfs = (currentNode, depth) => { \n    if (currentNode === stopNode) { \n      shortestDistance = depth; \n    } else { \n      for (let neighbour of adjacencyList.get(currentNode)) { \n        previous.set(neighbour, currentNode); \n        dfs(neighbour, depth + 1); \n      } \n    } \n  }; \n  dfs(startNode, 0); \n  return { shortestDistance, previous }; \n}; \n";
+const input4 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n \nconst shortestPathBfs = (startNode, stopNode) => { \n  const previous = new Map(); \n  const visited = new Set(); \n  const queue = []; \n  queue.push({ node: startNode, dist: 0 }); \n  visited.add(startNode); \n \n  while (queue.length > 0) { \n    const { node, dist } = queue.shift(); \n    if (node === stopNode) return { shortestDistande: dist, previous }; \n \n    for (let neighbour of adjacencyList.get(node)) { \n      if (!visited.has(neighbour)) { \n        previous.set(neighbour, node); \n        queue.push({ node: neighbour, dist: dist + 1 }); \n        visited.add(neighbour); \n      } \n    } \n  } \n  return { shortestDistance: -1, previous }; \n}; \n";
+const input5 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n \nconst addIfUnset = (map, key, value) => { \n  if (!map.has(key)) { \n    map.set(key, value); \n  } \n} \n \nconst shortestPathBfs = (adjList, queue, visitedOwn, visitedOther, previous, isBackwards) => { \n  if (queue.length > 0) { \n    const { node, dist } = queue.shift(); \n    if (visitedOther.has(node)) { \n      return { \n        shortestDistance: dist + visitedOther.get(node), \n        previous, \n      }; \n    } \n \n    for (let neighbour of adjList.get(node)) { \n      if (!visitedOwn.has(neighbour)) { \n        if (isBackwards) { \n          addIfUnset(previous, node, neighbour); \n        } else { \n          addIfUnset(previous, neighbour, node); \n        } \n        queue.push({ node: neighbour, dist: dist + 1 }); \n        visitedOwn.set(neighbour, dist + 1); \n      } \n    } \n  } \n}; \n \nconst bidirectionalSearch = (adjList, startNode, stopNode) => { \n  const previous = new Map(); \n  const visited1 = new Map(); \n  const visited2 = new Map(); \n  const queue1 = []; \n  const queue2 = []; \n  queue1.push({ node: startNode, dist: 0 }); \n  queue2.push({ node: stopNode, dist: 0 }); \n  visited1.set(startNode, 0); \n  visited2.set(stopNode, 0); \n \n  while (queue1.length > 0 || queue2.length > 0) { \n    shortestPathBfs(adjList, queue1, visited1, visited2, previous, false); \n    shortestPathBfs(adjList, queue2, visited2, visited1, previous, true); \n  } \n  return { shortestDistance: -1, previous }; \n}; \n";
+const input6 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n \nconst dijkstra = (startNode, stopNode) => { \n  const distances = new Map(); \n  const previous = new Map(); \n  const remaining = createPriorityQueue(n => distances.get(n)); \n  for (let node of adjacencyList.keys()) { \n    distances.set(node, Number.MAX_VALUE); \n    remaining.insert(node); \n  } \n  distances.set(startNode, 0); \n \n  while (!remaining.isEmpty()) { \n    const n = remaining.extractMin(); \n    for (let neighbour of adjacencyList.get(n)) { \n      const newPathLength = distances.get(n) + edgeWeights.get(n).get(neighbour); \n      const oldPathLength = distances.get(neighbour); \n      if (newPathLength < oldPathLength) { \n        distances.set(neighbour, newPathLength); \n        previous.set(neighbour, n); \n      } \n    } \n  } \n \n  return { distance: distances.get(stopNode), path: previous }; \n}; \n";
+const input7 = "const adjacencyList = new Map(); \nadjacencyList.set(NODE_ID, new Set([...])); \n \nconst printPath = (previous, startNode, stopNode) => { \n  let currentNode = stopNode; \n  console.log(currentNode); \n  while (currentNode !== startNode) { \n    currentNode = previous.get(currentNode); \n    console.log(currentNode); \n  } \n} \n \nconst bellmanFord = (startNode, stopNode) => { \n  const distances = new Map(); \n  const previous = new Map(); \n  for (let node of adjacencyList.keys()) { \n    distances.set(node, Number.MAX_VALUE); \n  } \n  distances.set(startNode, 0); \n \n  for (let i = 0; i < adjacencyList.size - 1; i++) { \n    for (let n of adjacencyList.keys()) { \n      for (let neighbour of adjacencyList.get(n)) { \n        const newPathLength = distances.get(n) + edgeWeights.get(n).get(neighbour); \n        const oldPathLength = distances.get(neighbour); \n        if (newPathLength < oldPathLength) { \n          distances.set(neighbour, newPathLength); \n          previous.set(neighbour, n); \n        } \n      } \n    } \n  } \n  for (let n of adjacencyList.keys()) { \n    for (let neighbour of adjacencyList.get(n)) { \n      if (distances.get(n) + edgeWeights.get(n).get(neighbour) < distances.get(neighbour)) { \n        // there is a cycle with negative weight \n        return null; \n      } \n    } \n  } \n \n  return { distance: distances.get(stopNode), path: previous }; \n}; \n";
 
-export const commands: Command[] = [
+var commands = [
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Introduction",
       message:
@@ -19,11 +18,16 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: "", target: input1 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', {
+    source: "",
+    target:
+      "const adjacencyList = new Map();"
+      + "adjacencyList.set(NODE_ID, new Set([...]));"
+  }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -32,11 +36,14 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input1, target: input2 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', {
+    source: input1,
+    target: input2
+  }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "1. Depth-First Search (DFS)",
       message:
@@ -45,11 +52,14 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input2, target: input3 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', {
+    source: input2,
+    target: input3,
+  }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -59,7 +69,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Performance",
       level: 2,
@@ -71,7 +81,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "2. Breadth-First Search (BFS)",
       message:
@@ -81,12 +91,12 @@ export const commands: Command[] = [
       pause: true,
     },
   ],
-  [CommandType.REPLACE_ALL, input2],
-  [CommandType.CREATE_DIFF, { source: input2, target: input4 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', input2],
+  ['CREATE_DIFF', { source: input2, target: input4 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -96,21 +106,21 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Performance",
       level: 2,
       message:
         "<h3>Performance</h3>" +
-        "<p>Let <i>g</i> describe the largest number of adjacent nodes for any node in our graph. Moreover, let <i>d</i> be the length of the shortest path between <strong>startNode</strong> and <strong>stopNode</strong>. Then this algorithm has a time complexity of <i>O(gᵈ)</i>.</p>" +
-        "<p>Why is that? A BFS searches a graph in so-called levels. Every node in a level has the same distance to the start node. It takes <i>O(g)</i> steps to reach level <i>1</i>, <i>O(g²)</i> steps to reach level <i>2</i>, and so on. Therefore, it takes <i>O(gᵈ)</i> steps to reach level <i>d</i>. Using the variables <i>n</i> and <i>e</i> again, the runtime is still <i>O(n + e)</i>. However, <i>O(gᵈ)</i> is a more precise statement if looking for the shortest path.</p>" +
+        "<p>Let <i>g</i> describe the largest number of adjacent nodes for any node in our graph. Moreover, let <i>d</i> be the length of the shortest path between <strong>startNode</strong> and <strong>stopNode</strong>. Then this algorithm has a time complexity of <i>O(g<sup>d</sup>)</i>.</p>" +
+        "<p>Why is that? A BFS searches a graph in so-called levels. Every node in a level has the same distance to the start node. It takes <i>O(g)</i> steps to reach level <i>1</i>, <i>O(g²)</i> steps to reach level <i>2</i>, and so on. Therefore, it takes <i>O(g<sup>d</sup>)</i> steps to reach level <i>d</i>. Using the variables <i>n</i> and <i>e</i> again, the runtime is still <i>O(n + e)</i>. However, <i>O(gᵈ)</i> is a more precise statement if looking for the shortest path.</p>" +
         "<p>In some graphs, the queue can contain all of its nodes. Therefore, it also has a space complexity of <i>O(n)</i>.</p>" +
         "<p>A small remark: The actual runtime of the above implementation is worse than <i>O(n + e)</i>. The reason is that a JavaScript array is used as a queue. The shift operation takes <i>O(s)</i> time, where <i>s</i> is the size of the queue. However, it is possible to implement a queue in JavaScript that allows the operations enqueue and dequeue in <i>O(1)</i>.</p>",
       pause: true,
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "3. Bidirectional Search",
       message:
@@ -119,11 +129,11 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input4, target: input5 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input4, target: input5 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -133,7 +143,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "4. Dijkstra's Algorithm",
       message:
@@ -143,7 +153,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Crash Course: Priority Queues",
       level: 2,
@@ -160,7 +170,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "How does Dijkstra's algorithm work?",
       level: 2,
@@ -172,12 +182,12 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.REPLACE_ALL, input2],
-  [CommandType.CREATE_DIFF, { source: input2, target: input6 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', input2],
+  ['CREATE_DIFF', { source: input2, target: input6 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -186,7 +196,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Performance",
       level: 2,
@@ -197,7 +207,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "5. Bellman-Ford Algorithm",
       message:
@@ -208,12 +218,12 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.REPLACE_ALL, input2],
-  [CommandType.CREATE_DIFF, { source: input2, target: input7 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', input2],
+  ['CREATE_DIFF', { source: input2, target: input7 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Performance",
       level: 2,
@@ -224,7 +234,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Conclusion",
       message:
@@ -247,7 +257,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "References",
       message:
