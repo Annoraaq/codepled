@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({ filename: '[name].css' }),
+    new MiniCssExtractPlugin({ filename: 'codepled.min.css' }),
     new CopyPlugin({
       patterns: [
         { from: 'assets', to: 'assets' },
@@ -41,8 +41,9 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
-    filename: '[name].js',
+    filename: 'codepled.min.js',
     path: path.resolve(__dirname, 'dist/'),
     library: 'Codepled',
+    publicPath: '',
   },
 };

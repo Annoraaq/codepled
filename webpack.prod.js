@@ -7,10 +7,10 @@ module.exports = merge(common, {
   mode: 'production',
   optimization: {
     minimize: true,
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserPlugin(),
-    ],
+    // minimizer: [
+    //   // new CssMinimizerPlugin(),
+    //   new TerserPlugin(),
+    // ],
   },
   // devtool: 'source-map',
 });
