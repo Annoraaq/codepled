@@ -1,15 +1,14 @@
-import { input as input1 } from "./input1";
-import { input as input2 } from "./input2";
-import { input as input3 } from "./input3";
-import { input as input4 } from "./input4";
-import { input as input5 } from "./input5";
-import { input as input6 } from "./input6";
-import { input as input7 } from "./input7";
-import { Command, CommandType } from "../../src/DiffConverter/Commands";
+const input1 = "const stack = []; \n \n// insert elements (push) \nstack.push('one'); \nstack.push('two'); \nconsole.log(stack); // ['one', 'two'] \n \n// access first (peek) \nconsole.log(stack[stack.length-1]); // 'two' \n \n// remove first (pop) \nstack.pop(); \nconsole.log(stack); // ['one'] \n";
+const input2 = "const queue = []; \n \n// insert elements (enqueue) \nqueue.push('one'); \nqueue.push('two'); \nconsole.log(queue); // ['one', 'two'] \n \n// access last \nconsole.log(queue[0]); // 'one' \n \n// remove last (dequeue) \nqueue.shift(); \nconsole.log(queue); // ['two'] \n";
+const input3 = "const Node = data => ({ data, next: null, prev: null }); \n";
+const input4 = "const Queue = () => { \n  const Node = data => ({ data, next: null, prev: null }); \n  let head = null; \n  let tail = null; \n \n  return { \n    enqueue, \n    dequeue, \n    peek, \n  }; \n}; \n";
+const input5 = "const Queue = () => { \n  const Node = data => ({ data, next: null, prev: null }); \n  let head = null; \n  let tail = null; \n \n  const enqueue = data => { \n    if (head == null) { \n      head = Node(data); \n      tail = head; \n      return head; \n    } \n    const newNode = Node(data); \n    newNode.next = head; \n    head.prev = newNode; \n    head = newNode; \n    return head; \n  }; \n \n  return { \n    enqueue, \n    dequeue, \n    peek, \n  }; \n}; \n";
+const input6 = "const Queue = () => { \n  const Node = data => ({ data, next: null, prev: null }); \n  let head = null; \n  let tail = null; \n \n  const enqueue = data => { \n    if (head == null) { \n      head = Node(data); \n      tail = head; \n      return head; \n    } \n    const newNode = Node(data); \n    newNode.next = head; \n    head.prev = newNode; \n    head = newNode; \n    return head; \n  }; \n \n  const dequeue = () => { \n    if (tail === null) return null; \n    const tailData = tail.data; \n    if (tail.prev === null) { \n      tail = null; \n      head = null; \n      return tailData; \n    } \n    tail.prev.next = null; \n    tail = tail.prev; \n    return tailData; \n  }; \n \n  return { \n    enqueue, \n    dequeue, \n    peek, \n  }; \n}; \n";
+const input7 = "const Queue = () => { \n  const Node = data => ({ data, next: null, prev: null }); \n  let head = null; \n  let tail = null; \n \n  const enqueue = data => { \n    if (head == null) { \n      head = Node(data); \n      tail = head; \n      return head; \n    } \n    const newNode = Node(data); \n    newNode.next = head; \n    head.prev = newNode; \n    head = newNode; \n    return head; \n  }; \n \n  const dequeue = () => { \n    if (tail === null) return null; \n    const tailData = tail.data; \n    if (tail.prev === null) { \n      tail = null; \n      head = null; \n      return tailData; \n    } \n    tail.prev.next = null; \n    tail = tail.prev; \n    return tailData; \n  }; \n \n  const peek = () => tail ? tail.data : null; \n \n  return { \n    enqueue, \n    dequeue, \n    peek, \n  }; \n}; \n";
 
-export const commands: Command[] = [
+var commands = [
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Introduction",
       message:
@@ -19,7 +18,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Stacks",
       message:
@@ -29,10 +28,10 @@ export const commands: Command[] = [
         "<ul>" +
         "<li><strong>Insertion</strong> (push): O(1)</li>" +
         "<li><strong>Random access</strong> (access any element): O(n)<sup>*</sup></li>" +
-        "<li><strong>Access first</strong> (peek — access most recently added element): O(1)</li>" +
+        "<li><strong>Access first</strong> (peek - access most recently added element): O(1)</li>" +
         "<li><strong>Find</strong> (find a specific element): O(n)</li>" +
         "<li><strong>Random removal</strong> (remove any element): O(n)</li>" +
-        "<li><strong>Remove first</strong> (pop — remove most recently added element): O(1)</li>" +
+        "<li><strong>Remove first</strong> (pop - remove most recently added element): O(1)</li>" +
         "</ul>" +
         "<p><strong>Note:</strong> If you use JavaScript arrays as a stack, random access can be done in O(1).</p>" +
         "<p>The important operations for a stack are <strong>insert (push)</strong>, <strong>remove first (pop)</strong>, and <strong>access first (peek)</strong>. These are the efficient operations of a stack. If you find yourself using different operations a lot, a stack is probably the wrong data structure for your purpose.</p>",
@@ -40,7 +39,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Stacks in JavaScript",
       level: 2,
@@ -51,11 +50,11 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: "", target: input1 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: "", target: input1 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Queues",
       message:
@@ -68,14 +67,14 @@ export const commands: Command[] = [
         "<li><strong>Access last</strong> (access least recently added element): O(1)</li>" +
         "<li><strong>Find</strong> (find a specific element): O(n)</li>" +
         "<li><strong>Random removal</strong> (remove any element): O(n)</li>" +
-        "<li><strong>Remove last</strong> (dequeue — remove least recently added element): O(1)</li>" +
+        "<li><strong>Remove last</strong> (dequeue - remove least recently added element): O(1)</li>" +
         "</ul>" +
-        "<p>The essential and efficient operations for a queue are <strong>insert (enqueue)</strong>, <strong>remove last (dequeue)</strong>, and <strong>access last (peek)</strong>. Similar to stacks, you shouldn’t use this data structure if you don’t need the mentioned operations.</p>",
+        "<p>The essential and efficient operations for a queue are <strong>insert (enqueue)</strong>, <strong>remove last (dequeue)</strong>, and <strong>access last (peek)</strong>. Similar to stacks, you shouldn't use this data structure if you don't need the mentioned operations.</p>",
       pause: true,
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Queues in JavaScript",
       level: 2,
@@ -85,38 +84,38 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.REPLACE_ALL, ""],
-  [CommandType.CREATE_DIFF, { source: "", target: input2 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', ""],
+  ['CREATE_DIFF', { source: "", target: input2 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
         "<p>However, there is one downside to this solution: shift takes O(n) in the worst case because all array elements have to be copied over by one position.</p>" +
-        "<p>There are several third-party solutions implementing a queue in an efficient way. However, you can’t use them during an interview. You should tell your interviewer you know about this limitation in JavaScript and clarify if you can simply use arrays as a queue, pretending that shift takes only O(1). If that’s not an option, you can implement a queue (and also a stack) efficiently using a linked list.</p>" +
+        "<p>There are several third-party solutions implementing a queue in an efficient way. However, you can't use them during an interview. You should tell your interviewer you know about this limitation in JavaScript and clarify if you can simply use arrays as a queue, pretending that shift takes only O(1). If that's not an option, you can implement a queue (and also a stack) efficiently using a linked list.</p>" +
         "<p>However, you can also implement a queue right from scratch. You need the following data structure for this.</p>",
       pause: false,
     },
   ],
-  [CommandType.REPLACE_ALL, ""],
-  [CommandType.CREATE_DIFF, { source: "", target: input3 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', ""],
+  ['CREATE_DIFF', { source: "", target: input3 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message: "<p>We embed this in a queue factory function.</p>",
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input3, target: input4 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input3, target: input4 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -125,7 +124,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Insertion (enqueue)",
       level: 2,
@@ -135,11 +134,11 @@ export const commands: Command[] = [
       pause: true,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input4, target: input5 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input4, target: input5 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Remove last (dequeue)",
       level: 2,
@@ -149,11 +148,11 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input5, target: input6 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input5, target: input6 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       toc: false,
       message:
@@ -162,7 +161,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Access last (peek)",
       level: 2,
@@ -172,7 +171,7 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input6, target: input7 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input6, target: input7 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
 ];
