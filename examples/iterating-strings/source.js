@@ -116,7 +116,7 @@ var commands = [
       title: "for...of",
       level: 2,
       message:
-        "<h3>for…of</h3>" +
+        "<h3>for...of</h3>" +
         "<p>This statement was introduced with ECMAScript 2015 and can be used with iterable objects. It's more convenient to write than a classic for loop if you don't care about the current index in the loop body.</p>",
       pause: false,
     },

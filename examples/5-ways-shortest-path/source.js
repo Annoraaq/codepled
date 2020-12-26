@@ -64,7 +64,7 @@ var commands = [
       toc: false,
       message:
         "<p>If there does not exist a path between startNode and stopNode, the shortest path will have a length of -1. We initialize the shortest path with this value and start a recursive DFS. That recursive DFS is slightly modified in the sense that it will track the depth of the search and stop as soon as it reaches stopNode. The current depth when it reaches stopNode is our shortest path length.</p>" +
-        "<p>The reason why we can’t use it for cyclic graphs is that whenever we find a path, we can’t be sure that it is the shortest path. A DFS gives no such guarantee.</p>",
+        "<p>The reason why we can't use it for cyclic graphs is that whenever we find a path, we can't be sure that it is the shortest path. A DFS gives no such guarantee.</p>",
       pause: true,
     },
   ],
@@ -101,7 +101,7 @@ var commands = [
       toc: false,
       message:
         "<p>This is a straightforward implementation of a BFS that only differs in a few details. With every node that gets stored in the queue, we additionally save the distance to <strong>startNode</strong>. When we reach <strong>stopNode</strong>, we simply return the distance that was stored along with it.</p>" +
-        "<p>This works because of the nature of a BFS: A neighbor’s neighbor is not visited before all direct neighbors have been visited. As a consequence, all nodes with distance <i>x</i> from <strong>startNode</strong> are visited after all nodes with distance <i>&lt; x</i> have been visited. The BFS will first visit nodes with distance <i>0</i> then all nodes with distance <i>1</i> and so on. This property is the reason why we can use a BFS to find the shortest path even in cyclic graphs.</p>",
+        "<p>This works because of the nature of a BFS: A neighbor's neighbor is not visited before all direct neighbors have been visited. As a consequence, all nodes with distance <i>x</i> from <strong>startNode</strong> are visited after all nodes with distance <i>&lt; x</i> have been visited. The BFS will first visit nodes with distance <i>0</i> then all nodes with distance <i>1</i> and so on. This property is the reason why we can use a BFS to find the shortest path even in cyclic graphs.</p>",
       pause: true,
     },
   ],
@@ -113,7 +113,7 @@ var commands = [
       message:
         "<h3>Performance</h3>" +
         "<p>Let <i>g</i> describe the largest number of adjacent nodes for any node in our graph. Moreover, let <i>d</i> be the length of the shortest path between <strong>startNode</strong> and <strong>stopNode</strong>. Then this algorithm has a time complexity of <i>O(g<sup>d</sup>)</i>.</p>" +
-        "<p>Why is that? A BFS searches a graph in so-called levels. Every node in a level has the same distance to the start node. It takes <i>O(g)</i> steps to reach level <i>1</i>, <i>O(g²)</i> steps to reach level <i>2</i>, and so on. Therefore, it takes <i>O(g<sup>d</sup>)</i> steps to reach level <i>d</i>. Using the variables <i>n</i> and <i>e</i> again, the runtime is still <i>O(n + e)</i>. However, <i>O(gᵈ)</i> is a more precise statement if looking for the shortest path.</p>" +
+        "<p>Why is that? A BFS searches a graph in so-called levels. Every node in a level has the same distance to the start node. It takes <i>O(g)</i> steps to reach level <i>1</i>, <i>O(g<sup>2</sup>)</i> steps to reach level <i>2</i>, and so on. Therefore, it takes <i>O(g<sup>d</sup>)</i> steps to reach level <i>d</i>. Using the variables <i>n</i> and <i>e</i> again, the runtime is still <i>O(n + e)</i>. However, <i>O(g<sup>d</sup>)</i> is a more precise statement if looking for the shortest path.</p>" +
         "<p>In some graphs, the queue can contain all of its nodes. Therefore, it also has a space complexity of <i>O(n)</i>.</p>" +
         "<p>A small remark: The actual runtime of the above implementation is worse than <i>O(n + e)</i>. The reason is that a JavaScript array is used as a queue. The shift operation takes <i>O(s)</i> time, where <i>s</i> is the size of the queue. However, it is possible to implement a queue in JavaScript that allows the operations enqueue and dequeue in <i>O(1)</i>.</p>",
       pause: true,
@@ -125,7 +125,7 @@ var commands = [
       title: "3. Bidirectional Search",
       message:
         "<h3>3. Bidirectional Search</h3>" +
-        "<p>Our third method to get the shortest path is a bidirectional search. Like a BFS, it is applicable to undirected graphs without edge weights. To perform a bidirectional search, we basically start one BFS from <strong>node1</strong> and one from <strong>node2</strong> at the same time. When both BFS meet, we’ve found the shortest path.</p>",
+        "<p>Our third method to get the shortest path is a bidirectional search. Like a BFS, it is applicable to undirected graphs without edge weights. To perform a bidirectional search, we basically start one BFS from <strong>node1</strong> and one from <strong>node2</strong> at the same time. When both BFS meet, we've found the shortest path.</p>",
       pause: false,
     },
   ],
@@ -148,7 +148,7 @@ var commands = [
       title: "4. Dijkstra's Algorithm",
       message:
         "<h2>4. Dijkstra's Algorithm</h2>" +
-        "<p>This algorithm might be the most famous one for finding the shortest path. Its advantage over a DFS, BFS, and bidirectional search is that you can use it in all graphs with positive edge weights. Don’t try it on graphs that contain negative edge weights because termination is not guaranteed in this case.</p>",
+        "<p>This algorithm might be the most famous one for finding the shortest path. Its advantage over a DFS, BFS, and bidirectional search is that you can use it in all graphs with positive edge weights. Don't try it on graphs that contain negative edge weights because termination is not guaranteed in this case.</p>",
       pause: true,
     },
   ],
@@ -178,7 +178,7 @@ var commands = [
         "<h3>How does Dijkstra's algorithm work?</h3>" +
         "<p>Before we look at the code, let me shortly describe the algorithm so that you get an idea of how it works.</p>" +
         "<p>We start by initializing the shortest path from our start node to every other node in our graph. Initially, this will be infinity for every node other than the start node itself. The start node will be initialized with <i>0</i> because that is the distance to itself. We insert all nodes to our priority queue along with their previously initialized distance to our start node as a priority.</p>" +
-        "<p>Now begins the actual work. Until the priority queue is not empty, we extract the node with the current shortest known distance to our start node. Let’s call it <strong>currentNode</strong>. Then we loop over all neighbors of <strong>currentNode</strong>, and for each one, we check if reaching it through <strong>currentNode</strong> is shorter than the currently known shortest path to that neighbor. If so, we update the shortest distance to the neighbor and proceed. But see for yourself.</p>",
+        "<p>Now begins the actual work. Until the priority queue is not empty, we extract the node with the current shortest known distance to our start node. Let's call it <strong>currentNode</strong>. Then we loop over all neighbors of <strong>currentNode</strong>, and for each one, we check if reaching it through <strong>currentNode</strong> is shorter than the currently known shortest path to that neighbor. If so, we update the shortest distance to the neighbor and proceed. But see for yourself.</p>",
       pause: false,
     },
   ],
@@ -239,7 +239,7 @@ var commands = [
       title: "Conclusion",
       message:
         "<h2>Conclusion</h2>" +
-        "<p>We inspected some of the most important algorithms to get the shortest path in a graph, along with their advantages and disadvantages. Let’s look at an overview to help you decide which algorithm to use in which situation:</p>" +
+        "<p>We inspected some of the most important algorithms to get the shortest path in a graph, along with their advantages and disadvantages. Let's look at an overview to help you decide which algorithm to use in which situation:</p>" +
         '<p><img src="../assets/graph-algorithms-comparison.png" alt="table comparing shortest path algorithms"/></p>' +
         "<p>As you can see, which algorithm to use depends on a couple of properties of the graph as well as the runtime of the algorithm. However, another important factor is implementation time. If you are in a coding contest or coding interview, then implementation speed matters. In this case, you might want to make a trade-off between implementation speed and runtime complexity. All these observations lead to the following questions:</p>" +
         "<ul>" +
@@ -248,7 +248,7 @@ var commands = [
         "<li>Does the graph contain undirected cycles?</li>" +
         "<li>Is implementation speed more important than runtime?</li>" +
         "</ul>" +
-        "<p>Based on these questions, you can determine the right algorithm to use. Here’s a helpful decision tree:</p>" +
+        "<p>Based on these questions, you can determine the right algorithm to use. Here's a helpful decision tree:</p>" +
         '<p><img src="../assets/graph-algos-decision-tree.png" alt="decision tree for choosing the right shortest path algorithm"/></p>' +
         "<p>Please note that this piece does not cover all the existing algorithms to find the shortest path in a graph. It gives an overview of the most important ones as well as a recommendation of the best of these algorithms for your situation.</p>" +
         "<p>I hope I could give you a deeper understanding of this landscape so you can pick an algorithm wisely the next time you need it.</p>" +
