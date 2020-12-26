@@ -1,16 +1,15 @@
-import { input as input1 } from "./input1";
-import { input as input2 } from "./input2";
-import { input as input3 } from "./input3";
-import { input as input4 } from "./input4";
-import { input as input5 } from "./input5";
-import { input as input6 } from "./input6";
-import { input as input7 } from "./input7";
-import { input as input8 } from "./input8";
-import { Command, CommandType } from "../../src/DiffConverter/Commands";
+const input1 = "const createNode = (data) => ({ \n  next: null, \n  data, \n});";
+const input2 = "const createNode = (data) => ({ \n  next: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  node.next = newNode; \n  return node; \n} \n \nconst insertBefore = (head, data) => { \n  const newHead = createNode(data); \n  newHead.next = head; \n  return newHead; \n} \n \n// create new list \nlet head = createNode('one'); \n \n// insert element after head \ninsertAfter(head, 'two'); \n \n// insert to head of list \nhead = insertBefore(head, 'zero'); \n";
+const input3 = "const createNode = (data) => ({ \n  next: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  node.next = newNode; \n  return node; \n} \n \nconst insertBefore = (head, data) => { \n  const newHead = createNode(data); \n  newHead.next = head; \n  return newHead; \n} \n \nconst getElementAt = (head, index) => { \n  let currentIndex = 0; \n  let currentNode = head; \n  while (currentIndex < index && currentNode !== null) { \n      currentIndex++; \n      currentNode = currentNode.next; \n  } \n  return currentNode; \n} \n \n// create new list \nlet head = createNode('one'); \n \n// insert element after head \ninsertAfter(head, 'two'); \n \n// insert to head of list \nhead = insertBefore(head, 'zero'); \n";
+const input4 = "const createNode = (data) => ({ \n  next: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  node.next = newNode; \n  return node; \n} \n \nconst insertBefore = (head, data) => { \n  const newHead = createNode(data); \n  newHead.next = head; \n  return newHead; \n} \n \nconst getElementAt = (head, index) => { \n  let currentIndex = 0; \n  let currentNode = head; \n  while (currentIndex < index && currentNode !== null) { \n      currentIndex++; \n      currentNode = currentNode.next; \n  } \n  return currentNode; \n} \n \nconst getElement = (head, data) => { \n  let currentNode = head; \n  while (currentNode.data !== data && currentNode !== null) { \n      currentNode = currentNode.next; \n  } \n  return currentNode; \n} \n \n// create new list \nlet head = createNode('one'); \n \n// insert element after head \ninsertAfter(head, 'two'); \n \n// insert to head of list \nhead = insertBefore(head, 'zero'); \n";
+const input5 = "const createNode = (data) => ({ \n  next: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  node.next = newNode; \n  return node; \n} \n \nconst insertBefore = (head, data) => { \n  const newHead = createNode(data); \n  newHead.next = head; \n  return newHead; \n} \n \nconst getElementAt = (head, index) => { \n  let currentIndex = 0; \n  let currentNode = head; \n  while (currentIndex < index && currentNode !== null) { \n      currentIndex++; \n      currentNode = currentNode.next; \n  } \n  return currentNode; \n} \n \nconst getElement = (head, data) => { \n  let currentNode = head; \n  while (currentNode.data !== data && currentNode !== null) { \n      currentNode = currentNode.next; \n  } \n  return currentNode; \n} \n \nconst remove = (head, data) => { \n  if (head.data === data) return head.next; \n  let currentNode = head; \n  while (currentNode.next !== null ) { \n      if (currentNode.next.data === data) { \n          currentNode.next = currentNode.next.next; \n          return head; \n      } \n      currentNode = currentNode.next; \n  } \n  return head; \n} \n \n// create new list \nlet head = createNode('one'); \n \n// insert element after head \ninsertAfter(head, 'two'); \n \n// insert to head of list \nhead = insertBefore(head, 'zero'); \n";
+const input6 = "const createNode = (data) => ({ \n  next: null, \n  previous: null, \n  data, \n}); \n";
+const input7 = "const createNode = (data) => ({ \n  next: null, \n  previous: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  newNode.previous = node; \n  node.next && (node.next.previous = newNode); \n  node.next = newNode; \n  return node; \n}; \n \nconst insertBefore = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node; \n  newNode.previous = node.previous; \n  node.previous && (node.previous.next = newNode); \n  node.previous = newNode; \n  return newNode; \n}; \n";
+const input8 = "const createNode = (data) => ({ \n  next: null, \n  previous: null, \n  data, \n}); \n \nconst insertAfter = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node.next; \n  newNode.previous = node; \n  node.next && (node.next.previous = newNode); \n  node.next = newNode; \n  return node; \n}; \n \nconst insertBefore = (node, data) => { \n  const newNode = createNode(data); \n  newNode.next = node; \n  newNode.previous = node.previous; \n  node.previous && (node.previous.next = newNode); \n  node.previous = newNode; \n  return newNode; \n}; \n \nconst removeNode = (node) => { \n  if (!node) return null; \n \n  node.previous && (node.previous.next = node.next); \n  node.next && (node.next.previous = node.previous); \n  return node; \n} \n \nconst remove = (head, data) => removeNode(getElement(head, data)); \n";
 
-export const commands: Command[] = [
+var commands = [
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Introduction",
       message:
@@ -31,7 +30,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "A Simple Singly Linked List",
       message:
@@ -41,7 +40,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Introduction",
       message: `A simple approach for a singly linked list is the following data structure.</p><p>It is a simple list node object that contains data as well as a pointer to the next element in the list. But as simple as this data structure might be the complexity comes with the operations. <br />`,
@@ -49,11 +48,11 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: "", target: input1 }],
-  [CommandType.SET_CURSOR, 0],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: "", target: input1 }],
+  ['SET_CURSOR', 0],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Insertion",
       message:
@@ -62,11 +61,11 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input1, target: input2 }],
-  [CommandType.PAUSE, undefined],
-  [CommandType.SET_CURSOR, 0],
+  ['CREATE_DIFF', { source: input1, target: input2 }],
+  ['PAUSE', undefined],
+  ['SET_CURSOR', 0],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Random Access",
       message: `<h3>Random access</h3>To access an element at any given index in the list you have to start at the head and follow the list until you reached the specified index. This operation has O(n) time complexity.
@@ -75,11 +74,11 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input2, target: input3 }],
-  [CommandType.PAUSE, undefined],
-  [CommandType.SET_CURSOR, 0],
+  ['CREATE_DIFF', { source: input2, target: input3 }],
+  ['PAUSE', undefined],
+  ['SET_CURSOR', 0],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Find",
       message: `<h3>Find</h3>Finding a specific element is similar to accessing a random element. The only difference is that you need to compare the data of the current element with the one you are looking for. The runtime complexity of this operation is O(n).
@@ -88,11 +87,11 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input3, target: input4 }],
-  [CommandType.PAUSE, undefined],
-  [CommandType.SET_CURSOR, 0],
+  ['CREATE_DIFF', { source: input3, target: input4 }],
+  ['PAUSE', undefined],
+  ['SET_CURSOR', 0],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Random Removal",
       message: `<h3>Random removal</h3>Removing any element from the list is a combination of finding the element and its predecessor and updating the next pointers. This operations also has a runtime complexity of O(n) caused by the find operation.
@@ -101,10 +100,10 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input4, target: input5 }],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input4, target: input5 }],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "More Sophisticated Implementations",
       message:
@@ -115,7 +114,7 @@ export const commands: Command[] = [
     },
   ],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Doubly Linked List",
       message:
@@ -124,11 +123,11 @@ export const commands: Command[] = [
       pause: false,
     },
   ],
-  [CommandType.REPLACE_ALL, ""],
-  [CommandType.CREATE_DIFF, { source: "", target: input6 }],
-  [CommandType.PAUSE, undefined],
+  ['REPLACE_ALL', ""],
+  ['CREATE_DIFF', { source: "", target: input6 }],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Insertion",
       message:
@@ -138,10 +137,10 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input6, target: input7 }],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input6, target: input7 }],
+  ['PAUSE', undefined],
   [
-    CommandType.SHOW_TEXT,
+    'SHOW_TEXT',
     {
       title: "Random Removal",
       message:
@@ -151,8 +150,8 @@ export const commands: Command[] = [
       level: 2,
     },
   ],
-  [CommandType.CREATE_DIFF, { source: input7, target: input8 }],
-  [CommandType.PAUSE, undefined],
+  ['CREATE_DIFF', { source: input7, target: input8 }],
+  ['PAUSE', undefined],
   [
     ,
     {
