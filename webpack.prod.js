@@ -12,5 +12,5 @@ module.exports = merge(common, {
       new TerserPlugin(),
     ],
   },
-  devtool: 'source-map',
+  // devtool: 'source-map',
 });
