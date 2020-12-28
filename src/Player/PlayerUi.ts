@@ -67,7 +67,7 @@ export class PlayerUi {
 
   private initTitle(title: string) {
     (<HTMLElement>(
-      document.querySelector(this.selector + " .title a")
+      document.querySelector(this.selector + " .title h1")
     )).innerText = title;
   }
 

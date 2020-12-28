@@ -45,7 +45,7 @@
   line-height: 20px;
 }
 
-.codepled .header h1 a {
+.codepled .header h1 {
   color: rgb(255, 213, 190);
   font-family: Helvetica, Arial;
   font-weight: normal;
@@ -514,10 +514,6 @@
   align-self: center;
   height: 35px;
   margin-left: 10px;
-}
-
-.codepled .logo img {
-  height: 35px;
 }
 
 .codepled .lines .line {

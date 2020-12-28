@@ -2,15 +2,15 @@ export const template = `<div class="codepled">
   <div class="container">
     <header class="header">
       <div class="header__row">
-        <div class="left"><a class="logo" href="index.html"><img src="../assets/codepled_logo.png" /></a>
+        <div class="left"><img class="logo" src="../assets/codepled_logo.png" />
           <div class="title">
-            <h1><a href="index.html"></a></h1>
+            <h1></h1>
           </div>
         </div>
       </div>
       <div class="header__row responsive">
         <div class="title">
-          <h1><a href="index.html"></a></h1>
+          <h1></h1>
         </div>
       </div>
     </header>
